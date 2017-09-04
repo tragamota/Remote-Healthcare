@@ -1,6 +1,6 @@
 ﻿namespace WindowsFormsApp1
 {
-    partial class Form1
+    partial class Console
     {
         /// <summary>
         /// Required designer variable.
@@ -76,7 +76,6 @@
             this.label1.Size = new System.Drawing.Size(42, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Pulse:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -87,7 +86,6 @@
             this.label2.Size = new System.Drawing.Size(74, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "Round/Min:";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label3
             // 
@@ -108,7 +106,6 @@
             this.label4.Size = new System.Drawing.Size(61, 13);
             this.label4.TabIndex = 5;
             this.label4.Text = "Distance:";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label5
             // 
@@ -158,7 +155,6 @@
             this.lblWatt.Size = new System.Drawing.Size(31, 13);
             this.lblWatt.TabIndex = 17;
             this.lblWatt.Text = "9000";
-            this.lblWatt.Click += new System.EventHandler(this.lblWatt_Click);
             // 
             // lblTime
             // 
@@ -168,7 +164,6 @@
             this.lblTime.Size = new System.Drawing.Size(34, 13);
             this.lblTime.TabIndex = 16;
             this.lblTime.Text = "14:66";
-            this.lblTime.Click += new System.EventHandler(this.lblTime_Click);
             // 
             // lblEnergy
             // 
@@ -178,7 +173,6 @@
             this.lblEnergy.Size = new System.Drawing.Size(13, 13);
             this.lblEnergy.TabIndex = 15;
             this.lblEnergy.Text = "4";
-            this.lblEnergy.Click += new System.EventHandler(this.lblEnergy_Click);
             // 
             // lblResistence
             // 
@@ -188,7 +182,6 @@
             this.lblResistence.Size = new System.Drawing.Size(19, 13);
             this.lblResistence.TabIndex = 14;
             this.lblResistence.Text = "30";
-            this.lblResistence.Click += new System.EventHandler(this.lblResistence_Click);
             // 
             // lblDistance
             // 
@@ -198,7 +191,6 @@
             this.lblDistance.Size = new System.Drawing.Size(25, 13);
             this.lblDistance.TabIndex = 13;
             this.lblDistance.Text = "500";
-            this.lblDistance.Click += new System.EventHandler(this.lblDistence_Click);
             // 
             // lblSpeed
             // 
@@ -208,7 +200,6 @@
             this.lblSpeed.Size = new System.Drawing.Size(19, 13);
             this.lblSpeed.TabIndex = 12;
             this.lblSpeed.Text = "55";
-            this.lblSpeed.Click += new System.EventHandler(this.lblSpeed_Click);
             // 
             // lblRoundMin
             // 
@@ -218,7 +209,6 @@
             this.lblRoundMin.Size = new System.Drawing.Size(19, 13);
             this.lblRoundMin.TabIndex = 11;
             this.lblRoundMin.Text = "10";
-            this.lblRoundMin.Click += new System.EventHandler(this.lblRoundMin_Click);
             // 
             // lblPulse
             // 
@@ -228,7 +218,6 @@
             this.lblPulse.Size = new System.Drawing.Size(19, 13);
             this.lblPulse.TabIndex = 10;
             this.lblPulse.Text = "80";
-            this.lblPulse.Click += new System.EventHandler(this.lblPulse_Click);
             // 
             // label9
             // 
@@ -351,7 +340,6 @@
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
