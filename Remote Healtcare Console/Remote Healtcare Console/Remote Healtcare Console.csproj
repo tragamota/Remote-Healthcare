@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bike.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="BikeSimulator.cs" />
     <Compile Include="Kettler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

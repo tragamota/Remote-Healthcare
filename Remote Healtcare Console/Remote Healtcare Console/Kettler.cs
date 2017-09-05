@@ -2,38 +2,48 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulator
 {
     abstract class Kettler
     {
+        protected ISet<BikeData> RecordedData;
         public abstract void Run();
         public abstract void Update();
-        public abstract void SetResistance();
+        public abstract void SetResistance(int power);
         public abstract void SetAscending();
-        public abstract void SetDescending();       
+        public abstract void SetDescending();
+        public abstract void Reset();
+        public abstract void SetTime(int mm, int ss);
     }
 
     struct BikeData
     {
-        private int pulse, rpm, distance, resistance, power, energy;
-        private TimeSpan time;
-        private double speed;
+        public int Pulse { get; }
+        public int Rpm { get; }
+        public int Distance { get; }
+        public int Resistance { get; }
+        public int Power { get; }
+        public int Energy { get; }
+        public TimeSpan Time { get; }
+        public double Speed { get; }
 
-        public BikeData(int pulse, int rpm, int distance, int resistance, int power, int energy, string time, string speed)
+        public BikeData(int pulse, int rpm, string speed, int distance, int resistance, int energy, string time, int power)
         {
-            this.pulse = pulse;
-            this.rpm = rpm;
-            this.distance = distance;
-            this.resistance = resistance;
-            this.power = power;
-            this.energy = energy;
+            Pulse = pulse;
+            Rpm = rpm;
+            Distance = distance;
+            Resistance = resistance;
+            Power = power;
+            Energy = energy;
             string[] timeSplitted = time.Split(':');
-            this.time = new TimeSpan(0, int.Parse(timeSplitted[0]), int.Parse(timeSplitted[1]));
-            this.speed = double.Parse(speed) / 10;
+            Time = new TimeSpan(0, int.Parse(timeSplitted[0]), int.Parse(timeSplitted[1]));
+            Speed = (double.Parse(speed) / 10);
         }
 
-        
+        public override string ToString()
+        {
+             return $"{Pulse}-{Rpm}-{Speed}-{Distance}-{Resistance}-{Energy}-{Time.Minutes + ":" + Time.Seconds}-{Power}";
+        }
     }
 }
