@@ -3,7 +3,7 @@ using System.IO.Ports;
 
 namespace Simulator
 {
-    class SerialCommunicator
+    public class SerialCommunicator
     {
         private SerialPort serialPort;
         public SerialCommunicator(String port)

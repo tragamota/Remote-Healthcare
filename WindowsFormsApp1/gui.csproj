@@ -87,5 +87,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Remote Healtcare Console\Remote Healtcare Console\Remote Healtcare Console.csproj">
+      <Project>{a1f37cb6-af3f-421e-aae6-42ffe587582f}</Project>
+      <Name>Remote Healtcare Console</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

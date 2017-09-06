@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Simulator
 {
-    class Bike : Kettler
+    public class Bike : Kettler
     {
         //private Client client;
         private SerialCommunicator serialCommunicator;

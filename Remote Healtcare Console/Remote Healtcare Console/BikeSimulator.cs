@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Simulator
 {
-    class BikeSimulator : Kettler
+    public class BikeSimulator : Kettler
     {
         public override void Reset()
         {

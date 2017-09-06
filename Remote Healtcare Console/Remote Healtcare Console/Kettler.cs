@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Simulator
 {
-    abstract class Kettler
+    public abstract class Kettler
     {
         protected ISet<BikeData> RecordedData;
         public abstract void Run();
