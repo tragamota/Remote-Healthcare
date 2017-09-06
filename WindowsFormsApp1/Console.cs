@@ -7,19 +7,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO.Ports;
+using Simulator;
 
 namespace WindowsFormsApp1
 {
     public partial class Console : Form
     {
+
+        ComboBox combo;
+
         public Console()
         {
             InitializeComponent();
+            combo = comPorts;
+            combo.Items.Clear();
+            combo.Items.Add("Simulator");
+            String[] ports = SerialPort.GetPortNames();
+            foreach (string port in ports)
+            {
+                combo.Items.Add(port);
+            }
         }
 
         private void BStart_Click(object sender, EventArgs e)
         {
-            
+            if (combo.SelectedText.Equals("Simulator")){
+                //
+            }
+            else
+            {
+                Bike bike = new Bike(combo.SelectedText);
+                bike.Start();
+                bike.Run();
+            }
         }
 
         public void SetPulse(String s){ lblPulse.Text = s; }

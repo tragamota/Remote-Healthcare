@@ -42,7 +42,7 @@ namespace Simulator
 
         public override void Run()
         {
-            while(serialCommunicator.isConnection() && start)
+            while(serialCommunicator.IsConnected() && start)
             {
                 Update();
                 System.Threading.Thread.Sleep(750);

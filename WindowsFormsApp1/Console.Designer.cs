@@ -53,7 +53,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comPorts = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // BStart
@@ -76,6 +76,7 @@
             this.label1.Size = new System.Drawing.Size(42, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Pulse:";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -290,28 +291,28 @@
             this.label16.TabIndex = 18;
             this.label16.Text = "B/min";
             // 
-            // comboBox1
+            // comPorts
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.comPorts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comPorts.FormattingEnabled = true;
+            this.comPorts.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.comPorts.Items.AddRange(new object[] {
             "Simulation",
             "COM1",
             "COM2",
             "COM3"});
-            this.comboBox1.Location = new System.Drawing.Point(119, 12);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(75, 21);
-            this.comboBox1.TabIndex = 26;
+            this.comPorts.Location = new System.Drawing.Point(119, 12);
+            this.comPorts.Name = "comPorts";
+            this.comPorts.Size = new System.Drawing.Size(75, 21);
+            this.comPorts.TabIndex = 26;
             // 
-            // Form1
+            // Console
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Highlight;
             this.ClientSize = new System.Drawing.Size(342, 322);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.comPorts);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label11);
@@ -338,7 +339,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.BStart);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Name = "Form1";
+            this.Name = "Console";
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -372,7 +373,7 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comPorts;
     }
 }
 

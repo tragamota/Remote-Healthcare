@@ -56,7 +56,7 @@ namespace Simulator
             serialPort.WriteLine("PW " + trueResistance);
         }
 
-        public void setDistance(int distance)
+        public void SetDistance(int distance)
         {
             int trueDistance;
             if(distance > 999)
@@ -89,7 +89,7 @@ namespace Simulator
             serialPort.WriteLine("CD");
         }
 
-        public bool isConnection()
+        public bool IsConnected()
         {
             return serialPort.IsOpen;
         }
