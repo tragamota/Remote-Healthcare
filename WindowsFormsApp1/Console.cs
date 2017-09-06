@@ -53,7 +53,7 @@ namespace Remote_Healtcare_Console
 
         public void SetSpeed(String s) { lblSpeed.Text = s; }
 
-        public void SetDistance(String s) { lblSpeed.Text = s; }
+        public void SetDistance(String s) { lblDistance.Text = s; }
 
         public void SetResistance(String s) { lblResistence.Text = s; }
 

@@ -106,17 +106,18 @@ namespace Remote_Healtcare_Console
             {
                 console.Invoke((MethodInvoker)delegate {
                     // Running on the UI thread
-                    console.SetPulse(bikeData.Pulse.ToString());
-                    console.SetRoundMin(bikeData.Rpm.ToString());
-                    console.SetSpeed(bikeData.Speed.ToString());
-                    console.SetDistance(bikeData.Distance.ToString());
-                    console.SetResistance(bikeData.Resistance.ToString());
-                    console.SetEnergy(bikeData.Energy.ToString());
-                    console.SetTime(bikeData.Time.ToString());
-                    console.SetWatt(bikeData.Power.ToString());
+                    console.SetPulse(i.ToString());
+                    console.SetRoundMin(i.ToString());
+                    console.SetSpeed(i.ToString());
+                    console.SetDistance(i.ToString());
+                    console.SetResistance(i.ToString());
+                    console.SetEnergy(i.ToString());
+                    console.SetTime(i.ToString());
+                    console.SetWatt(i.ToString());
                 });
             }
             catch (System.InvalidOperationException) { }
+            catch (System.ComponentModel.InvalidAsynchronousStateException) { }
         }
 
         public int getRecordedDataSize()
