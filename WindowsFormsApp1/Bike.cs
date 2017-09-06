@@ -101,6 +101,22 @@ namespace Remote_Healtcare_Console
             }
 
             BikeData bikeData = GetLatestBikeData();
+
+            try
+            {
+                console.Invoke((MethodInvoker)delegate {
+                    // Running on the UI thread
+                    console.SetPulse(bikeData.Pulse.ToString());
+                    console.SetRoundMin(bikeData.Rpm.ToString());
+                    console.SetSpeed(bikeData.Speed.ToString());
+                    console.SetDistance(bikeData.Distance.ToString());
+                    console.SetResistance(bikeData.Resistance.ToString());
+                    console.SetEnergy(bikeData.Energy.ToString());
+                    console.SetTime(bikeData.Time.ToString());
+                    console.SetWatt(bikeData.Power.ToString());
+                });
+            }
+            catch (System.InvalidOperationException) { }
         }
 
         public int getRecordedDataSize()

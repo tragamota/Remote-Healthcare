@@ -44,8 +44,6 @@ namespace Remote_Healtcare_Console
 
                 Thread thread = new Thread(bike.Start);
                 thread.Start();
-
-
             }
         }
 
