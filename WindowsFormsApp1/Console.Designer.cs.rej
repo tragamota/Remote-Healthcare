@@ -1,0 +1,8 @@
+diff a/WindowsFormsApp1/Console.Designer.cs b/WindowsFormsApp1/Console.Designer.cs	(rejected hunks)
+@@ -1,5 +1,6 @@
+ ﻿namespace WindowsFormsApp1
+ {
++    partial class Console
+     {
+         /// <summary>
+         /// Required designer variable.
