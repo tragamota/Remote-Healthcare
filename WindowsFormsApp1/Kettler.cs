@@ -13,9 +13,12 @@ namespace Remote_Healtcare_Console
         public abstract void SetResistance(int power);
         public abstract void SetAscending();
         public abstract void SetDescending();
+        public abstract void SetDistance(int distance);
         public abstract void Reset();
         public abstract void SetTime(int mm, int ss);
     }
+
+    
 
     struct BikeData
     {

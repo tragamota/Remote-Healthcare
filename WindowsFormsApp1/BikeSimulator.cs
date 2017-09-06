@@ -42,5 +42,10 @@ namespace Remote_Healtcare_Console
         {
             throw new NotImplementedException();
         }
+
+        public override void SetDistance(int distance)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Healtcare Console", "Remote Healtcare Console\Remote Healtcare Console.csproj", "{A1F37CB6-AF3F-421E-AAE6-42FFE587582F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "..\WindowsFormsApp1\GUI.csproj", "{5E73D397-1A19-450F-944C-7C87261CFE3C}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A1F37CB6-AF3F-421E-AAE6-42FFE587582F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1F37CB6-AF3F-421E-AAE6-42FFE587582F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1F37CB6-AF3F-421E-AAE6-42FFE587582F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1F37CB6-AF3F-421E-AAE6-42FFE587582F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E73D397-1A19-450F-944C-7C87261CFE3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E73D397-1A19-450F-944C-7C87261CFE3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E73D397-1A19-450F-944C-7C87261CFE3C}.Release|Any CPU.ActiveCfg = Release|Any CPU

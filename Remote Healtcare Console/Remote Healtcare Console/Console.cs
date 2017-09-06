@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
-using System.Threading;
 
 namespace Remote_Healtcare_Console
 {
@@ -32,20 +31,14 @@ namespace Remote_Healtcare_Console
 
         private void BStart_Click(object sender, EventArgs e)
         {
-            combo.Focus();
             if (combo.SelectedText.Equals("Simulator")){
                 //
             }
             else
             {
-                String p = combo.SelectedItem.ToString();
-
-                Bike bike = new Bike(p, this);
-
-                Thread thread = new Thread(bike.Start);
-                thread.Start();
-
-
+                Bike bike = new Bike(combo.SelectedText);
+                bike.Start();
+                bike.Run();
             }
         }
 

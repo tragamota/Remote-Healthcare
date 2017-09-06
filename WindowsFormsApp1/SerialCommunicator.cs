@@ -26,16 +26,26 @@ namespace Remote_Healtcare_Console
             serialPort.WriteLine("RS");
         }
 
-        public void Status(out string data)
+        public String readLine()
         {
+            return serialPort.ReadLine();
+        }
+
+        public string Status(Bike bike)
+        {
+            if(bike.getRecordedDataSize() < 1)
+            {
+                System.Console.WriteLine(serialPort.ReadLine());
+            }
             serialPort.WriteLine("ST");
-            data = serialPort.ReadLine().Replace('\t', ' ');
+            string data = serialPort.ReadLine().Replace('\t', ' ');
+            return data;
         }
 
         public void SetTime(int mm, int ss)
         {
             string time = (mm.ToString() + ss.ToString());
-            serialPort.WriteLine(time);
+            serialPort.WriteLine("PT " + time);
         }
 
         public void SetResistance(int resistance)
@@ -77,6 +87,9 @@ namespace Remote_Healtcare_Console
         public void SetManual()
         {
             serialPort.WriteLine("CM");
+            clearBuffer();
+            System.Threading.Thread.Sleep(1000);
+            serialPort.WriteLine("CM");
         }
 
         public void SetCountForward()
@@ -92,6 +105,11 @@ namespace Remote_Healtcare_Console
         public bool IsConnected()
         {
             return serialPort.IsOpen;
+        }
+
+        public void clearBuffer()
+        {
+            serialPort.DiscardInBuffer();
         }
     }
 }

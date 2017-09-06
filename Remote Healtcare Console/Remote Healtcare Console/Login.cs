@@ -25,6 +25,7 @@ namespace Remote_Healtcare_Console
                 Form Form1 = new Console();
                 Form1.Closed += (s, args) => this.Close();
                 Form1.Show();
+
             }
         }
     }
