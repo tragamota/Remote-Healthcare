@@ -99,6 +99,8 @@ namespace Remote_Healtcare_Console
                 System.Console.WriteLine(GetLatestBikeData().ToString());
                 serialCommunicator.clearBuffer();
             }
+
+            SetDataToGUI();
         }
 
         public int getRecordedDataSize()
