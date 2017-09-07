@@ -19,13 +19,19 @@ namespace Remote_Healtcare_Console
 
         private void BLog_in_Click(object sender, EventArgs e)
         {
-            if(txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0)
+            if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
                 this.Hide();
                 Form Form1 = new Console();
                 Form1.Closed += (s, args) => this.Close();
                 Form1.Show();
             }
+        }
+
+        private void KeyPressed(object sender, KeyEventArgs e)
+        {
+            if(e.KeyData == Keys.Enter)
+                BLog_in_Click(null, null);
         }
     }
 }

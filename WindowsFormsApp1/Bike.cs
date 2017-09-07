@@ -51,7 +51,7 @@ namespace Remote_Healtcare_Console
             while(serialCommunicator.IsConnected() && start)
             {
                 Update();
-                System.Threading.Thread.Sleep(750);
+                System.Threading.Thread.Sleep(500);
             }
         }
 
@@ -99,25 +99,6 @@ namespace Remote_Healtcare_Console
                 System.Console.WriteLine(GetLatestBikeData().ToString());
                 serialCommunicator.clearBuffer();
             }
-
-            BikeData bikeData = GetLatestBikeData();
-
-            try
-            {
-                console.Invoke((MethodInvoker)delegate {
-                    // Running on the UI thread
-                    console.SetPulse(i.ToString());
-                    console.SetRoundMin(i.ToString());
-                    console.SetSpeed(i.ToString());
-                    console.SetDistance(i.ToString());
-                    console.SetResistance(i.ToString());
-                    console.SetEnergy(i.ToString());
-                    console.SetTime(i.ToString());
-                    console.SetWatt(i.ToString());
-                });
-            }
-            catch (System.InvalidOperationException) { }
-            catch (System.ComponentModel.InvalidAsynchronousStateException) { }
         }
 
         public int getRecordedDataSize()
@@ -125,7 +106,29 @@ namespace Remote_Healtcare_Console
             return RecordedData.Count;
         }
 
-        private BikeData GetLatestBikeData()
+        public override void SetDataToGUI()
+        {
+            BikeData bikeData = GetLatestBikeData();
+
+            try
+            {
+                console.Invoke((MethodInvoker)delegate {
+                    // Running on the UI thread
+                    console.SetPulse(bikeData.Pulse.ToString());
+                    console.SetRoundMin(bikeData.Rpm.ToString());
+                    console.SetSpeed(bikeData.Speed.ToString());
+                    console.SetDistance(bikeData.Distance.ToString());
+                    console.SetResistance(bikeData.Resistance.ToString());
+                    console.SetEnergy(bikeData.Energy.ToString());
+                    console.SetTime(((bikeData.Time < TimeSpan.Zero) ? "-" : "") + bikeData.Time.ToString(@"mm\:ss"));
+                    console.SetWatt(bikeData.Power.ToString());
+                });
+            }
+            catch (System.InvalidOperationException) { }
+            catch (System.ComponentModel.InvalidAsynchronousStateException) { }
+        }
+
+        public override BikeData GetLatestBikeData()
         {
             return RecordedData.Last();
         }
