@@ -2,137 +2,113 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Remote_Healtcare_Console
-{
-    class Bike : Kettler
-    {
+namespace Remote_Healtcare_Console {
+    class Bike : Kettler {
         //private Client client;
         private SerialCommunicator serialCommunicator;
+        private Thread BikeThread;
         private bool start;
-        private Console console;
 
-        public Bike(string port, Console console)
-        {
-            this.console = console;
+        public Bike(string port, Console console) : base(console) {
             start = false;
-            RecordedData = new HashSet<BikeData>();
             serialCommunicator = new SerialCommunicator(port);
+            BikeThread = new Thread(InitBike);
         }
 
-        public void Start()
-        {
+        public override void Start() {
             start = true;
             serialCommunicator.OpenConnection();
-            System.Threading.Thread.Sleep(1000);
-            serialCommunicator.Reset();
-            System.Threading.Thread.Sleep(1000);
-            serialCommunicator.SetManual();
-            serialCommunicator.clearBuffer();
-            Run();
+            BikeThread.Start();
         }
 
-        public void Stop()
-        {
+        public override void Stop() {
             start = false;
             serialCommunicator.CloseConnection();
         }
 
-        public override void Reset()
-        {
-            serialCommunicator.Reset();
+        private void InitBike() {
+            Reset();
+            Thread.Sleep(500);
+            SetManual();
+            Thread.Sleep(500);
+            Run();
+        }
+
+        private void Run() {
+            while (serialCommunicator.IsConnected() && start) {
+                Update();
+                Thread.Sleep(500);
+            }
+        }
+
+        public override void Reset() {
+            serialCommunicator.SendMessage("RS");
             RecordedData.Clear();
         }
 
-        public override void Run()
-        {
-            while(serialCommunicator.IsConnected() && start)
-            {
-                Update();
-                System.Threading.Thread.Sleep(500);
+        public override void SetManual() {
+            serialCommunicator.SendMessage("CM");
+            if (serialCommunicator.ReadInput() != "RUN") {
+                Thread.Sleep(500);
+                serialCommunicator.ReadInput();
             }
         }
 
-        public override void SetAscending()
-        {
-            serialCommunicator.SetCountForward();
-        }
-
-        public override void SetDescending()
-        {
-            serialCommunicator.SetCountDownwards();
-        }
-
-        public override void SetResistance(int resistance)
-        {
-            serialCommunicator.SetResistance(resistance);
-        }
-
-        public override void SetTime(int mm, int ss)
-        {
-            serialCommunicator.SetTime(mm, ss);
-        }
-
-        public override void SetDistance(int distance)
-        {
-            serialCommunicator.SetDistance(distance);
-        }
-
-        public override void Update()
-        {
-            string data = serialCommunicator.Status(this);
-            string[] dataSplitted = data.Split(' ');
-
-            if (RecordedData.Count > 1)
-            {
-                RecordedData.Add(new BikeData(int.Parse(dataSplitted[0]), int.Parse(dataSplitted[1]), dataSplitted[2], int.Parse(dataSplitted[3]),
-                    int.Parse(dataSplitted[4]), int.Parse(dataSplitted[5]), dataSplitted[6], int.Parse(dataSplitted[7])));
-                System.Console.WriteLine(GetLatestBikeData().ToString());
-                serialCommunicator.clearBuffer();
+        public override void SetResistance(int resistance) {
+            int trueResistance;
+            if (resistance > 400) {
+                trueResistance = 400;
             }
-            else
-            {
-                RecordedData.Add(new BikeData(int.Parse(dataSplitted[0]), int.Parse(dataSplitted[1]), dataSplitted[2], int.Parse(dataSplitted[3]),
-                    int.Parse(dataSplitted[4]), int.Parse(dataSplitted[5]), dataSplitted[6], int.Parse(dataSplitted[7])));
-                System.Console.WriteLine(GetLatestBikeData().ToString());
-                serialCommunicator.clearBuffer();
+            else if (resistance < 25) {
+                trueResistance = 25;
             }
+            else {
+                trueResistance = resistance;
+            }
+            serialCommunicator.SendMessage("PW " + trueResistance);
+            serialCommunicator.ReadInput();
+        }
+
+        public override void SetTime(int mm, int ss) {
+            string time = (mm.ToString() + ss.ToString());
+            serialCommunicator.SendMessage("PT " + time);
+            serialCommunicator.ReadInput();
+        }
+
+        public override void SetDistance(int distance) {
+            int trueDistance;
+            if (distance > 999) {
+                trueDistance = 999;
+            }
+            else if (distance < 0) {
+                trueDistance = 0;
+            }
+            else {
+                trueDistance = distance;
+            }
+            serialCommunicator.SendMessage("PD " + trueDistance);
+            serialCommunicator.ReadInput();
+        }
+
+        public override void Update() {
+            serialCommunicator.SendMessage("ST");
+            string data = serialCommunicator.ReadInput();
+            data = data.Replace("\r", "");
+            string[] dataSplitted = data.Split('\t');
+
+            RecordedData.Add(new BikeData(
+                int.Parse(dataSplitted[0]), int.Parse(dataSplitted[1]), 
+                dataSplitted[2], 
+                int.Parse(dataSplitted[3]), int.Parse(dataSplitted[4]), int.Parse(dataSplitted[5]), 
+                dataSplitted[6], 
+                int.Parse(dataSplitted[7])));
+            System.Console.WriteLine(RecordedData.Last());
 
             SetDataToGUI();
-        }
-
-        public int getRecordedDataSize()
-        {
-            return RecordedData.Count;
-        }
-
-        public override void SetDataToGUI()
-        {
-            BikeData bikeData = GetLatestBikeData();
-
-            try
-            {
-                console.Invoke((MethodInvoker)delegate {
-                    // Running on the UI thread
-                    console.SetPulse(bikeData.Pulse.ToString());
-                    console.SetRoundMin(bikeData.Rpm.ToString());
-                    console.SetSpeed(bikeData.Speed.ToString());
-                    console.SetDistance(bikeData.Distance.ToString());
-                    console.SetResistance(bikeData.Resistance.ToString());
-                    console.SetEnergy(bikeData.Energy.ToString());
-                    console.SetTime(((bikeData.Time < TimeSpan.Zero) ? "-" : "") + bikeData.Time.ToString(@"mm\:ss"));
-                    console.SetWatt(bikeData.Power.ToString());
-                });
-            }
-            catch (System.InvalidOperationException) { }
-            catch (System.ComponentModel.InvalidAsynchronousStateException) { }
-        }
-
-        public override BikeData GetLatestBikeData()
-        {
-            return RecordedData.Last();
         }
     }
 }

@@ -1,50 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
-using System.Threading;
 
 namespace Remote_Healtcare_Console
 {
     partial class Console : Form
     {
-
-        ComboBox combo;
-
+        private Kettler bike;
+        private ComboBox combo;
+        
         public Console()
         {
             InitializeComponent();
             combo = comPorts;
             combo.Items.Clear();
             combo.Items.Add("Simulator");
-            String[] ports = SerialPort.GetPortNames();
-            foreach (string port in ports)
-            {
-                combo.Items.Add(port);
-            }
+            combo.Items.AddRange(SerialPort.GetPortNames());
         }
 
         private void BStart_Click(object sender, EventArgs e)
         {
             combo.Focus();
             if (combo.SelectedText.Equals("Simulator")){
-                //
+                //bike = new SimulatorBike(this)
             }
             else
             {
-                String p = combo.SelectedItem.ToString();
-
-                Bike bike = new Bike(p, this);
-
-                Thread thread = new Thread(bike.Start);
-                thread.Start();
+                bike = new Bike(combo.SelectedItem.ToString(), this);
+                bike.Start();
             }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e) {
+            Environment.Exit(0);
+            base.OnFormClosed(e);
         }
 
         public void SetPulse(String s){ lblPulse.Text = s; }
