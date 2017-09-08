@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -30,7 +32,9 @@ namespace Remote_Healtcare_Console {
             serialCommunicator.CloseConnection();
         }
 
-        private void InitBike() {
+        private void InitBike()
+        {
+            Thread.Sleep(500);
             Reset();
             Thread.Sleep(500);
             SetManual();
@@ -100,15 +104,31 @@ namespace Remote_Healtcare_Console {
             data = data.Replace("\r", "");
             string[] dataSplitted = data.Split('\t');
 
-            RecordedData.Add(new BikeData(
-                int.Parse(dataSplitted[0]), int.Parse(dataSplitted[1]), 
-                dataSplitted[2], 
-                int.Parse(dataSplitted[3]), int.Parse(dataSplitted[4]), int.Parse(dataSplitted[5]), 
-                dataSplitted[6], 
-                int.Parse(dataSplitted[7])));
-            System.Console.WriteLine(RecordedData.Last());
+            BikeData bikeData = new BikeData(
+                int.Parse(dataSplitted[0]), int.Parse(dataSplitted[1]),
+                dataSplitted[2],
+                int.Parse(dataSplitted[3]), int.Parse(dataSplitted[4]), int.Parse(dataSplitted[5]),
+                dataSplitted[6],
+                int.Parse(dataSplitted[7]));
+
+            if (RecordedData.Count == 0)
+                RecordedData.Add(bikeData);
+            else if(RecordedData.Last().Time != bikeData.Time)
+                RecordedData.Add(bikeData);
+            saveFile();
 
             SetDataToGUI();
+        }
+
+        public override void saveFile()
+        {
+            var json = JsonConvert.SerializeObject(RecordedData, Formatting.Indented);
+            File.WriteAllText(console.path, json);
+        }
+
+        public override void openFile()
+        {
+            throw new NotImplementedException();
         }
     }
 }

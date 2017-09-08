@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO.Ports;
+using System.IO;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Remote_Healtcare_Console
 {
@@ -8,7 +12,9 @@ namespace Remote_Healtcare_Console
     {
         private Kettler bike;
         private ComboBox combo;
-        
+        public string path;
+        public ISet<BikeData> data;
+
         public Console()
         {
             InitializeComponent();
@@ -21,12 +27,38 @@ namespace Remote_Healtcare_Console
         private void BStart_Click(object sender, EventArgs e)
         {
             combo.Focus();
-            if (combo.SelectedText.Equals("Simulator")){
-                //bike = new SimulatorBike(this)
+            if (combo.SelectedItem.Equals("Simulator")){
+
+                OpenFileDialog browseFileDialog = new OpenFileDialog();
+                browseFileDialog.Filter = "JSON (.json)|*.json;";
+                browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+
+                if (browseFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    path = Path.GetFullPath(browseFileDialog.FileName);
+                    string json = File.ReadAllText(path);
+                    JArray openedData = (JArray)JsonConvert.DeserializeObject(json);
+
+                    data = (ISet<BikeData>)openedData.ToObject(typeof(ISet<BikeData>));
+                }
+
+                bike = new BikeSimulator(this);
+                bike.Start();
             }
             else
             {
                 bike = new Bike(combo.SelectedItem.ToString(), this);
+
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+                saveFileDialog.Filter = "JSON (.json)|*.json;";
+                saveFileDialog.FileName = "sessie.json";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    path = Path.GetFullPath(saveFileDialog.FileName);
+                }
+
                 bike.Start();
             }
         }

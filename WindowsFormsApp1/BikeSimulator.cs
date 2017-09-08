@@ -1,15 +1,27 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Remote_Healtcare_Console {
     class BikeSimulator : Kettler {
 
+        private Thread BikeThread;
+        ISet<BikeData> data;
+        private int i;
+
         public BikeSimulator(Console console) : base(console) {
             this.console = console;
+            data = console.data;
+            openFile();
+            i = 0;
+            BikeThread = new Thread(Update);
         }
 
         public override void Reset() {
@@ -25,7 +37,34 @@ namespace Remote_Healtcare_Console {
         }
 
         public override void Update() {
-            throw new NotImplementedException();
+            while (i != data.Count)
+            {
+                try
+                {
+                    console.Invoke((MethodInvoker)delegate
+                    {
+                        // Running on the UI thread
+                        console.SetPulse(data.ElementAt(i).Pulse.ToString());
+                        console.SetRoundMin(data.ElementAt(i).Rpm.ToString());
+                        console.SetSpeed(data.ElementAt(i).Speed.ToString());
+                        console.SetDistance(data.ElementAt(i).Distance.ToString());
+                        console.SetResistance(data.ElementAt(i).Resistance.ToString());
+                        console.SetEnergy(data.ElementAt(i).Energy.ToString());
+                        console.SetTime(((data.ElementAt(i).Time < TimeSpan.Zero) ? "-" : "") + data.ElementAt(i).Time.ToString(@"mm\:ss"));
+                        console.SetWatt(data.ElementAt(i).Power.ToString());
+                    });
+                }
+                catch (System.InvalidOperationException e)
+                {
+                    System.Console.WriteLine(e.StackTrace);
+                }
+                catch (System.ComponentModel.InvalidAsynchronousStateException e)
+                {
+                    System.Console.WriteLine(e.StackTrace);
+                }
+                i++;
+                System.Threading.Thread.Sleep(1000);
+            }
         }
 
         public override void SetDistance(int distance) {
@@ -33,15 +72,25 @@ namespace Remote_Healtcare_Console {
         }
 
         public override void Start() {
-            throw new NotImplementedException();
+            BikeThread.Start();
         }
 
         public override void Stop() {
-            throw new NotImplementedException();
+            BikeThread.Abort();
         }
 
         public override void SetManual() {
             throw new NotImplementedException();
+        }
+
+        public override void saveFile()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void openFile()
+        {
+            
         }
     }
 }

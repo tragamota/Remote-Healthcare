@@ -10,7 +10,8 @@ namespace Remote_Healtcare_Console {
         }
 
         public void OpenConnection() {
-            serialPort.Open();
+            if(!IsConnected())
+                serialPort.Open();
         }
 
         public void CloseConnection() {
@@ -18,7 +19,7 @@ namespace Remote_Healtcare_Console {
         }
 
         public void SendMessage(string message) {
-            serialPort.Write(message);
+            serialPort.WriteLine(message);
         }
 
         public string ReadInput() {
@@ -31,6 +32,11 @@ namespace Remote_Healtcare_Console {
 
         public string UsingComPort() {
             return serialPort.PortName;
+        }
+
+        internal void clearBuffer()
+        {
+            serialPort.DiscardInBuffer();
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Remote_Healtcare_Console
         public abstract void SetResistance(int power);
         public abstract void SetDistance(int distance);
         public abstract void SetTime(int mm, int ss);
+        public abstract void saveFile();
+        public abstract void openFile();
 
         public Kettler(Console console) {
             this.console = console;
@@ -51,14 +53,14 @@ namespace Remote_Healtcare_Console
 
     struct BikeData
     {
-        public int Pulse { get; }
-        public int Rpm { get; }
-        public int Distance { get; }
-        public int Resistance { get; }
-        public int Power { get; }
-        public int Energy { get; }
-        public TimeSpan Time { get; }
-        public double Speed { get; }
+        public int Pulse { get; set; }
+        public int Rpm { get; set; }
+        public int Distance { get; set; }
+        public int Resistance { get; set; }
+        public int Power { get; set; }
+        public int Energy { get; set; }
+        public TimeSpan Time { get; set; }
+        public double Speed { get; set; }
 
         public BikeData(int pulse, int rpm, string speed, int distance, int resistance, int energy, string time, int power)
         {
