@@ -33,7 +33,7 @@ namespace Remote_Healtcare_Console
                     console.SetPulse(bikeData.Pulse.ToString());
                     console.SetRoundMin(bikeData.Rpm.ToString());
                     console.SetSpeed(bikeData.Speed.ToString());
-                    console.SetDistance(bikeData.Distance.ToString());
+                    console.SetDistance((bikeData.Distance*100).ToString());
                     console.SetResistance(bikeData.Resistance.ToString());
                     console.SetEnergy(bikeData.Energy.ToString());
                     console.SetTime(((bikeData.Time < TimeSpan.Zero) ? "-" : "") + bikeData.Time.ToString(@"mm\:ss"));

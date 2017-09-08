@@ -19,7 +19,6 @@ namespace Remote_Healtcare_Console {
         public BikeSimulator(Console console) : base(console) {
             this.console = console;
             data = console.data;
-            openFile();
             i = 0;
             BikeThread = new Thread(Update);
         }
@@ -47,7 +46,7 @@ namespace Remote_Healtcare_Console {
                         console.SetPulse(data.ElementAt(i).Pulse.ToString());
                         console.SetRoundMin(data.ElementAt(i).Rpm.ToString());
                         console.SetSpeed(data.ElementAt(i).Speed.ToString());
-                        console.SetDistance(data.ElementAt(i).Distance.ToString());
+                        console.SetDistance((data.ElementAt(i).Distance*100).ToString());
                         console.SetResistance(data.ElementAt(i).Resistance.ToString());
                         console.SetEnergy(data.ElementAt(i).Energy.ToString());
                         console.SetTime(((data.ElementAt(i).Time < TimeSpan.Zero) ? "-" : "") + data.ElementAt(i).Time.ToString(@"mm\:ss"));
