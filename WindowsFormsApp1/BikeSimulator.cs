@@ -82,15 +82,5 @@ namespace Remote_Healtcare_Console {
         public override void SetManual() {
             throw new NotImplementedException();
         }
-
-        public override void saveFile()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void openFile()
-        {
-            
-        }
     }
 }

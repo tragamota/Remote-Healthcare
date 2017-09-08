@@ -18,8 +18,6 @@ namespace Remote_Healtcare_Console
         public abstract void SetResistance(int power);
         public abstract void SetDistance(int distance);
         public abstract void SetTime(int mm, int ss);
-        public abstract void saveFile();
-        public abstract void openFile();
 
         public Kettler(Console console) {
             this.console = console;

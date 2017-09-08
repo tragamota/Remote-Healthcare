@@ -115,20 +115,8 @@ namespace Remote_Healtcare_Console {
                 RecordedData.Add(bikeData);
             else if(RecordedData.Last().Time != bikeData.Time)
                 RecordedData.Add(bikeData);
-            saveFile();
 
             SetDataToGUI();
-        }
-
-        public override void saveFile()
-        {
-            var json = JsonConvert.SerializeObject(RecordedData, Formatting.Indented);
-            File.WriteAllText(console.path, json);
-        }
-
-        public override void openFile()
-        {
-            throw new NotImplementedException();
         }
     }
 }
