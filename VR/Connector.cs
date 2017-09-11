@@ -37,7 +37,6 @@ namespace VR
             jObject = ReadMessage();
 
             JArray array = (JArray)jObject.SelectToken("data");
-            Console.WriteLine(array.ToString());
 
             foreach (JObject client in array)
             {
@@ -77,10 +76,17 @@ namespace VR
             }
             while (stream.DataAvailable);
 
-
             string response = message.ToString();
 
             return JObject.Parse(response);
+        }
+
+        public void ChangeScene(string id, string change)
+        {
+            string message = @"{""id"" : ""tunnel/send"",""data"" : {""dest"" : """ + id + @""",""data"" : {""id"" : """ + change + @""",""data"" : {}}}}";
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
         }
     }
 }

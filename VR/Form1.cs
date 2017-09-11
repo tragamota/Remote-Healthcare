@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,10 +13,14 @@ namespace VR
 {
     public partial class Form1 : Form
     {
+
+        private Connector connector;
+        private string id;
+
         public Form1()
         {
             InitializeComponent();
-            Connector connector = new Connector();
+            connector = new Connector();
             foreach (string id in connector.GetClients().Keys)
             {
                 listBox_id.Items.Add(id);
@@ -24,7 +29,14 @@ namespace VR
 
         private void Connect_Btn_Click(object sender, EventArgs e)
         {
-            
+            string key = @"""" + connector.GetClients()[listBox_id.SelectedItem.ToString()] + @"""";
+            string message = @"{""id"" : ""tunnel/create"",""data"" : {""session"" : " + key + @",""key"" : """"}}";
+
+            connector.SendMessage(message);
+            JObject jObject = connector.ReadMessage();
+            id = (string)jObject.SelectToken("data").SelectToken("id");
+
+            connector.ChangeScene(id, "scene/reset");
         }
     }
 }
