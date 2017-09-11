@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "WindowsFormsApp1\GUI.csproj", "{5E73D397-1A19-450F-944C-7C87261CFE3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VR", "VR\VR.csproj", "{0E89495E-98D7-45DE-998C-995C28AF520F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5E73D397-1A19-450F-944C-7C87261CFE3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E73D397-1A19-450F-944C-7C87261CFE3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E73D397-1A19-450F-944C-7C87261CFE3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E89495E-98D7-45DE-998C-995C28AF520F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E89495E-98D7-45DE-998C-995C28AF520F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E89495E-98D7-45DE-998C-995C28AF520F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E89495E-98D7-45DE-998C-995C28AF520F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
