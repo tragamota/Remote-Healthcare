@@ -13,7 +13,6 @@ namespace VR
 {
     public partial class Form1 : Form
     {
-
         private Connector connector;
 
         public Form1()
@@ -28,7 +27,7 @@ namespace VR
 
         private void Connect_Btn_Click(object sender, EventArgs e)
         {
-            string key = @"""" + connector.GetClients()[listBox_id.SelectedItem.ToString()] + @"""";
+            string key = connector.GetClients()[listBox_id.SelectedItem.ToString()];
 
             dynamic message = new
             {
@@ -45,7 +44,8 @@ namespace VR
             string id = (string)jObject.SelectToken("data").SelectToken("id");
             connector.SetId(id);
 
-            connector.AddFlatTerrain(256, 256);
+            //connector.AddModel("model");
+            connector.AddFlatTerrain(200,100);
         }
     }
 }

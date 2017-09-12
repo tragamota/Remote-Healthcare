@@ -84,7 +84,6 @@ namespace VR
             while (stream.DataAvailable);
 
             string response = message.ToString();
-
             return JObject.Parse(response);
         }
 
@@ -135,10 +134,11 @@ namespace VR
 
         public void AddFlatTerrain(int width, int length)
         {
+            Random rdm = new Random();
             int[] heightValues = new int[width * length];
             for (int i = 0; i < heightValues.Length; i++)
             {
-                heightValues[i] = 0;
+                heightValues[i] = rdm.Next(0,10);
             }
             int[] measure = new int[2] { width, length };
 
@@ -160,9 +160,122 @@ namespace VR
                 }
             };
 
-            //SendMessage(message);
-            //JObject jObject = ReadMessage();
-            Console.WriteLine(JsonConvert.SerializeObject(message));
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+        public JObject GetScene()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/get"
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            //Console.WriteLine(jObject);
+            return jObject;
+        }
+
+        public void AddModel(string model)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/node/add",
+                        data = new
+                        {
+                            name = "name",
+                            parent = "guid",
+                            components = new
+                            {
+                                transform = new
+                                {
+                                    position = new int[3] { 0, 0, 0 },
+                                    scale = 1,
+                                    rotation = new int[3] { 0, 0, 0 }
+                                },
+                                model = new
+                                {
+                                    file = "tree1.obj",
+                                    cullbackfaces = true,
+                                    animated = false,
+                                    animation = "animationname"
+                                },
+                                terrain = new
+                                {
+                                    smoothnormals = true
+                                },
+                                panel = new
+                                {
+                                    size = new int[2] { 1, 1 },
+                                    resolution = new int[2] { 512, 512 },
+                                    background = new int[4] { 1, 1, 1, 1 }
+                                },
+                                water = new
+                                {
+                                    size = new int[2] {20, 20},
+                                    resolution = 0.1
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            //Console.WriteLine(jObject);
+        }
+
+        public void AddRoute()
+        {
+            dynamic pos1 = new { pos = new int[3] { 0, 0, 0 } };
+            dynamic pos2 = new { pos = new int[3] { 50, 0, 0 } };
+            dynamic pos3 = new { pos = new int[3] { 50, 0, 50 } };
+            dynamic pos4 = new { pos = new int[3] { 0, 0, 50 } };
+
+            dynamic dir1 = new { dir = new int[3] { 5, 0, -5 } };
+            dynamic dir2 = new { dir = new int[3] { 5, 0, 5 } };
+            dynamic dir3 = new { dir = new int[3] { -5, 0, 5 } };
+            dynamic dir4 = new { dir = new int[3] { -5, 0, -5 } };
+
+            dynamic[] data = new dynamic[8]
+            {
+                pos1, dir1, pos2, dir2, pos3, dir3, pos4, dir4
+            };
+
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "route/add",
+                        data = data
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
         }
 
         public void SetId(string id)
