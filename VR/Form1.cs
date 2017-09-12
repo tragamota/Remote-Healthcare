@@ -15,7 +15,6 @@ namespace VR
     {
 
         private Connector connector;
-        private string id;
 
         public Form1()
         {
@@ -30,13 +29,23 @@ namespace VR
         private void Connect_Btn_Click(object sender, EventArgs e)
         {
             string key = @"""" + connector.GetClients()[listBox_id.SelectedItem.ToString()] + @"""";
-            string message = @"{""id"" : ""tunnel/create"",""data"" : {""session"" : " + key + @",""key"" : """"}}";
 
+            dynamic message = new
+            {
+                id = "tunnel/create",
+                data = new
+                {
+                    session = key,
+                    key = ""
+                }
+            };
+            
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
-            id = (string)jObject.SelectToken("data").SelectToken("id");
+            string id = (string)jObject.SelectToken("data").SelectToken("id");
+            connector.SetId(id);
 
-            connector.ChangeScene(id, "scene/reset");
+            connector.AddFlatTerrain(256, 256);
         }
     }
 }

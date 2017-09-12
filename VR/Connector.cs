@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace VR
         private TcpClient tcp;
         private NetworkStream stream;
         private JObject jObject;
+        private string id;
 
         public Connector()
         {
@@ -29,8 +31,11 @@ namespace VR
 
         public Dictionary<string, string> GetClients()
         {
-            string json = @"{""id"" : ""session/list""}";
-            SendMessage(json);
+            dynamic message = new
+            {
+                id = "session/list"
+            };
+            SendMessage(message);
 
             Dictionary<string, string> hosts = new Dictionary<string, string>();
 
@@ -42,18 +47,20 @@ namespace VR
             {
                 string host = (string)client.SelectToken("clientinfo").SelectToken("host");
                 string id = (string)client.SelectToken("id");
-                hosts.Add(host, id);
+                hosts.Add(host + " - " + id, id);
             }
 
             return hosts;
         }
 
-        public void SendMessage(string message)
+        public void SendMessage(dynamic message)
         {
-            byte[] prefixArray = BitConverter.GetBytes(message.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(message);
+            string json = JsonConvert.SerializeObject(message);
 
-            byte[] buffer = new Byte[prefixArray.Length + message.Length];
+            byte[] prefixArray = BitConverter.GetBytes(json.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(json);
+
+            byte[] buffer = new Byte[prefixArray.Length + json.Length];
             prefixArray.CopyTo(buffer, 0);
             requestArray.CopyTo(buffer, prefixArray.Length);
             stream.Write(buffer, 0, buffer.Length);
@@ -64,8 +71,8 @@ namespace VR
             StringBuilder message = new StringBuilder();
             int numberOfBytesRead = 0;
             byte[] messageBytes = new byte[4];
-            int length = stream.Read(messageBytes, 0, messageBytes.Length);
-            byte[] receiveBuffer = new byte[tcp.ReceiveBufferSize - length];
+            stream.Read(messageBytes, 0, messageBytes.Length);
+            byte[] receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
 
             do
             {
@@ -81,12 +88,86 @@ namespace VR
             return JObject.Parse(response);
         }
 
-        public void ChangeScene(string id, string change)
+        public void ChangeScene(string change)
         {
-            string message = @"{""id"" : ""tunnel/send"",""data"" : {""dest"" : """ + id + @""",""data"" : {""id"" : """ + change + @""",""data"" : {}}}}";
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = change,
+                        data = new {}
+                    }
+                }
+            };
+
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
+        }
+
+        public void SetTime(double hour)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/skybox/settime",
+                        data = new
+                        {
+                            time = hour
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            //Console.WriteLine(jObject);
+        }
+
+        public void AddFlatTerrain(int width, int length)
+        {
+            int[] heightValues = new int[width * length];
+            for (int i = 0; i < heightValues.Length; i++)
+            {
+                heightValues[i] = 0;
+            }
+            int[] measure = new int[2] { width, length };
+
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/terrain/add",
+                        data = new
+                        {
+                            size = measure,
+                            heights = heightValues
+                        }
+                    }
+                }
+            };
+
+            //SendMessage(message);
+            //JObject jObject = ReadMessage();
+            Console.WriteLine(JsonConvert.SerializeObject(message));
+        }
+
+        public void SetId(string id)
+        {
+            this.id = id;
         }
     }
 }
