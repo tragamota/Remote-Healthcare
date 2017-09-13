@@ -44,11 +44,11 @@ namespace VR
             string id = (string)jObject.SelectToken("data").SelectToken("id");
             connector.SetId(id);
 
-            connector.AddTerrain(25,25);
-            connector.AddNode();
-            connector.AddModel("hoi");
+            connector.AddTerrain(256,256);
+            connector.AddTerrainNode();
             connector.AddLayer();
-            connector.AddRoute();
+            connector.AddModel("tree", @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\models\trees\fantasy\tree2.obj", 0,0,0);
+            connector.MakeTreeFollowRoute();
         }
     }
 }

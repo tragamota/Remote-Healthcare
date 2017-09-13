@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -15,7 +16,7 @@ namespace VR
         private TcpClient tcp;
         private NetworkStream stream;
         private JObject jObject;
-        private string id;
+        private string tunnelID;
 
         public Connector()
         {
@@ -94,7 +95,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = change,
@@ -115,7 +116,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/skybox/settime",
@@ -135,16 +136,7 @@ namespace VR
         public void AddTerrain(int width, int length)
         {
             Random rdm = new Random();
-            int[] heightValues = new int[width * length];
-            for (int i = 0; i < heightValues.Length; i++)
-            {
-                if (rdm.Next(0, 10).Equals(rdm.Next(0, 2)))
-                {
-                    heightValues[i] = 1;
-                }
-                else
-                    heightValues[i] = 0;
-            }
+            int[] heightValues = GetImageHeightArray(@"C:\Users\zwen1\Desktop\map.png", 256, 256);
             int[] measure = new int[2] { width, length };
 
             dynamic message = new
@@ -152,7 +144,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/terrain/add",
@@ -177,7 +169,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/get"
@@ -190,14 +182,6 @@ namespace VR
             return jObject;
         }
 
-        public string GetTerrainNodeUUID()
-        {
-            JObject jObject = GetScene();
-            string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children").Last.SelectToken("uuid");
-            Console.WriteLine(uuid);
-            return uuid;
-        }
-
         public void AddLayer()
         {
             dynamic message = new
@@ -205,13 +189,13 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/node/addlayer",
                         data = new
                         {
-                            id = GetTerrainNodeUUID(),
+                            id = GetUUID("terrain"),
                             diffuse = @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\textures\terrain\grass_diffuse.png",
                             normal = @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\textures\terrain\grass_normal.png",
                             minHeight = 0,
@@ -227,20 +211,20 @@ namespace VR
             Console.WriteLine(jObject);
         }
 
-        public void AddModel(string model)
+        public void AddModel(string modelname, string path, int x, int y, int z)
         {
             dynamic message = new
             {
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/node/add",
                         data = new
                         {
-                            name = "name",
+                            name = modelname,
                             components = new
                             {
                                 transform = new
@@ -251,14 +235,10 @@ namespace VR
                                 },
                                 model = new
                                 {
-                                    file = @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\models\trees\fantasy\tree1.obj",
+                                    file = path,
                                     cullbackfaces = true,
                                     animated = false,
                                     animation = "animationname"
-                                },
-                                terrain = new
-                                {
-                                    smoothnormals = true
                                 },
                                 panel = new
                                 {
@@ -277,21 +257,16 @@ namespace VR
             Console.WriteLine(jObject);
         }
 
-        public void AddRoute()
+        public string AddRoute()
         {
-            dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }) };
-            dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }) };
-            dynamic pos3 = new { pos = (new int[3] { 50, 0, 50 }) };
-            dynamic pos4 = new { pos = (new int[3] { 0, 0, 50 }) };
+            dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }), dir = (new int[3] { 5, 0, -5 }) };
+            dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }), dir = (new int[3] { 5, 0, 5 }) };
+            dynamic pos3 = new { pos = (new int[3] { 50, 0, 50 }), dir = (new int[3] { -5, 0, 5 }) };
+            dynamic pos4 = new { pos = (new int[3] { 0, 0, 50 }), dir = (new int[3] { -5, 0, -5 }) };
 
-            dynamic dir1 = new { dir = (new int[3] { 5, 0, -5 }) };
-            dynamic dir2 = new { dir = (new int[3] { 5, 0, 5 }) };
-            dynamic dir3 = new { dir = (new int[3] { -5, 0, 5 }) };
-            dynamic dir4 = new { dir = (new int[3] { -5, 0, -5 }) };
-
-            dynamic[] data = new dynamic[8]
+            dynamic[] data = new dynamic[4]
             {
-                pos1, dir1, pos2, dir2, pos3, dir3, pos4, dir4
+                pos1, pos2, pos3, pos4
             };
 
             dynamic message = new
@@ -299,7 +274,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "route/add",
@@ -313,7 +288,9 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
+            string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
             Console.WriteLine(jObject);
+            return uuid;
         }
 
         public void UpdateTerrain()
@@ -323,7 +300,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/terrain/update",
@@ -344,7 +321,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/terrain/delete",
@@ -365,7 +342,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/terrain/getheight",
@@ -389,7 +366,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/node/dellayer",
@@ -410,7 +387,7 @@ namespace VR
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/reset",
@@ -424,20 +401,20 @@ namespace VR
             Console.WriteLine(jObject);
         }
 
-        public void AddNode()
+        public void AddTerrainNode()
         {
             dynamic message = new
             {
                 id = "tunnel/send",
                 data = new
                 {
-                    dest = id,
+                    dest = tunnelID,
                     data = new
                     {
                         id = "scene/node/add",
                         data = new
                         {
-                            name = "name",
+                            name = "terrain",
                             components = new
                             {
                                 transform = new
@@ -461,9 +438,84 @@ namespace VR
             Console.WriteLine(jObject);
         }
 
+        public void MakeTreeFollowRoute()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "route/follow",
+                        data = new
+                        {
+                            route = AddRoute(),
+                            node = GetUUID("tree"),
+                            speed = 1.0,
+                            offset = 0.0,
+                            rotate = "XZ",
+                            followHeight = true,
+                            rotateOffset = (new int[] { 0, 0, 0 }),
+                            positionOffset = (new int[] { 0, 0, 0 })
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+        public string GetUUID(string name)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/find",
+                        data = new
+                        {
+                            name = name
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").First.SelectToken("uuid");
+            return uuid;
+        }
+
         public void SetId(string id)
         {
-            this.id = id;
+            this.tunnelID = id;
+        }
+
+        public static int[] GetImageHeightArray(string imagepath, int length, int width)
+        {
+            Bitmap image = (Bitmap)Image.FromFile(imagepath);
+            int[] result = new int[(length * width)];
+            
+            for (int y = 0; y <= length-1; y++)
+            {
+                for (int x = 0; x <= width-1; x++)
+                {   
+                    if ((image.GetPixel(x, y).R < 0x21) || (image.GetPixel(x, y).G < 0x21) || (image.GetPixel(x, y).B < 0x21))
+                    {
+                        result[((y * width) + x)] = 10;
+                    }
+                }
+
+            }
+            return result;
         }
     }
 }
