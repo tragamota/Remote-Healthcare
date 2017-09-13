@@ -81,7 +81,7 @@ namespace VR
                 message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
 
             }
-            while (stream.DataAvailable);
+            while (message.Length < receiveBuffer.Length);
 
             string response = message.ToString();
             return JObject.Parse(response);
@@ -138,7 +138,12 @@ namespace VR
             int[] heightValues = new int[width * length];
             for (int i = 0; i < heightValues.Length; i++)
             {
-                heightValues[i] = rdm.Next(0,5);
+                if (rdm.Next(0, 10).Equals(rdm.Next(0, 2)))
+                {
+                    heightValues[i] = 1;
+                }
+                else
+                    heightValues[i] = 0;
             }
             int[] measure = new int[2] { width, length };
 
@@ -182,8 +187,44 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
             return jObject;
+        }
+
+        public string GetTerrainNodeUUID()
+        {
+            JObject jObject = GetScene();
+            string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children").Last.SelectToken("uuid");
+            Console.WriteLine(uuid);
+            return uuid;
+        }
+
+        public void AddLayer()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/node/addlayer",
+                        data = new
+                        {
+                            id = GetTerrainNodeUUID(),
+                            diffuse = @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\textures\terrain\grass_diffuse.png",
+                            normal = @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\textures\terrain\grass_normal.png",
+                            minHeight = 0,
+                            maxHeight = 1,
+                            fadeDist = 1
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
         }
 
         public void AddModel(string model)
@@ -200,7 +241,6 @@ namespace VR
                         data = new
                         {
                             name = "name",
-                            parent = "guid",
                             components = new
                             {
                                 transform = new
@@ -211,7 +251,7 @@ namespace VR
                                 },
                                 model = new
                                 {
-                                    file = "tree1.obj",
+                                    file = @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\models\trees\fantasy\tree1.obj",
                                     cullbackfaces = true,
                                     animated = false,
                                     animation = "animationname"
@@ -225,11 +265,6 @@ namespace VR
                                     size = new int[2] { 1, 1 },
                                     resolution = new int[2] { 512, 512 },
                                     background = new int[4] { 1, 1, 1, 1 }
-                                },
-                                water = new
-                                {
-                                    size = new int[2] {20, 20},
-                                    resolution = 0.1
                                 }
                             }
                         }
@@ -244,15 +279,15 @@ namespace VR
 
         public void AddRoute()
         {
-            dynamic pos1 = new { pos = new int[3] { 0, 0, 0 } };
-            dynamic pos2 = new { pos = new int[3] { 50, 0, 0 } };
-            dynamic pos3 = new { pos = new int[3] { 50, 0, 50 } };
-            dynamic pos4 = new { pos = new int[3] { 0, 0, 50 } };
+            dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }) };
+            dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }) };
+            dynamic pos3 = new { pos = (new int[3] { 50, 0, 50 }) };
+            dynamic pos4 = new { pos = (new int[3] { 0, 0, 50 }) };
 
-            dynamic dir1 = new { dir = new int[3] { 5, 0, -5 } };
-            dynamic dir2 = new { dir = new int[3] { 5, 0, 5 } };
-            dynamic dir3 = new { dir = new int[3] { -5, 0, 5 } };
-            dynamic dir4 = new { dir = new int[3] { -5, 0, -5 } };
+            dynamic dir1 = new { dir = (new int[3] { 5, 0, -5 }) };
+            dynamic dir2 = new { dir = (new int[3] { 5, 0, 5 }) };
+            dynamic dir3 = new { dir = (new int[3] { -5, 0, 5 }) };
+            dynamic dir4 = new { dir = (new int[3] { -5, 0, -5 }) };
 
             dynamic[] data = new dynamic[8]
             {
@@ -268,7 +303,10 @@ namespace VR
                     data = new
                     {
                         id = "route/add",
-                        data = data
+                        data = new
+                        {
+                            nodes = data
+                        }
                     }
                 }
             };
@@ -356,6 +394,64 @@ namespace VR
                     {
                         id = "scene/node/dellayer",
                         data = new {}
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+        public void ResetScene()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/reset",
+                        data = new { }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+        public void AddNode()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/node/add",
+                        data = new
+                        {
+                            name = "name",
+                            components = new
+                            {
+                                transform = new
+                                {
+                                    position = (new int[3] { 0, 0, 0 }),
+                                    scale = 1,
+                                    rotation = (new int[3] { 0, 0, 0 })
+                                },
+                                terrain = new
+                                {
+                                    smoothnormals = true
+                                }
+                            }
+                        }
                     }
                 }
             };

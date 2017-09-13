@@ -44,9 +44,11 @@ namespace VR
             string id = (string)jObject.SelectToken("data").SelectToken("id");
             connector.SetId(id);
 
-            //connector.AddTerrain(25,25);
-            //connector.UpdateTerrain();
-            connector.DeleteLayer();
+            connector.AddTerrain(25,25);
+            connector.AddNode();
+            connector.AddModel("hoi");
+            connector.AddLayer();
+            connector.AddRoute();
         }
     }
 }
