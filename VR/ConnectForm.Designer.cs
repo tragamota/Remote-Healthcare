@@ -1,6 +1,6 @@
 ﻿namespace VR
 {
-    partial class Form1
+    partial class ConnectForm
     {
         /// <summary>
         /// Required designer variable.

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace VR
 {
-    class Connector
+    public class Connector
     {
         private int port = 6666;
         private TcpClient tcp;
@@ -136,7 +136,11 @@ namespace VR
         public void AddTerrain(int width, int length)
         {
             Random rdm = new Random();
-            int[] heightValues = GetImageHeightArray(@"C:\Users\zwen1\Desktop\map.png", 256, 256);
+            int[] heightValues = new int[width * length];
+            for (int i = 0; i < heightValues.Length; i++)
+            {
+                heightValues[i] = 0;
+            }
             int[] measure = new int[2] { width, length };
 
             dynamic message = new
@@ -182,7 +186,7 @@ namespace VR
             return jObject;
         }
 
-        public void AddLayer()
+        public void AddLayer(string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist)
         {
             dynamic message = new
             {
@@ -195,12 +199,12 @@ namespace VR
                         id = "scene/node/addlayer",
                         data = new
                         {
-                            id = GetUUID("terrain"),
-                            diffuse = @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\textures\terrain\grass_diffuse.png",
-                            normal = @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\textures\terrain\grass_normal.png",
-                            minHeight = 0,
-                            maxHeight = 1,
-                            fadeDist = 1
+                            id = GetUUID(terrainName),
+                            diffuse = diffuseFile,
+                            normal = normalFile,
+                            minHeight = minHeight,
+                            maxHeight = maxHeight,
+                            fadeDist = fadeDist
                         }
                     }
                 }
@@ -229,9 +233,9 @@ namespace VR
                             {
                                 transform = new
                                 {
-                                    position = new int[3] { 0, 0, 0 },
+                                    position = (new int[3] { x, y, z }),
                                     scale = 1,
-                                    rotation = new int[3] { 0, 0, 0 }
+                                    rotation = (new int[3] { 0, 0, 0 })
                                 },
                                 model = new
                                 {
@@ -242,9 +246,9 @@ namespace VR
                                 },
                                 panel = new
                                 {
-                                    size = new int[2] { 1, 1 },
-                                    resolution = new int[2] { 512, 512 },
-                                    background = new int[4] { 1, 1, 1, 1 }
+                                    size = (new int[2] { 1, 1 }),
+                                    resolution = (new int[2] { 512, 512 }),
+                                    background = (new int[4] { 1, 1, 1, 1 })
                                 }
                             }
                         }

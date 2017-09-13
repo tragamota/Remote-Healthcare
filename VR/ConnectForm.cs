@@ -11,11 +11,11 @@ using System.Windows.Forms;
 
 namespace VR
 {
-    public partial class Form1 : Form
+    public partial class ConnectForm : Form
     {
         private Connector connector;
 
-        public Form1()
+        public ConnectForm()
         {
             InitializeComponent();
             connector = new Connector();
@@ -44,11 +44,9 @@ namespace VR
             string id = (string)jObject.SelectToken("data").SelectToken("id");
             connector.SetId(id);
 
-            connector.AddTerrain(256,256);
-            connector.AddTerrainNode();
-            connector.AddLayer();
-            connector.AddModel("tree", @"D:\Downloads\NetworkEngine.17.09.13.1\NetworkEngine\data\NetworkEngine\models\trees\fantasy\tree2.obj", 0,0,0);
-            connector.MakeTreeFollowRoute();
+            ControlPanel panel = new ControlPanel(connector);
+            panel.Closed += (s, args) => this.Close();
+            panel.Show();
         }
     }
 }
