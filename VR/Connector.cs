@@ -105,7 +105,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
+            Console.WriteLine(jObject);
         }
 
         public void SetTime(double hour)
@@ -129,16 +129,16 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
+            Console.WriteLine(jObject);
         }
 
-        public void AddFlatTerrain(int width, int length)
+        public void AddTerrain(int width, int length)
         {
             Random rdm = new Random();
             int[] heightValues = new int[width * length];
             for (int i = 0; i < heightValues.Length; i++)
             {
-                heightValues[i] = rdm.Next(0,10);
+                heightValues[i] = rdm.Next(0,5);
             }
             int[] measure = new int[2] { width, length };
 
@@ -182,7 +182,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
+            Console.WriteLine(jObject);
             return jObject;
         }
 
@@ -239,7 +239,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
+            Console.WriteLine(jObject);
         }
 
         public void AddRoute()
@@ -269,6 +269,93 @@ namespace VR
                     {
                         id = "route/add",
                         data = data
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+        public void UpdateTerrain()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/terrain/update",
+                        data = new {}
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+        public void DeleteTerrain()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/terrain/delete",
+                        data = new { }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+        public void GetHeight()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/terrain/getheight",
+                        data = new
+                        {
+                            position = (new double[2] {10.2, 4.4})
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+        public void DeleteLayer()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = id,
+                    data = new
+                    {
+                        id = "scene/node/dellayer",
+                        data = new {}
                     }
                 }
             };
