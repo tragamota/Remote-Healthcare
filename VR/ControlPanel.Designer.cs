@@ -42,7 +42,7 @@
             this.AddTree.TabIndex = 0;
             this.AddTree.Text = "Add model";
             this.AddTree.UseVisualStyleBackColor = true;
-            this.AddTree.Click += new System.EventHandler(this.Add_Tree_Click);
+            this.AddTree.Click += new System.EventHandler(this.Add_Model_Click);
             // 
             // button1
             // 
@@ -52,6 +52,7 @@
             this.button1.TabIndex = 1;
             this.button1.Text = "Add terrain";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Add_Terrain_Click);
             // 
             // button2
             // 

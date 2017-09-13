@@ -20,10 +20,16 @@ namespace VR
             this.connector = connector;
         }
 
-        private void Add_Tree_Click(object sender, EventArgs e)
+        private void Add_Model_Click(object sender, EventArgs e)
         {
             AddModel model = new AddModel(connector);
             model.Show();
+        }
+
+        private void Add_Terrain_Click(object sender, EventArgs e)
+        {
+            AddTerrain addTerrain = new AddTerrain(connector);
+            addTerrain.Show();
         }
     }
 }

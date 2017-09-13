@@ -405,7 +405,7 @@ namespace VR
             Console.WriteLine(jObject);
         }
 
-        public void AddTerrainNode()
+        public void AddTerrainNode(string terrainName, int x, int y, int z)
         {
             dynamic message = new
             {
@@ -418,12 +418,12 @@ namespace VR
                         id = "scene/node/add",
                         data = new
                         {
-                            name = "terrain",
+                            name = terrainName,
                             components = new
                             {
                                 transform = new
                                 {
-                                    position = (new int[3] { 0, 0, 0 }),
+                                    position = (new int[3] { x, y, z }),
                                     scale = 1,
                                     rotation = (new int[3] { 0, 0, 0 })
                                 },

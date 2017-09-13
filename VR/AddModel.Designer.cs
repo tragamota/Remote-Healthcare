@@ -139,6 +139,7 @@
             // 
             this.Object_Name_Txt.AutoSize = true;
             this.Object_Name_Txt.Location = new System.Drawing.Point(166, 121);
+            this.Object_Name_Txt.MaximumSize = new System.Drawing.Size(130, 0);
             this.Object_Name_Txt.MinimumSize = new System.Drawing.Size(130, 0);
             this.Object_Name_Txt.Name = "Object_Name_Txt";
             this.Object_Name_Txt.Size = new System.Drawing.Size(130, 13);
