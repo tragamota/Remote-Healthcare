@@ -39,13 +39,14 @@
             this.Terrain_Grid_Id.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.Terrain_Grid_Id.ColumnCount = 2;
             this.Terrain_Grid_Id.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 139F));
-            this.Terrain_Grid_Id.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 546F));
+            this.Terrain_Grid_Id.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 548F));
+            this.Terrain_Grid_Id.Dock = System.Windows.Forms.DockStyle.Top;
             this.Terrain_Grid_Id.Location = new System.Drawing.Point(0, 0);
             this.Terrain_Grid_Id.Name = "Terrain_Grid_Id";
             this.Terrain_Grid_Id.RowCount = 2;
             this.Terrain_Grid_Id.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 129F));
             this.Terrain_Grid_Id.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.Terrain_Grid_Id.Size = new System.Drawing.Size(688, 142);
+            this.Terrain_Grid_Id.Size = new System.Drawing.Size(684, 142);
             this.Terrain_Grid_Id.TabIndex = 1;
             // 
             // Set_Height_Btn

@@ -29,18 +29,6 @@ namespace VR
             Terrain_Grid_Id.ColumnCount += width - 2;
             Terrain_Grid_Id.RowCount += length - 2;
 
-            TextBox label = new TextBox();
-            label.Text = "0";
-            label.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
-
-            for (int x = 0;  x < Terrain_Grid_Id.RowCount;  x++)
-            {
-                for (int y = 0; y < Terrain_Grid_Id.ColumnCount; y++)
-                {
-                    Terrain_Grid_Id.Controls.Add(label, y, x);
-                }
-            }
-
             float cellWidth = float.Parse((this.Width / width).ToString());
             float cellHeight = float.Parse((this.Height / length).ToString());
 
@@ -54,6 +42,17 @@ namespace VR
             {
                 Terrain_Grid_Id.RowStyles.Add(new RowStyle(SizeType.Absolute));
                 Terrain_Grid_Id.RowStyles[y].Height = cellHeight*0.9F;
+            }
+
+            for (int x = 0; x < Terrain_Grid_Id.RowCount; x++)
+            {
+                for (int y = 0; y < Terrain_Grid_Id.ColumnCount; y++)
+                {
+                    NumericUpDown label = new NumericUpDown();
+                    label.Minimum = minHeight;
+                    label.Maximum = maxHeight;
+                    Terrain_Grid_Id.Controls.Add(label, y, x);
+                }
             }
 
             Set_Height_Btn.Location = new Point(this.Width/2 - Set_Height_Btn.Width/2, Terrain_Grid_Id.Height + 10);

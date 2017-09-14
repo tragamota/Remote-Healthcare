@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.Terrain_Name_Txt = new System.Windows.Forms.TextBox();
-            this.Width_Txt = new System.Windows.Forms.TextBox();
-            this.Length_Txt = new System.Windows.Forms.TextBox();
             this.X_Txt = new System.Windows.Forms.TextBox();
             this.Y_Txt = new System.Windows.Forms.TextBox();
             this.Z_Txt = new System.Windows.Forms.TextBox();
@@ -54,6 +52,10 @@
             this.Fade_Distance_Txt = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.Edit_Terrain_Btn = new System.Windows.Forms.Button();
+            this.Width_Txt = new System.Windows.Forms.NumericUpDown();
+            this.Length_Txt = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.Width_Txt)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Length_Txt)).BeginInit();
             this.SuspendLayout();
             // 
             // Terrain_Name_Txt
@@ -62,20 +64,6 @@
             this.Terrain_Name_Txt.Name = "Terrain_Name_Txt";
             this.Terrain_Name_Txt.Size = new System.Drawing.Size(100, 20);
             this.Terrain_Name_Txt.TabIndex = 0;
-            // 
-            // Width_Txt
-            // 
-            this.Width_Txt.Location = new System.Drawing.Point(96, 38);
-            this.Width_Txt.Name = "Width_Txt";
-            this.Width_Txt.Size = new System.Drawing.Size(100, 20);
-            this.Width_Txt.TabIndex = 1;
-            // 
-            // Length_Txt
-            // 
-            this.Length_Txt.Location = new System.Drawing.Point(96, 64);
-            this.Length_Txt.Name = "Length_Txt";
-            this.Length_Txt.Size = new System.Drawing.Size(100, 20);
-            this.Length_Txt.TabIndex = 2;
             // 
             // X_Txt
             // 
@@ -278,11 +266,57 @@
             this.Edit_Terrain_Btn.UseVisualStyleBackColor = true;
             this.Edit_Terrain_Btn.Click += new System.EventHandler(this.Edit_Terrain_Btn_Click);
             // 
+            // Width_Txt
+            // 
+            this.Width_Txt.Location = new System.Drawing.Point(96, 39);
+            this.Width_Txt.Maximum = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            this.Width_Txt.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.Width_Txt.Name = "Width_Txt";
+            this.Width_Txt.Size = new System.Drawing.Size(100, 20);
+            this.Width_Txt.TabIndex = 28;
+            this.Width_Txt.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // Length_Txt
+            // 
+            this.Length_Txt.Location = new System.Drawing.Point(96, 65);
+            this.Length_Txt.Maximum = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            this.Length_Txt.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.Length_Txt.Name = "Length_Txt";
+            this.Length_Txt.Size = new System.Drawing.Size(100, 20);
+            this.Length_Txt.TabIndex = 29;
+            this.Length_Txt.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
             // AddTerrain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(414, 256);
+            this.Controls.Add(this.Length_Txt);
+            this.Controls.Add(this.Width_Txt);
             this.Controls.Add(this.Edit_Terrain_Btn);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.Fade_Distance_Txt);
@@ -306,11 +340,11 @@
             this.Controls.Add(this.Z_Txt);
             this.Controls.Add(this.Y_Txt);
             this.Controls.Add(this.X_Txt);
-            this.Controls.Add(this.Length_Txt);
-            this.Controls.Add(this.Width_Txt);
             this.Controls.Add(this.Terrain_Name_Txt);
             this.Name = "AddTerrain";
             this.Text = "AddTerrain";
+            ((System.ComponentModel.ISupportInitialize)(this.Width_Txt)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Length_Txt)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -319,8 +353,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox Terrain_Name_Txt;
-        private System.Windows.Forms.TextBox Width_Txt;
-        private System.Windows.Forms.TextBox Length_Txt;
         private System.Windows.Forms.TextBox X_Txt;
         private System.Windows.Forms.TextBox Y_Txt;
         private System.Windows.Forms.TextBox Z_Txt;
@@ -344,5 +376,7 @@
         private System.Windows.Forms.TextBox Fade_Distance_Txt;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button Edit_Terrain_Btn;
+        private System.Windows.Forms.NumericUpDown Width_Txt;
+        private System.Windows.Forms.NumericUpDown Length_Txt;
     }
 }
