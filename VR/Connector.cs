@@ -10,18 +10,23 @@ using System.Threading.Tasks;
 
 namespace VR
 {
-    public class Connector
+    class Connector
     {
         private int port = 6666;
         private TcpClient tcp;
         private NetworkStream stream;
         private JObject jObject;
-        private string tunnelID;
+        public string tunnelID;
+        List<Model> models { get; set; }
+        List<Route> routes { get; set; }
+        private Terrain terrain;
 
         public Connector()
         {
             tcp = new TcpClient();
             Connect("145.48.6.10", port);
+            models = new List<Model>();
+            routes = new List<Route>();
         }
 
         private void Connect(string host, int port)
@@ -133,66 +138,6 @@ namespace VR
             //Console.WriteLine(jObject);
         }
 
-        public void AddTerrain(int width, int length, int[] heightValues)
-        {
-            int[] measure = new int[2] { width, length };
-
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/terrain/add",
-                        data = new
-                        {
-                            size = measure,
-                            heights = heightValues
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public void AddFlatTerrain(int width, int length)
-        {
-            Random rdm = new Random();
-            int[] heightValues = new int[width * length];
-            for (int i = 0; i < heightValues.Length; i++)
-            {
-                heightValues[i] = 0;
-            }
-            int[] measure = new int[2] { width, length };
-
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/terrain/add",
-                        data = new
-                        {
-                            size = measure,
-                            heights = heightValues
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
         public JObject GetScene()
         {
             dynamic message = new
@@ -213,204 +158,6 @@ namespace VR
             return jObject;
         }
 
-        public void AddLayer(string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist)
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/node/addlayer",
-                        data = new
-                        {
-                            id = GetUUID(terrainName),
-                            diffuse = diffuseFile,
-                            normal = normalFile,
-                            minHeight = minHeight,
-                            maxHeight = maxHeight,
-                            fadeDist = fadeDist
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public void AddModel(string modelname, string path, int x, int y, int z)
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/node/add",
-                        data = new
-                        {
-                            name = modelname,
-                            components = new
-                            {
-                                transform = new
-                                {
-                                    position = (new int[3] { x, y, z }),
-                                    scale = 1,
-                                    rotation = (new int[3] { 0, 0, 0 })
-                                },
-                                model = new
-                                {
-                                    file = path,
-                                    cullbackfaces = true,
-                                    animated = false,
-                                    animation = "animationname"
-                                },
-                                panel = new
-                                {
-                                    size = (new int[2] { 1, 1 }),
-                                    resolution = (new int[2] { 512, 512 }),
-                                    background = (new int[4] { 1, 1, 1, 1 })
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public string AddRoute()
-        {
-            dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }), dir = (new int[3] { 5, 0, -5 }) };
-            dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }), dir = (new int[3] { 5, 0, 5 }) };
-            dynamic pos3 = new { pos = (new int[3] { 50, 0, 50 }), dir = (new int[3] { -5, 0, 5 }) };
-            dynamic pos4 = new { pos = (new int[3] { 0, 0, 50 }), dir = (new int[3] { -5, 0, -5 }) };
-
-            dynamic[] data = new dynamic[4]
-            {
-                pos1, pos2, pos3, pos4
-            };
-
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "route/add",
-                        data = new
-                        {
-                            nodes = data
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
-            //Console.WriteLine(jObject);
-            return uuid;
-        }
-
-        public void UpdateTerrain()
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/terrain/update",
-                        data = new {}
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public void DeleteTerrain()
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/terrain/delete",
-                        data = new { }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public void GetHeight()
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/terrain/getheight",
-                        data = new
-                        {
-                            position = (new double[2] {10.2, 4.4})
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public void DeleteLayer()
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/node/dellayer",
-                        data = new {}
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
         public void ResetScene()
         {
             dynamic message = new
@@ -423,74 +170,6 @@ namespace VR
                     {
                         id = "scene/reset",
                         data = new { }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public void AddTerrainNode(string terrainName, int x, int y, int z)
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/node/add",
-                        data = new
-                        {
-                            name = terrainName,
-                            components = new
-                            {
-                                transform = new
-                                {
-                                    position = (new int[3] { x, y, z }),
-                                    scale = 1,
-                                    rotation = (new int[3] { 0, 0, 0 })
-                                },
-                                terrain = new
-                                {
-                                    smoothnormals = true
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public void MakeTreeFollowRoute()
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "route/follow",
-                        data = new
-                        {
-                            route = AddRoute(),
-                            node = GetUUID("tree"),
-                            speed = 1.0,
-                            offset = 0.0,
-                            rotate = "XZ",
-                            followHeight = true,
-                            rotateOffset = (new int[] { 0, 0, 0 }),
-                            positionOffset = (new int[] { 0, 0, 0 })
-                        }
                     }
                 }
             };
@@ -530,23 +209,34 @@ namespace VR
             this.tunnelID = id;
         }
 
-        public static int[] GetImageHeightArray(string imagepath, int length, int width)
+        public void AddModel(string modelName, string filePath, int x, int y, int z)
         {
-            Bitmap image = (Bitmap)Image.FromFile(imagepath);
-            int[] result = new int[(length * width)];
-            
-            for (int y = 0; y <= length-1; y++)
-            {
-                for (int x = 0; x <= width-1; x++)
-                {   
-                    if ((image.GetPixel(x, y).R < 0x21) || (image.GetPixel(x, y).G < 0x21) || (image.GetPixel(x, y).B < 0x21))
-                    {
-                        result[((y * width) + x)] = 10;
-                    }
-                }
+            models.Add(new Model(this, modelName, filePath, x, y, z));
+        }
 
-            }
-            return result;
+        public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, int[] heightValues)
+        {
+            terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z, heightValues);
+        }
+
+        public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z)
+        {
+            terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z);
+        }
+        
+        public void AddRoute()
+        {
+            routes.Add(new Route(this));
+        }
+
+        public List<Model> GetModels()
+        {
+            return models;
+        }
+
+        public List<Route> GetRoutes()
+        {
+            return routes;
         }
     }
 }

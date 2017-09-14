@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace VR
 {
-    public partial class ControlPanel : Form
+    partial class ControlPanel : Form
     {
         Connector connector;
 
         public ControlPanel(Connector connector)
         {
-            InitializeComponent();
             this.connector = connector;
+            InitializeComponent();
         }
 
         private void Add_Model_Click(object sender, EventArgs e)
@@ -30,6 +30,23 @@ namespace VR
         {
             AddTerrain addTerrain = new AddTerrain(connector);
             addTerrain.Show();
+        }
+
+        private void Add_Route_Btn_Click(object sender, EventArgs e)
+        {
+            connector.AddRoute();
+        }
+
+        private void Model_Follow_Route_Btn_Click(object sender, EventArgs e)
+        {
+            ModelFollowRoute followRoute = new ModelFollowRoute(connector);
+            followRoute.Show();
+        }
+
+        private void Add_Road_Btn_Click(object sender, EventArgs e)
+        {
+            AddRoadToRoute addRoad = new AddRoadToRoute(connector);
+            addRoad.Show();
         }
     }
 }

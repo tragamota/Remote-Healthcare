@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace VR
 {
-    public partial class TerrainGrid : Form
+    partial class TerrainGrid : Form
     {
         AddTerrain addTerrain;
 

@@ -11,10 +11,10 @@ using System.Windows.Forms;
 
 namespace VR
 {
-    public partial class AddTerrain : Form
+    partial class AddTerrain : Form
     {
-        Connector connector;
         public int[] heightValues = null;
+        Connector connector;
 
         public AddTerrain(Connector connector)
         {
@@ -55,11 +55,9 @@ namespace VR
                 Diffuse_Texture_Lbl.Text.Length > 0 && Normal_Texture_Lbl.Text.Length > 0)
             {
                 if (heightValues != null)
-                    connector.AddTerrain(int.Parse(Width_Txt.Text), int.Parse(Length_Txt.Text), heightValues);
+                    connector.AddTerrain(Terrain_Name_Txt.Text, Diffuse_Texture_Lbl.Text, Normal_Texture_Lbl.Text, int.Parse(Min_Height_Txt.Text), int.Parse(Max_Height_Txt.Text), int.Parse(Fade_Distance_Txt.Text), int.Parse(Width_Txt.Text), int.Parse(Length_Txt.Text), int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text), heightValues);
                 else
-                    connector.AddFlatTerrain(int.Parse(Width_Txt.Text), int.Parse(Length_Txt.Text));
-                connector.AddTerrainNode(Terrain_Name_Txt.Text, int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text));
-                connector.AddLayer(Terrain_Name_Txt.Text, Diffuse_Texture_Lbl.Text, Normal_Texture_Lbl.Text, int.Parse(Max_Height_Txt.Text), int.Parse(Min_Height_Txt.Text), int.Parse(Fade_Distance_Txt.Text));
+                    connector.AddTerrain(Terrain_Name_Txt.Text, Diffuse_Texture_Lbl.Text, Normal_Texture_Lbl.Text, int.Parse(Min_Height_Txt.Text), int.Parse(Max_Height_Txt.Text), int.Parse(Fade_Distance_Txt.Text), int.Parse(Width_Txt.Text), int.Parse(Length_Txt.Text), int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text));
                 this.Hide();
             }
             else

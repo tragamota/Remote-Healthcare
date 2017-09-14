@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace VR
 {
-    public partial class AddModel : Form
+    partial class AddModel : Form
     {
         Connector connector;
 
