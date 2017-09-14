@@ -53,6 +53,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.Fade_Distance_Txt = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
+            this.Edit_Terrain_Btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Terrain_Name_Txt
@@ -267,11 +268,22 @@
             this.label11.TabIndex = 26;
             this.label11.Text = "Fade distance:";
             // 
+            // Edit_Terrain_Btn
+            // 
+            this.Edit_Terrain_Btn.Location = new System.Drawing.Point(217, 93);
+            this.Edit_Terrain_Btn.Name = "Edit_Terrain_Btn";
+            this.Edit_Terrain_Btn.Size = new System.Drawing.Size(180, 23);
+            this.Edit_Terrain_Btn.TabIndex = 27;
+            this.Edit_Terrain_Btn.Text = "Edit terrain heights";
+            this.Edit_Terrain_Btn.UseVisualStyleBackColor = true;
+            this.Edit_Terrain_Btn.Click += new System.EventHandler(this.Edit_Terrain_Btn_Click);
+            // 
             // AddTerrain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(414, 256);
+            this.Controls.Add(this.Edit_Terrain_Btn);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.Fade_Distance_Txt);
             this.Controls.Add(this.label10);
@@ -331,5 +343,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox Fade_Distance_Txt;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button Edit_Terrain_Btn;
     }
 }

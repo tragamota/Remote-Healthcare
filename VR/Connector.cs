@@ -106,7 +106,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public void SetTime(double hour)
@@ -130,10 +130,37 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
-        public void AddTerrain(int width, int length)
+        public void AddTerrain(int width, int length, int[] heightValues)
+        {
+            int[] measure = new int[2] { width, length };
+
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/terrain/add",
+                        data = new
+                        {
+                            size = measure,
+                            heights = heightValues
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            //Console.WriteLine(jObject);
+        }
+
+        public void AddFlatTerrain(int width, int length)
         {
             Random rdm = new Random();
             int[] heightValues = new int[width * length];
@@ -163,7 +190,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public JObject GetScene()
@@ -212,7 +239,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public void AddModel(string modelname, string path, int x, int y, int z)
@@ -258,7 +285,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public string AddRoute()
@@ -293,7 +320,7 @@ namespace VR
             SendMessage(message);
             JObject jObject = ReadMessage();
             string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
             return uuid;
         }
 
@@ -315,7 +342,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public void DeleteTerrain()
@@ -336,7 +363,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public void GetHeight()
@@ -360,7 +387,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public void DeleteLayer()
@@ -381,7 +408,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public void ResetScene()
@@ -402,7 +429,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public void AddTerrainNode(string terrainName, int x, int y, int z)
@@ -439,7 +466,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public void MakeTreeFollowRoute()
@@ -470,7 +497,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            //Console.WriteLine(jObject);
         }
 
         public string GetUUID(string name)

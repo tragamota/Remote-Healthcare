@@ -14,6 +14,7 @@ namespace VR
     public partial class AddTerrain : Form
     {
         Connector connector;
+        public int[] heightValues = null;
 
         public AddTerrain(Connector connector)
         {
@@ -53,7 +54,10 @@ namespace VR
                 X_Txt.Text.Length > 0 && Y_Txt.Text.Length > 0 && Z_Txt.Text.Length > 0 && 
                 Diffuse_Texture_Lbl.Text.Length > 0 && Normal_Texture_Lbl.Text.Length > 0)
             {
-                connector.AddTerrain(int.Parse(Width_Txt.Text), int.Parse(Length_Txt.Text));
+                if (heightValues != null)
+                    connector.AddTerrain(int.Parse(Width_Txt.Text), int.Parse(Length_Txt.Text), heightValues);
+                else
+                    connector.AddFlatTerrain(int.Parse(Width_Txt.Text), int.Parse(Length_Txt.Text));
                 connector.AddTerrainNode(Terrain_Name_Txt.Text, int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text));
                 connector.AddLayer(Terrain_Name_Txt.Text, Diffuse_Texture_Lbl.Text, Normal_Texture_Lbl.Text, int.Parse(Max_Height_Txt.Text), int.Parse(Min_Height_Txt.Text), int.Parse(Fade_Distance_Txt.Text));
                 this.Hide();
@@ -61,6 +65,15 @@ namespace VR
             else
             {
                 MessageBox.Show("Vul al de velden in");
+            }
+        }
+
+        private void Edit_Terrain_Btn_Click(object sender, EventArgs e)
+        {
+            if(Width_Txt.Text.Length > 0 && Length_Txt.Text.Length > 0 && Min_Height_Txt.Text.Length > 0 && Max_Height_Txt.Text.Length > 0)
+            {
+                TerrainGrid grid = new TerrainGrid(this, int.Parse(Width_Txt.Text), int.Parse(Length_Txt.Text), int.Parse(Min_Height_Txt.Text), int.Parse(Max_Height_Txt.Text));
+                grid.Show();
             }
         }
     }

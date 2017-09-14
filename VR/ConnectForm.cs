@@ -43,7 +43,7 @@ namespace VR
             JObject jObject = connector.ReadMessage();
             string id = (string)jObject.SelectToken("data").SelectToken("id");
             connector.SetId(id);
-
+            
             this.Hide();
             ControlPanel panel = new ControlPanel(connector);
             panel.Closed += (s, args) => this.Close();
