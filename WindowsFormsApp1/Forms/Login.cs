@@ -35,6 +35,8 @@ namespace Remote_Healtcare_Console
 
         private void login() {
             if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0) {
+                User user = new User(txtUsername.Text, txtPassword.Text);
+
                 this.Hide();
                 Form Form1 = new Console();
                 Form1.Closed += (s, args) => this.Close();

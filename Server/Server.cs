@@ -15,6 +15,7 @@ namespace ClientServer
     class Server
     {
         public static object ClientServerUtil { get; private set; }
+        public static List<User> users;
         
         static void Main(string[] args)
         {
@@ -25,6 +26,12 @@ namespace ClientServer
 
             TcpListener listener = new System.Net.Sockets.TcpListener(localhost, 1330);
             listener.Start();
+            
+            string path = Directory.GetCurrentDirectory() + @"\users.json";
+            string jsonFile = File.ReadAllText(path);
+            JArray openedData = (JArray)JsonConvert.DeserializeObject(jsonFile);
+
+            users = (List<User>)openedData.ToObject(typeof(List<User>));
 
             while (true)
             {
@@ -45,13 +52,27 @@ namespace ClientServer
         static void HandleClientThread(object obj)
         {
             List<BikeData> data = new List<BikeData>();
-
+            User declaredUser;
             TcpClient client = obj as TcpClient;
+
+            bool userDeclared = false;
+            while (!userDeclared)
+            {
+                string received = ReadMessage(client);
+                User user = (User)JObject.Parse(received).ToObject(typeof(User));
+
+                if (users.Contains(user))
+                {
+                    declaredUser = user;
+                    userDeclared = true;
+                }
+            }
 
             bool done = false;
             while (!done)
             {
                 string received = ReadMessage(client);
+
                 if (received.Equals("bye")) {
                     done = true;
                     SendMessage(client, "BYE");
