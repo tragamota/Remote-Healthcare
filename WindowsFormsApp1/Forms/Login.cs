@@ -16,10 +16,12 @@ namespace Remote_Healtcare_Console
     public partial class Login : Form
     {
         Dictionary<string, string> users;
+        Client client;
 
         public Login()
         {
             InitializeComponent();
+            client = new Client();
         }
 
         private void BLog_in_Click(object sender, EventArgs e)
@@ -36,11 +38,24 @@ namespace Remote_Healtcare_Console
         private void login() {
             if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0) {
                 User user = new User(txtUsername.Text, txtPassword.Text);
+                client.SendMessage(user);
 
-                this.Hide();
-                Form Form1 = new Console();
-                Form1.Closed += (s, args) => this.Close();
-                Form1.Show();
+                JObject jObject = JObject.Parse(client.ReadMessage());
+                string result = (string)jObject.GetValue("access");
+                if (result.Equals("approved")) {
+                    this.Hide();
+                    Form Form1 = new Console();
+                    Form1.Closed += (s, args) => this.Close();
+                    Form1.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Ingevulde gegevens zijn onjuist");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Vul de velden in");
             }
         }
     }

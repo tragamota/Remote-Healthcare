@@ -61,10 +61,26 @@ namespace ClientServer
                 string received = ReadMessage(client);
                 User user = (User)JObject.Parse(received).ToObject(typeof(User));
 
-                if (users.Contains(user))
+                foreach (User userOfList in users)
                 {
-                    declaredUser = user;
-                    userDeclared = true;
+                    if(user.username == userOfList.username && user.password == userOfList.password)
+                    {
+                        declaredUser = user;
+                        userDeclared = true;
+                        dynamic response = new
+                        {
+                            access = "approved"
+                        };
+                        SendMessage(client, response);
+                    }
+                    else
+                    {
+                        dynamic response = new
+                        {
+                            access = "denied"
+                        };
+                        SendMessage(client, response);
+                    }
                 }
             }
 
@@ -118,6 +134,20 @@ namespace ClientServer
         {
             byte[] bytes = Encoding.UTF8.GetBytes(message);
             client.GetStream().Write(bytes, 0, bytes.Length);
+        }
+
+        public static void SendMessage(TcpClient client, dynamic message)
+        {
+            NetworkStream stream = client.GetStream();
+            string json = JsonConvert.SerializeObject(message);
+
+            byte[] prefixArray = BitConverter.GetBytes(json.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(json);
+
+            byte[] buffer = new Byte[prefixArray.Length + json.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
+            stream.Write(buffer, 0, buffer.Length);
         }
 
     }
