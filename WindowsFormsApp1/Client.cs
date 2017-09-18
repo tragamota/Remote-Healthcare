@@ -44,26 +44,12 @@ namespace Remote_Healtcare_Console
         {
             NetworkStream stream = client.GetStream();
             byte[] buffer;
-            if (message == "hoi")
-            {
-                string json = JsonConvert.SerializeObject(new BikeData());
+            byte[] prefixArray = BitConverter.GetBytes(message.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(message);
 
-                byte[] prefixArray = BitConverter.GetBytes(json.Length);
-                byte[] requestArray = Encoding.Default.GetBytes(json);
-
-                buffer = new Byte[prefixArray.Length + json.Length];
-                prefixArray.CopyTo(buffer, 0);
-                requestArray.CopyTo(buffer, prefixArray.Length);
-            }
-            else
-            {
-                byte[] prefixArray = BitConverter.GetBytes(message.Length);
-                byte[] requestArray = Encoding.Default.GetBytes(message);
-
-                buffer = new Byte[prefixArray.Length + message.Length];
-                prefixArray.CopyTo(buffer, 0);
-                requestArray.CopyTo(buffer, prefixArray.Length);
-            }
+            buffer = new Byte[prefixArray.Length + message.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
             stream.Write(buffer, 0, buffer.Length);
         }
 
@@ -72,6 +58,21 @@ namespace Remote_Healtcare_Console
             NetworkStream stream = client.GetStream();
             byte[] buffer;
             string json = JsonConvert.SerializeObject(user);
+
+            byte[] prefixArray = BitConverter.GetBytes(json.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(json);
+
+            buffer = new Byte[prefixArray.Length + json.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
+            stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public void SendMessage(BikeData data)
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] buffer;
+            string json = JsonConvert.SerializeObject(data);
 
             byte[] prefixArray = BitConverter.GetBytes(json.Length);
             byte[] requestArray = Encoding.Default.GetBytes(json);

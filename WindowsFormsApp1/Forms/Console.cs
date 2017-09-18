@@ -14,10 +14,12 @@ namespace Remote_Healtcare_Console
         private ComboBox combo;
         public string path;
         public ISet<BikeData> data;
+        private Client client;
 
-        public Console()
+        public Console(Client client)
         {
             InitializeComponent();
+            this.client = client;
             combo = comPorts;
             combo.Items.Clear();
             combo.Items.Add("Simulator");
@@ -47,7 +49,7 @@ namespace Remote_Healtcare_Console
             }
             else
             {
-                bike = new Bike(combo.SelectedItem.ToString(), this);
+                bike = new Bike(combo.SelectedItem.ToString(), this, client);
 
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.InitialDirectory = Directory.GetCurrentDirectory();

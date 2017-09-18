@@ -14,8 +14,10 @@ namespace Remote_Healtcare_Console {
         private SerialCommunicator serialCommunicator;
         private Thread BikeThread;
         private bool start;
+        private Client client;
 
-        public Bike(string port, Console console) : base(console) {
+        public Bike(string port, Console console, Client client) : base(console) {
+            this.client = client;
             start = false;
             serialCommunicator = new SerialCommunicator(port);
             BikeThread = new Thread(InitBike);
@@ -115,6 +117,8 @@ namespace Remote_Healtcare_Console {
                 RecordedData.Add(bikeData);
             else if(RecordedData.Last().Time != bikeData.Time)
                 RecordedData.Add(bikeData);
+
+            client.SendMessage(bikeData);
 
             SetDataToGUI();
         }

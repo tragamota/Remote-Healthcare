@@ -92,6 +92,7 @@ namespace ClientServer
                 if (received.Equals("bye")) {
                     done = true;
                     SendMessage(client, "BYE");
+                    File.WriteAllText(Directory.GetCurrentDirectory() + @"\session.json", json);
                 } else
                 {
                     data.Add((BikeData)JObject.Parse(received).ToObject(typeof(BikeData)));
