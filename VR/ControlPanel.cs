@@ -48,5 +48,11 @@ namespace VR
             AddRoadToRoute addRoad = new AddRoadToRoute(connector);
             addRoad.Show();
         }
+
+        private void Speed_Model_Btn_Click(object sender, EventArgs e)
+        {
+            ChangeModelSpeed modelSpeed = new ChangeModelSpeed(connector);
+            modelSpeed.Show();
+        }
     }
 }

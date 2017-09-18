@@ -64,7 +64,7 @@ namespace VR
                         {
                             route = routeID,
                             node = connector.GetUUID(model.nodeID),
-                            speed = 1.0,
+                            speed = 0.0,
                             offset = 0.0,
                             rotate = "XZ",
                             followHeight = true,

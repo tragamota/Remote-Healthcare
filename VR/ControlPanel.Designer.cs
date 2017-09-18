@@ -36,6 +36,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.Speed_Model_Btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // AddTree
@@ -115,11 +116,22 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.Add_Road_Btn_Click);
             // 
+            // Speed_Model_Btn
+            // 
+            this.Speed_Model_Btn.Location = new System.Drawing.Point(12, 165);
+            this.Speed_Model_Btn.Name = "Speed_Model_Btn";
+            this.Speed_Model_Btn.Size = new System.Drawing.Size(171, 23);
+            this.Speed_Model_Btn.TabIndex = 8;
+            this.Speed_Model_Btn.Text = "Change speed of model";
+            this.Speed_Model_Btn.UseVisualStyleBackColor = true;
+            this.Speed_Model_Btn.Click += new System.EventHandler(this.Speed_Model_Btn_Click);
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(197, 171);
+            this.ClientSize = new System.Drawing.Size(197, 204);
+            this.Controls.Add(this.Speed_Model_Btn);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
@@ -144,5 +156,6 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button Speed_Model_Btn;
     }
 }

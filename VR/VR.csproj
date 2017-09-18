@@ -37,7 +37,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualBasic.Compatibility" />
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -75,6 +75,12 @@
     </Compile>
     <Compile Include="AddTerrain.Designer.cs">
       <DependentUpon>AddTerrain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChangeModelSpeed.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChangeModelSpeed.Designer.cs">
+      <DependentUpon>ChangeModelSpeed.cs</DependentUpon>
     </Compile>
     <Compile Include="Connector.cs" />
     <Compile Include="ConnectForm.cs">
@@ -120,6 +126,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddTerrain.resx">
       <DependentUpon>AddTerrain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChangeModelSpeed.resx">
+      <DependentUpon>ChangeModelSpeed.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectForm.resx">
       <DependentUpon>ConnectForm.cs</DependentUpon>

@@ -59,5 +59,32 @@ namespace VR
             JObject jObject = connector.ReadMessage();
             //Console.WriteLine(jObject);
         }
+
+        public void ChangeSpeed(double speed)
+        {
+            {
+                dynamic message = new
+                {
+                    id = "tunnel/send",
+                    data = new
+                    {
+                        dest = connector.tunnelID,
+                        data = new
+                        {
+                            id = "route/follow/speed",
+                            data = new
+                            {
+                                node = connector.GetUUID(nodeID),
+                                speed = speed
+                            }
+                        }
+                    }
+                };
+
+                connector.SendMessage(message);
+                JObject jObject = connector.ReadMessage();
+                Console.WriteLine(jObject);
+            }
+        }
     }
 }
