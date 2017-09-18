@@ -8,13 +8,14 @@ using Remote_Healtcare_Console;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace ClientServer
 {
     class Server
     {
         public static object ClientServerUtil { get; private set; }
-
+        
         static void Main(string[] args)
         {
             IPAddress localhost;
@@ -50,29 +51,27 @@ namespace ClientServer
             bool done = false;
             while (!done)
             {
-                JObject received = ReadMessage(client);
-                data.Add((BikeData)received.ToObject(typeof(BikeData)));
-                System.Console.WriteLine("Received: {0}", received);
-                done = received.Equals("bye");
-                if (done) SendMessage(client, "BYE");
-                else SendMessage(client, "OK");
+                string received = ReadMessage(client);
+                if (received.Equals("bye")) {
+                    done = true;
+                    SendMessage(client, "BYE");
+                } else
+                {
+                    data.Add((BikeData)JObject.Parse(received).ToObject(typeof(BikeData)));
+                    System.Console.WriteLine("Received: {0}", received);
+                    SendMessage(client, "OK");
+                }
 
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
-            saveFileDialog.Filter = "JSON (.json)|*.json;";
-            saveFileDialog.FileName = "sessie.json";
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-            }
+            string json = JsonConvert.SerializeObject(data);
+            System.IO.File.WriteAllText(Directory.GetCurrentDirectory() + @"\session.json", json);
 
             client.Close();
             System.Console.WriteLine("Connection closed");
         }
 
-        public static JObject ReadMessage(TcpClient client)
+        public static string ReadMessage(TcpClient client)
         {
             NetworkStream stream = client.GetStream();
             StringBuilder message = new StringBuilder();
@@ -91,7 +90,7 @@ namespace ClientServer
             while (message.Length < receiveBuffer.Length);
             
             string response = message.ToString();
-            return JObject.Parse(response);
+            return response;
         }
 
         public static void SendMessage(TcpClient client, string message)

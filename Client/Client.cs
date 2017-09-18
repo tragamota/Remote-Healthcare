@@ -46,7 +46,7 @@ namespace ClientServer
         public static void SendMessage(TcpClient client, string message)
         {
             NetworkStream stream = client.GetStream();
-            byte[] bytes;
+            byte[] buffer;
             if (message == "hoi")
             {
                 string json = JsonConvert.SerializeObject(new BikeData());
@@ -54,15 +54,19 @@ namespace ClientServer
                 byte[] prefixArray = BitConverter.GetBytes(json.Length);
                 byte[] requestArray = Encoding.Default.GetBytes(json);
 
-                byte[] buffer = new Byte[prefixArray.Length + json.Length];
+                buffer = new Byte[prefixArray.Length + json.Length];
                 prefixArray.CopyTo(buffer, 0);
                 requestArray.CopyTo(buffer, prefixArray.Length);
-                stream.Write(buffer, 0, buffer.Length);
             }
             else {
-                bytes = Encoding.UTF8.GetBytes(message);
-                stream.Write(bytes, 0, bytes.Length);
+                byte[] prefixArray = BitConverter.GetBytes(message.Length);
+                byte[] requestArray = Encoding.Default.GetBytes(message);
+
+                buffer = new Byte[prefixArray.Length + message.Length];
+                prefixArray.CopyTo(buffer, 0);
+                requestArray.CopyTo(buffer, prefixArray.Length);
             }
+            stream.Write(buffer, 0, buffer.Length);
         }
     }
 }
