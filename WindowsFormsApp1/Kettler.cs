@@ -49,7 +49,8 @@ namespace Remote_Healtcare_Console
         }
     }
 
-    struct BikeData
+    [Serializable]
+    public struct BikeData
     {
         public int Pulse { get; set; }
         public int Rpm { get; set; }
