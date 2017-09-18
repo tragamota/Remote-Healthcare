@@ -7,44 +7,40 @@ using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-namespace ClientServer
+namespace Remote_Healtcare_Console
 {
-    class Client
+    public class Client
     {
-        static void Main(string[] args)
+        TcpClient client;
+
+        public Client()
         {
-            TcpClient client = new TcpClient("127.0.0.1", 1330);
-            bool done = false;
-            System.Console.WriteLine("Type 'bye' to end connection");
-            while (!done)
-            {
-                System.Console.Write("Enter a message to send to server: ");
-                string message = System.Console.ReadLine();
-
-                SendMessage(client, message);
-
-                string response = ReadMessage(client);
-                System.Console.WriteLine("Response: " + response);
-                done = response.Equals("BYE");
-            }
+            client = new TcpClient("127.0.0.1", 1330);
         }
 
-        public static string ReadMessage(TcpClient client)
+        public string ReadMessage()
         {
-            byte[] buffer = new byte[256];
-            int totalRead = 0;
-            
+            NetworkStream stream = client.GetStream();
+            StringBuilder message = new StringBuilder();
+            int numberOfBytesRead = 0;
+            byte[] messageBytes = new byte[4];
+            stream.Read(messageBytes, 0, messageBytes.Length);
+            byte[] receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
+
             do
             {
-                int read = client.GetStream().Read(buffer, totalRead, buffer.Length - totalRead);
-                totalRead += read;
-                System.Console.WriteLine("ReadMessage: " + read);
-            } while (client.GetStream().DataAvailable);
+                numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
 
-            return Encoding.UTF8.GetString(buffer, 0, totalRead);
+                message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
+
+            }
+            while (message.Length < receiveBuffer.Length);
+
+            string response = message.ToString();
+            return response;
         }
 
-        public static void SendMessage(TcpClient client, string message)
+        public void SendMessage(string message)
         {
             NetworkStream stream = client.GetStream();
             byte[] buffer;
@@ -71,7 +67,7 @@ namespace ClientServer
             stream.Write(buffer, 0, buffer.Length);
         }
 
-        public static void SendMessage(TcpClient client, User user)
+        public void SendMessage(User user)
         {
             NetworkStream stream = client.GetStream();
             byte[] buffer;
