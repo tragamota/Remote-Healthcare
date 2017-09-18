@@ -58,17 +58,17 @@ namespace ClientServer
                 } else
                 {
                     data.Add((BikeData)JObject.Parse(received).ToObject(typeof(BikeData)));
-                    System.Console.WriteLine("Received: {0}", received);
+                    Console.WriteLine("Received: {0}", received);
                     SendMessage(client, "OK");
                 }
 
             }
 
             string json = JsonConvert.SerializeObject(data);
-            System.IO.File.WriteAllText(Directory.GetCurrentDirectory() + @"\session.json", json);
+            File.WriteAllText(Directory.GetCurrentDirectory() + @"\session.json", json);
 
             client.Close();
-            System.Console.WriteLine("Connection closed");
+            Console.WriteLine("Connection closed");
         }
 
         public static string ReadMessage(TcpClient client)
