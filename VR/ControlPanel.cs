@@ -54,5 +54,11 @@ namespace VR
             ChangeModelSpeed modelSpeed = new ChangeModelSpeed(connector);
             modelSpeed.Show();
         }
+
+        private void Add_Terrain_By_Picture_Btn_Click(object sender, EventArgs e)
+        {
+            AddTerrainByPicture addTerrain = new AddTerrainByPicture(connector);
+            addTerrain.Show();
+        }
     }
 }

@@ -29,9 +29,17 @@ namespace VR
 
         private void Set_Speed_Btn(object sender, EventArgs e)
         {
-            Model model = (Model)model_Box.SelectedItem;
-            model.ChangeSpeed(double.Parse(Speed_Txt.Text));
-            this.Hide();
+            if (model_Box.SelectedItem != null)
+            {
+
+                Model model = (Model)model_Box.SelectedItem;
+                model.ChangeSpeed(double.Parse(Speed_Txt.Text));
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Kies een model");
+            }
         }
     }
 }

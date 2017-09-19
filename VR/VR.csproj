@@ -76,6 +76,12 @@
     <Compile Include="AddTerrain.Designer.cs">
       <DependentUpon>AddTerrain.cs</DependentUpon>
     </Compile>
+    <Compile Include="AddTerrainByPicture.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddTerrainByPicture.Designer.cs">
+      <DependentUpon>AddTerrainByPicture.cs</DependentUpon>
+    </Compile>
     <Compile Include="ChangeModelSpeed.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddTerrain.resx">
       <DependentUpon>AddTerrain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddTerrainByPicture.resx">
+      <DependentUpon>AddTerrainByPicture.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChangeModelSpeed.resx">
       <DependentUpon>ChangeModelSpeed.cs</DependentUpon>
