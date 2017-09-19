@@ -14,7 +14,6 @@ namespace ClientServer
 {
     class Server
     {
-        public static object ClientServerUtil { get; private set; }
         public static List<User> users;
         
         static void Main(string[] args)
@@ -52,7 +51,7 @@ namespace ClientServer
         static void HandleClientThread(object obj)
         {
             List<BikeData> data = new List<BikeData>();
-            User declaredUser;
+            User declaredUser = new User("test", "test");
             TcpClient client = obj as TcpClient;
 
             bool userDeclared = false;
@@ -84,6 +83,7 @@ namespace ClientServer
                 }
             }
 
+            string path = Directory.GetCurrentDirectory() + declaredUser.username + ".json";
             bool done = false;
             while (!done)
             {
@@ -92,18 +92,17 @@ namespace ClientServer
                 if (received.Equals("bye")) {
                     done = true;
                     SendMessage(client, "BYE");
-                    File.WriteAllText(Directory.GetCurrentDirectory() + @"\session.json", json);
                 } else
                 {
                     data.Add((BikeData)JObject.Parse(received).ToObject(typeof(BikeData)));
                     Console.WriteLine("Received: {0}", received);
                     SendMessage(client, "OK");
+
+                    string json = JsonConvert.SerializeObject(data);
+                    File.WriteAllText(path, json);
                 }
 
             }
-
-            string json = JsonConvert.SerializeObject(data);
-            File.WriteAllText(Directory.GetCurrentDirectory() + @"\session.json", json);
 
             client.Close();
             Console.WriteLine("Connection closed");
