@@ -76,6 +76,12 @@
     <Compile Include="Forms\AddRoute.Designer.cs">
       <DependentUpon>AddRoute.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\AddStandardModel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddStandardModel.Designer.cs">
+      <DependentUpon>AddStandardModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AddTerrain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +133,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Objects\car_white.mtl" />
+    <None Include="Objects\car_white.obj" />
+    <None Include="Objects\house1.mtl" />
+    <None Include="Objects\house1.obj" />
+    <None Include="Objects\tree1.mtl" />
+    <None Include="Objects\tree1.obj" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddRoute.resx">
       <DependentUpon>AddRoute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddStandardModel.resx">
+      <DependentUpon>AddStandardModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddTerrain.resx">
       <DependentUpon>AddTerrain.cs</DependentUpon>
@@ -160,6 +175,20 @@
     <EmbeddedResource Include="Forms\TerrainGrid.resx">
       <DependentUpon>TerrainGrid.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Objects\building01_c.png" />
+    <Content Include="Objects\building03_c.png" />
+    <Content Include="Objects\building05_c.png" />
+    <Content Include="Objects\building06_c .png" />
+    <Content Include="Objects\building06_c.png" />
+    <Content Include="Objects\building_016_c.png" />
+    <Content Include="Objects\building_025_c.png" />
+    <Content Include="Objects\Building_V01_C.png" />
+    <Content Include="Objects\Building_V02_C.png" />
+    <Content Include="Objects\car_glass.png" />
+    <Content Include="Objects\car_white.png" />
+    <Content Include="Objects\Tree_01.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

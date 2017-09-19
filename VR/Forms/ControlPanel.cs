@@ -61,5 +61,11 @@ namespace VR
             AddTerrainByPicture addTerrain = new AddTerrainByPicture(connector);
             addTerrain.Show();
         }
+
+        private void Add_Standard_Model_Btn_Click(object sender, EventArgs e)
+        {
+            AddStandardModel addModel = new AddStandardModel(connector);
+            addModel.Show();
+        }
     }
 }

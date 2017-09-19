@@ -38,11 +38,12 @@
             this.button7 = new System.Windows.Forms.Button();
             this.Speed_Model_Btn = new System.Windows.Forms.Button();
             this.Add_Terrain_By_Picture_Btn = new System.Windows.Forms.Button();
+            this.Add_Standard_Model_Btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // AddTree
             // 
-            this.AddTree.Location = new System.Drawing.Point(12, 12);
+            this.AddTree.Location = new System.Drawing.Point(12, 41);
             this.AddTree.Name = "AddTree";
             this.AddTree.Size = new System.Drawing.Size(171, 23);
             this.AddTree.TabIndex = 0;
@@ -52,7 +53,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 41);
+            this.button1.Location = new System.Drawing.Point(12, 70);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(171, 23);
             this.button1.TabIndex = 1;
@@ -62,7 +63,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(185, 12);
+            this.button2.Location = new System.Drawing.Point(185, 41);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(90, 23);
             this.button2.TabIndex = 2;
@@ -71,7 +72,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(186, 40);
+            this.button3.Location = new System.Drawing.Point(186, 69);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(89, 23);
             this.button3.TabIndex = 3;
@@ -80,7 +81,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(12, 99);
+            this.button4.Location = new System.Drawing.Point(12, 128);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(171, 23);
             this.button4.TabIndex = 4;
@@ -90,7 +91,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(186, 99);
+            this.button5.Location = new System.Drawing.Point(186, 128);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(89, 23);
             this.button5.TabIndex = 5;
@@ -99,7 +100,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(12, 176);
+            this.button6.Location = new System.Drawing.Point(12, 205);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(171, 23);
             this.button6.TabIndex = 6;
@@ -109,7 +110,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(11, 147);
+            this.button7.Location = new System.Drawing.Point(11, 176);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(172, 23);
             this.button7.TabIndex = 7;
@@ -119,7 +120,7 @@
             // 
             // Speed_Model_Btn
             // 
-            this.Speed_Model_Btn.Location = new System.Drawing.Point(12, 205);
+            this.Speed_Model_Btn.Location = new System.Drawing.Point(12, 234);
             this.Speed_Model_Btn.Name = "Speed_Model_Btn";
             this.Speed_Model_Btn.Size = new System.Drawing.Size(171, 23);
             this.Speed_Model_Btn.TabIndex = 8;
@@ -129,7 +130,7 @@
             // 
             // Add_Terrain_By_Picture_Btn
             // 
-            this.Add_Terrain_By_Picture_Btn.Location = new System.Drawing.Point(12, 70);
+            this.Add_Terrain_By_Picture_Btn.Location = new System.Drawing.Point(12, 99);
             this.Add_Terrain_By_Picture_Btn.Name = "Add_Terrain_By_Picture_Btn";
             this.Add_Terrain_By_Picture_Btn.Size = new System.Drawing.Size(171, 23);
             this.Add_Terrain_By_Picture_Btn.TabIndex = 9;
@@ -137,11 +138,22 @@
             this.Add_Terrain_By_Picture_Btn.UseVisualStyleBackColor = true;
             this.Add_Terrain_By_Picture_Btn.Click += new System.EventHandler(this.Add_Terrain_By_Picture_Btn_Click);
             // 
+            // Add_Standard_Model_Btn
+            // 
+            this.Add_Standard_Model_Btn.Location = new System.Drawing.Point(12, 12);
+            this.Add_Standard_Model_Btn.Name = "Add_Standard_Model_Btn";
+            this.Add_Standard_Model_Btn.Size = new System.Drawing.Size(171, 23);
+            this.Add_Standard_Model_Btn.TabIndex = 10;
+            this.Add_Standard_Model_Btn.Text = "Add standard model";
+            this.Add_Standard_Model_Btn.UseVisualStyleBackColor = true;
+            this.Add_Standard_Model_Btn.Click += new System.EventHandler(this.Add_Standard_Model_Btn_Click);
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 236);
+            this.ClientSize = new System.Drawing.Size(287, 284);
+            this.Controls.Add(this.Add_Standard_Model_Btn);
             this.Controls.Add(this.Add_Terrain_By_Picture_Btn);
             this.Controls.Add(this.Speed_Model_Btn);
             this.Controls.Add(this.button7);
@@ -170,5 +182,6 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button Speed_Model_Btn;
         private System.Windows.Forms.Button Add_Terrain_By_Picture_Btn;
+        private System.Windows.Forms.Button Add_Standard_Model_Btn;
     }
 }
