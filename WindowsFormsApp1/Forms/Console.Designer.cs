@@ -340,6 +340,7 @@
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "Console";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

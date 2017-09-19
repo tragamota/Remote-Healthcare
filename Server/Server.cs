@@ -21,9 +21,9 @@ namespace ClientServer
             IPAddress localhost;
 
             bool ipIsOk = IPAddress.TryParse("127.0.0.1", out localhost);
-            if (!ipIsOk) { System.Console.WriteLine("ip adres kan niet geparsed worden."); Environment.Exit(1); }
+            if (!ipIsOk) { Console.WriteLine("ip adres kan niet geparsed worden."); Environment.Exit(1); }
 
-            TcpListener listener = new System.Net.Sockets.TcpListener(localhost, 1330);
+            TcpListener listener = new TcpListener(localhost, 1330);
             listener.Start();
             
             string path = Directory.GetCurrentDirectory() + @"\users.json";
@@ -34,7 +34,7 @@ namespace ClientServer
 
             while (true)
             {
-                System.Console.WriteLine(@"
+                Console.WriteLine(@"
                       ==============================================
                         Server started at {0}
                         Waiting for connection

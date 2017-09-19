@@ -85,5 +85,10 @@ namespace Remote_Healtcare_Console
         public void SetTime(String s) { lblTime.Text = s; }
 
         public void SetWatt(String s) { lblWatt.Text = s; }
+
+        private void Closing(object sender, FormClosingEventArgs e)
+        {
+            client.SendMessage("bye");
+        }
     }
 }
