@@ -155,7 +155,22 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
+            //Console.WriteLine(jObject);
             return jObject;
+        }
+
+        public string GetTerrainUUID(string terrainName)
+        {
+            JObject jObject = GetScene();
+            JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
+            List<JToken> list = array.ToList();
+            foreach (JToken token in list)
+            {
+                if (((string)token.SelectToken("name")).Equals(terrainName))
+                    return (string)token.SelectToken("uuid");
+            }
+
+            return null;
         }
 
         public void ResetScene()
@@ -177,31 +192,6 @@ namespace VR
             SendMessage(message);
             JObject jObject = ReadMessage();
             //Console.WriteLine(jObject);
-        }
-
-        public string GetUUID(string name)
-        {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/node/find",
-                        data = new
-                        {
-                            name = name
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").First.SelectToken("uuid");
-            return uuid;
         }
 
         public void SetId(string id)

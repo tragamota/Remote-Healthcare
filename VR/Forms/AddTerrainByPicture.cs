@@ -48,5 +48,44 @@ namespace VR
                 MessageBox.Show("Vul al de velden in");
             }
         }
+
+        private void Diffuse_Texture_Btn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog browseFileDialog = new OpenFileDialog();
+            browseFileDialog.Filter = "JPG (.jpg)|*.jpg|JPEG (.jpeg)|*.jpeg|PNG (.png)|*.png;";
+            browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+
+            if (browseFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string path = Path.GetFullPath(browseFileDialog.FileName);
+                Diffuse_Texture_Lbl.Text = path;
+            }
+        }
+
+        private void Normal_Texture_Btn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog browseFileDialog = new OpenFileDialog();
+            browseFileDialog.Filter = "JPG (.jpg)|*.jpg|JPEG (.jpeg)|*.jpeg|PNG (.png)|*.png;";
+            browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+
+            if (browseFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string path = Path.GetFullPath(browseFileDialog.FileName);
+                Normal_Texture_Lbl.Text = path;
+            }
+        }
+
+        private void Picture_Browse_Btn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog browseFileDialog = new OpenFileDialog();
+            browseFileDialog.Filter = "JPG (.jpg)|*.jpg|JPEG (.jpeg)|*.jpeg|PNG (.png)|*.png;";
+            browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+
+            if (browseFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string path = Path.GetFullPath(browseFileDialog.FileName);
+                Browse_Path_Lbl.Text = path;
+            }
+        }
     }
 }

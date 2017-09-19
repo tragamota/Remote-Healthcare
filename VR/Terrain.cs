@@ -188,7 +188,7 @@ namespace VR
                         id = "scene/node/addlayer",
                         data = new
                         {
-                            id = connector.GetUUID(terrainName),
+                            id = connector.GetTerrainUUID(terrainName),
                             diffuse = diffuseFile,
                             normal = normalFile,
                             minHeight = minHeight,
@@ -201,7 +201,7 @@ namespace VR
 
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
-            //Console.WriteLine(jObject);
+            Console.WriteLine(jObject);
         }
 
         public void AddNode()

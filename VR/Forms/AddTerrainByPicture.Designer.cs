@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Length_Txt = new System.Windows.Forms.NumericUpDown();
-            this.Width_Txt = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.Fade_Distance_Txt = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -56,53 +54,9 @@
             this.label12 = new System.Windows.Forms.Label();
             this.Picture_Browse_btn = new System.Windows.Forms.Button();
             this.Browse_Path_Lbl = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.Length_Txt)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Width_Txt)).BeginInit();
+            this.Width_Txt = new System.Windows.Forms.TextBox();
+            this.Length_Txt = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // Length_Txt
-            // 
-            this.Length_Txt.Location = new System.Drawing.Point(99, 65);
-            this.Length_Txt.Maximum = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
-            this.Length_Txt.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            this.Length_Txt.Name = "Length_Txt";
-            this.Length_Txt.Size = new System.Drawing.Size(100, 20);
-            this.Length_Txt.TabIndex = 54;
-            this.Length_Txt.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            // 
-            // Width_Txt
-            // 
-            this.Width_Txt.Location = new System.Drawing.Point(99, 39);
-            this.Width_Txt.Maximum = new decimal(new int[] {
-            25,
-            0,
-            0,
-            0});
-            this.Width_Txt.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            this.Width_Txt.Name = "Width_Txt";
-            this.Width_Txt.Size = new System.Drawing.Size(100, 20);
-            this.Width_Txt.TabIndex = 53;
-            this.Width_Txt.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             // 
             // label11
             // 
@@ -180,6 +134,7 @@
             this.Normal_Texture_Btn.TabIndex = 44;
             this.Normal_Texture_Btn.Text = "Browse";
             this.Normal_Texture_Btn.UseVisualStyleBackColor = true;
+            this.Normal_Texture_Btn.Click += new System.EventHandler(this.Normal_Texture_Btn_Click);
             // 
             // Diffuse_Texture_Btn
             // 
@@ -189,6 +144,7 @@
             this.Diffuse_Texture_Btn.TabIndex = 43;
             this.Diffuse_Texture_Btn.Text = "Browse";
             this.Diffuse_Texture_Btn.UseVisualStyleBackColor = true;
+            this.Diffuse_Texture_Btn.Click += new System.EventHandler(this.Diffuse_Texture_Btn_Click);
             // 
             // Add_Btn
             // 
@@ -198,6 +154,7 @@
             this.Add_Btn.TabIndex = 42;
             this.Add_Btn.Text = "Add";
             this.Add_Btn.UseVisualStyleBackColor = true;
+            this.Add_Btn.Click += new System.EventHandler(this.Add_Btn_Click);
             // 
             // label8
             // 
@@ -316,6 +273,7 @@
             this.Picture_Browse_btn.TabIndex = 56;
             this.Picture_Browse_btn.Text = "Browse";
             this.Picture_Browse_btn.UseVisualStyleBackColor = true;
+            this.Picture_Browse_btn.Click += new System.EventHandler(this.Picture_Browse_Btn_Click);
             // 
             // Browse_Path_Lbl
             // 
@@ -326,16 +284,30 @@
             this.Browse_Path_Lbl.Size = new System.Drawing.Size(0, 13);
             this.Browse_Path_Lbl.TabIndex = 57;
             // 
+            // Width_Txt
+            // 
+            this.Width_Txt.Location = new System.Drawing.Point(99, 38);
+            this.Width_Txt.Name = "Width_Txt";
+            this.Width_Txt.Size = new System.Drawing.Size(100, 20);
+            this.Width_Txt.TabIndex = 58;
+            // 
+            // Length_Txt
+            // 
+            this.Length_Txt.Location = new System.Drawing.Point(99, 64);
+            this.Length_Txt.Name = "Length_Txt";
+            this.Length_Txt.Size = new System.Drawing.Size(100, 20);
+            this.Length_Txt.TabIndex = 59;
+            // 
             // AddTerrainByPicture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(417, 313);
+            this.Controls.Add(this.Length_Txt);
+            this.Controls.Add(this.Width_Txt);
             this.Controls.Add(this.Browse_Path_Lbl);
             this.Controls.Add(this.Picture_Browse_btn);
             this.Controls.Add(this.label12);
-            this.Controls.Add(this.Length_Txt);
-            this.Controls.Add(this.Width_Txt);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.Fade_Distance_Txt);
             this.Controls.Add(this.label10);
@@ -361,17 +333,12 @@
             this.Controls.Add(this.Terrain_Name_Txt);
             this.Name = "AddTerrainByPicture";
             this.Text = "AddTerrainByPicture";
-            ((System.ComponentModel.ISupportInitialize)(this.Length_Txt)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Width_Txt)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.NumericUpDown Length_Txt;
-        private System.Windows.Forms.NumericUpDown Width_Txt;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox Fade_Distance_Txt;
         private System.Windows.Forms.Label label10;
@@ -398,5 +365,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button Picture_Browse_btn;
         private System.Windows.Forms.Label Browse_Path_Lbl;
+        private System.Windows.Forms.TextBox Width_Txt;
+        private System.Windows.Forms.TextBox Length_Txt;
     }
 }
