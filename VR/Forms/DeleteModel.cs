@@ -26,6 +26,12 @@ namespace VR
         {
             if(model_Box.SelectedItem != null)
                 connector.DeleteNode(models[model_Box.SelectedIndex].uuid);
+            
+            models = connector.GetModels();
+            model_Box.Items.Clear();
+
+            foreach (Model model in models)
+                model_Box.Items.Add(model.modelName);
         }
     }
 }

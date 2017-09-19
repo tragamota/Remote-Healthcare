@@ -172,6 +172,15 @@ namespace VR
             SendMessage(message);
             JObject jObject = ReadMessage();
             //Console.WriteLine(jObject);
+
+            foreach (Model model in models)
+            {
+                if (model.uuid.Equals(nodeID))
+                {
+                    models.Remove(model);
+                    break;
+                }
+            }
         }
 
         public JObject GetScene()
