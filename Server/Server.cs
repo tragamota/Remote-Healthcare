@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace ClientServer
 {
@@ -83,7 +84,10 @@ namespace ClientServer
                 }
             }
 
-            string path = Directory.GetCurrentDirectory() + declaredUser.username + ".json";
+            DateTime date = DateTime.Now;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("nl-NL");
+            string path = Directory.GetCurrentDirectory() + @"\" + declaredUser.username + "_" + date.ToShortDateString() + ".json";
+
             bool done = false;
             while (!done)
             {
