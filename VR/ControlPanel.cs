@@ -48,5 +48,10 @@ namespace VR
             AddRoadToRoute addRoad = new AddRoadToRoute(connector);
             addRoad.Show();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            connector.DrawText();
+        }
     }
 }

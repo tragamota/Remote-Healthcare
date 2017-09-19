@@ -51,7 +51,7 @@ namespace VR
 
             foreach (JObject client in array)
             {
-                string host = (string)client.SelectToken("clientinfo").SelectToken("host");
+                string host = (string)client.SelectToken("clientinfo").SelectToken("user");
                 string id = (string)client.SelectToken("id");
                 hosts.Add(host + " - " + id, id);
             }
@@ -203,6 +203,78 @@ namespace VR
             string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").First.SelectToken("uuid");
             return uuid;
         }
+        public void ClearPanel(string uuid)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/clear",
+                        data = new
+                        {
+                            id = uuid
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
+
+        public void SwapText(string uuid)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/swap",
+                        data = new
+                        {
+                            id = uuid
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
+
+        public void SetClearColor(string uuid)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/setclearcolor",
+                        data = new
+                        {
+                            id = uuid,
+                            color = (new int[4] { 1, 1, 1, 1})
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
 
         public void SetId(string id)
         {
@@ -212,6 +284,11 @@ namespace VR
         public void AddModel(string modelName, string filePath, int x, int y, int z)
         {
             models.Add(new Model(this, modelName, filePath, x, y, z));
+        }
+
+        public void DrawText()
+        {
+            new DrawText(this, "bike", "test");
         }
 
         public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, int[] heightValues)
@@ -228,6 +305,8 @@ namespace VR
         {
             routes.Add(new Route(this));
         }
+
+      
 
         public List<Model> GetModels()
         {

@@ -16,6 +16,7 @@ namespace VR
         {
             this.connector = connector;
             this.nodeID = modelname;
+
             dynamic message = new
             {
                 id = "tunnel/send",
@@ -47,7 +48,7 @@ namespace VR
                                 {
                                     size = (new int[2] { 1, 1 }),
                                     resolution = (new int[2] { 512, 512 }),
-                                    background = (new int[4] { 1, 1, 1, 1 })
+                                    background = (new int[4] { 1, 1, 1, 0 })
                                 }
                             }
                         }
@@ -57,7 +58,9 @@ namespace VR
 
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
-            //Console.WriteLine(jObject);
+            Console.WriteLine(jObject);
         }
+
+        
     }
 }
