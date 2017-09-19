@@ -229,9 +229,9 @@ namespace VR
             terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z);
         }
         
-        public void AddRoute()
+        public void AddRoute(dynamic[] data)
         {
-            routes.Add(new Route(this));
+            routes.Add(new Route(this, data));
         }
 
         public List<Model> GetModels()

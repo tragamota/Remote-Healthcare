@@ -12,19 +12,14 @@ namespace VR
         string routeID;
         Connector connector;
 
-        public Route(Connector connector)
+        public Route(Connector connector, dynamic[] data)
         {
             this.connector = connector;
 
-            dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }), dir = (new int[3] { 5, 0, -5 }) };
-            dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }), dir = (new int[3] { 5, 0, 5 }) };
-            dynamic pos3 = new { pos = (new int[3] { 50, 0, 50 }), dir = (new int[3] { -5, 0, 5 }) };
-            dynamic pos4 = new { pos = (new int[3] { 0, 0, 50 }), dir = (new int[3] { -5, 0, -5 }) };
-
-            dynamic[] data = new dynamic[4]
-            {
-                pos1, pos2, pos3, pos4
-            };
+            //dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }), dir = (new int[3] { 5, 0, -5 }) };
+            //dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }), dir = (new int[3] { 5, 0, 5 }) };
+            //dynamic pos3 = new { pos = (new int[3] { 50, 0, 50 }), dir = (new int[3] { -5, 0, 5 }) };
+            //dynamic pos4 = new { pos = (new int[3] { 0, 0, 50 }), dir = (new int[3] { -5, 0, -5 }) };
 
             dynamic message = new
             {

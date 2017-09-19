@@ -58,70 +58,70 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddModel.cs">
+    <Compile Include="Forms\AddModel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddModel.Designer.cs">
+    <Compile Include="Forms\AddModel.Designer.cs">
       <DependentUpon>AddModel.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddRoadToRoute.cs">
+    <Compile Include="Forms\AddRoadToRoute.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddRoadToRoute.Designer.cs">
+    <Compile Include="Forms\AddRoadToRoute.Designer.cs">
       <DependentUpon>AddRoadToRoute.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddRoute.cs">
+    <Compile Include="Forms\AddRoute.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddRoute.Designer.cs">
+    <Compile Include="Forms\AddRoute.Designer.cs">
       <DependentUpon>AddRoute.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddTerrain.cs">
+    <Compile Include="Forms\AddTerrain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddTerrain.Designer.cs">
+    <Compile Include="Forms\AddTerrain.Designer.cs">
       <DependentUpon>AddTerrain.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddTerrainByPicture.cs">
+    <Compile Include="Forms\AddTerrainByPicture.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddTerrainByPicture.Designer.cs">
+    <Compile Include="Forms\AddTerrainByPicture.Designer.cs">
       <DependentUpon>AddTerrainByPicture.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChangeModelSpeed.cs">
+    <Compile Include="Forms\ChangeModelSpeed.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChangeModelSpeed.Designer.cs">
+    <Compile Include="Forms\ChangeModelSpeed.Designer.cs">
       <DependentUpon>ChangeModelSpeed.cs</DependentUpon>
     </Compile>
     <Compile Include="Connector.cs" />
-    <Compile Include="ConnectForm.cs">
+    <Compile Include="Forms\ConnectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConnectForm.Designer.cs">
+    <Compile Include="Forms\ConnectForm.Designer.cs">
       <DependentUpon>ConnectForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlPanel.cs">
+    <Compile Include="Forms\ControlPanel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ControlPanel.Designer.cs">
+    <Compile Include="Forms\ControlPanel.Designer.cs">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="Model.cs" />
-    <Compile Include="ModelFollowRoute.cs">
+    <Compile Include="Forms\ModelFollowRoute.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ModelFollowRoute.Designer.cs">
+    <Compile Include="Forms\ModelFollowRoute.Designer.cs">
       <DependentUpon>ModelFollowRoute.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Route.cs" />
     <Compile Include="Terrain.cs" />
-    <Compile Include="TerrainGrid.cs">
+    <Compile Include="Forms\TerrainGrid.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TerrainGrid.Designer.cs">
+    <Compile Include="Forms\TerrainGrid.Designer.cs">
       <DependentUpon>TerrainGrid.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -130,34 +130,34 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AddModel.resx">
+    <EmbeddedResource Include="Forms\AddModel.resx">
       <DependentUpon>AddModel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddRoadToRoute.resx">
+    <EmbeddedResource Include="Forms\AddRoadToRoute.resx">
       <DependentUpon>AddRoadToRoute.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddRoute.resx">
+    <EmbeddedResource Include="Forms\AddRoute.resx">
       <DependentUpon>AddRoute.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddTerrain.resx">
+    <EmbeddedResource Include="Forms\AddTerrain.resx">
       <DependentUpon>AddTerrain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddTerrainByPicture.resx">
+    <EmbeddedResource Include="Forms\AddTerrainByPicture.resx">
       <DependentUpon>AddTerrainByPicture.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ChangeModelSpeed.resx">
+    <EmbeddedResource Include="Forms\ChangeModelSpeed.resx">
       <DependentUpon>ChangeModelSpeed.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConnectForm.resx">
+    <EmbeddedResource Include="Forms\ConnectForm.resx">
       <DependentUpon>ConnectForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlPanel.resx">
+    <EmbeddedResource Include="Forms\ControlPanel.resx">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ModelFollowRoute.resx">
+    <EmbeddedResource Include="Forms\ModelFollowRoute.resx">
       <DependentUpon>ModelFollowRoute.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TerrainGrid.resx">
+    <EmbeddedResource Include="Forms\TerrainGrid.resx">
       <DependentUpon>TerrainGrid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            this.Position_1_Lbl = new System.Windows.Forms.Label();
             this.Position_1_X = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.Direction_1_Lbl = new System.Windows.Forms.Label();
             this.Direction_1_X = new System.Windows.Forms.TextBox();
             this.Position_1_Z = new System.Windows.Forms.TextBox();
             this.Position_1_Y = new System.Windows.Forms.TextBox();
@@ -52,16 +52,17 @@
             this.Position_2_X = new System.Windows.Forms.TextBox();
             this.Position_2_Lbl = new System.Windows.Forms.Label();
             this.Add_Route_Btn = new System.Windows.Forms.Button();
+            this.Min_Btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // label1
+            // Position_1_Lbl
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 26);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Position";
+            this.Position_1_Lbl.AutoSize = true;
+            this.Position_1_Lbl.Location = new System.Drawing.Point(9, 26);
+            this.Position_1_Lbl.Name = "Position_1_Lbl";
+            this.Position_1_Lbl.Size = new System.Drawing.Size(44, 13);
+            this.Position_1_Lbl.TabIndex = 0;
+            this.Position_1_Lbl.Text = "Position";
             // 
             // Position_1_X
             // 
@@ -70,14 +71,14 @@
             this.Position_1_X.Size = new System.Drawing.Size(71, 20);
             this.Position_1_X.TabIndex = 1;
             // 
-            // label2
+            // Direction_1_Lbl
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(299, 26);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(49, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Direction";
+            this.Direction_1_Lbl.AutoSize = true;
+            this.Direction_1_Lbl.Location = new System.Drawing.Point(299, 26);
+            this.Direction_1_Lbl.Name = "Direction_1_Lbl";
+            this.Direction_1_Lbl.Size = new System.Drawing.Size(49, 13);
+            this.Direction_1_Lbl.TabIndex = 2;
+            this.Direction_1_Lbl.Text = "Direction";
             // 
             // Direction_1_X
             // 
@@ -240,19 +241,30 @@
             // 
             // Add_Route_Btn
             // 
-            this.Add_Route_Btn.Location = new System.Drawing.Point(59, 84);
+            this.Add_Route_Btn.Location = new System.Drawing.Point(106, 84);
             this.Add_Route_Btn.Name = "Add_Route_Btn";
-            this.Add_Route_Btn.Size = new System.Drawing.Size(520, 23);
+            this.Add_Route_Btn.Size = new System.Drawing.Size(473, 23);
             this.Add_Route_Btn.TabIndex = 23;
             this.Add_Route_Btn.Text = "Add Route";
             this.Add_Route_Btn.UseVisualStyleBackColor = true;
             this.Add_Route_Btn.Click += new System.EventHandler(this.Add_Route_Btn_Click);
+            // 
+            // Min_Btn
+            // 
+            this.Min_Btn.Location = new System.Drawing.Point(59, 84);
+            this.Min_Btn.Name = "Min_Btn";
+            this.Min_Btn.Size = new System.Drawing.Size(41, 23);
+            this.Min_Btn.TabIndex = 24;
+            this.Min_Btn.Text = "-";
+            this.Min_Btn.UseVisualStyleBackColor = true;
+            this.Min_Btn.Click += new System.EventHandler(this.Min_Btn_Click);
             // 
             // AddRoute
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(596, 123);
+            this.Controls.Add(this.Min_Btn);
             this.Controls.Add(this.Add_Route_Btn);
             this.Controls.Add(this.Direction_2_Y);
             this.Controls.Add(this.Direction_2_Z);
@@ -274,9 +286,9 @@
             this.Controls.Add(this.Position_1_Y);
             this.Controls.Add(this.Position_1_Z);
             this.Controls.Add(this.Direction_1_X);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.Direction_1_Lbl);
             this.Controls.Add(this.Position_1_X);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Position_1_Lbl);
             this.Name = "AddRoute";
             this.Text = "AddRoute";
             this.ResumeLayout(false);
@@ -286,9 +298,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label Position_1_Lbl;
         private System.Windows.Forms.TextBox Position_1_X;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label Direction_1_Lbl;
         private System.Windows.Forms.TextBox Direction_1_X;
         private System.Windows.Forms.TextBox Position_1_Z;
         private System.Windows.Forms.TextBox Position_1_Y;
@@ -310,5 +322,6 @@
         private System.Windows.Forms.TextBox Position_2_X;
         private System.Windows.Forms.Label Position_2_Lbl;
         private System.Windows.Forms.Button Add_Route_Btn;
+        private System.Windows.Forms.Button Min_Btn;
     }
 }
