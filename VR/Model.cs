@@ -10,12 +10,13 @@ namespace VR
     class Model
     {
         Connector connector;
-        public string nodeID;
+        public string modelName;
+        public string uuid;
 
         public Model(Connector connector, string modelname, string filePath, int x, int y, int z)
         {
             this.connector = connector;
-            this.nodeID = modelname;
+            this.modelName = modelname;
             dynamic message = new
             {
                 id = "tunnel/send",
@@ -57,6 +58,7 @@ namespace VR
 
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
+            uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
             //Console.WriteLine(jObject);
         }
 
@@ -74,7 +76,7 @@ namespace VR
                             id = "route/follow/speed",
                             data = new
                             {
-                                node = connector.GetUUID(nodeID),
+                                node = uuid,
                                 speed = speed
                             }
                         }
@@ -82,8 +84,8 @@ namespace VR
                 };
 
                 connector.SendMessage(message);
-                JObject jObject = connector.ReadMessage();
-                Console.WriteLine(jObject);
+                //JObject jObject = connector.ReadMessage();
+                //Console.WriteLine(jObject);
             }
         }
     }

@@ -58,7 +58,7 @@ namespace VR
                         data = new
                         {
                             route = routeID,
-                            node = connector.GetUUID(model.nodeID),
+                            node = connector.GetUUID(model.modelName),
                             speed = 0.0,
                             offset = 0.0,
                             rotate = "XZ",
