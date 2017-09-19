@@ -70,6 +70,12 @@
     <Compile Include="AddRoadToRoute.Designer.cs">
       <DependentUpon>AddRoadToRoute.cs</DependentUpon>
     </Compile>
+    <Compile Include="AddRoute.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddRoute.Designer.cs">
+      <DependentUpon>AddRoute.cs</DependentUpon>
+    </Compile>
     <Compile Include="AddTerrain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddRoadToRoute.resx">
       <DependentUpon>AddRoadToRoute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddRoute.resx">
+      <DependentUpon>AddRoute.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AddTerrain.resx">
       <DependentUpon>AddTerrain.cs</DependentUpon>

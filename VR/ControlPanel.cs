@@ -34,7 +34,8 @@ namespace VR
 
         private void Add_Route_Btn_Click(object sender, EventArgs e)
         {
-            connector.AddRoute();
+            AddRoute addRoute = new AddRoute(connector);
+            addRoute.Show();
         }
 
         private void Model_Follow_Route_Btn_Click(object sender, EventArgs e)
