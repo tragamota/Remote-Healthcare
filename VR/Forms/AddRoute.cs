@@ -123,8 +123,11 @@ namespace VR
                 data[i] = rowData;
             }
 
-            connector.AddRoute(data);
-            this.Hide();
+            if (Route_Name_Txt.Text.Length > 0)
+            {
+                connector.AddRoute(data, Route_Name_Txt.Text);
+                this.Hide();
+            }
         }
 
         private void Min_Btn_Click(object sender, EventArgs e)

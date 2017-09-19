@@ -62,6 +62,13 @@ namespace VR
             //Console.WriteLine(jObject);
         }
 
+        public Model(Connector connector, string modelname, string uuid)
+        {
+            this.connector = connector;
+            this.modelName = modelname;
+            this.uuid = uuid;
+        }
+
         public void ChangeSpeed(double speed)
         {
             {

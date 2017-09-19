@@ -11,10 +11,12 @@ namespace VR
     {
         string routeID;
         Connector connector;
+        public string routeName;
 
-        public Route(Connector connector, dynamic[] data)
+        public Route(Connector connector, dynamic[] data, string routeName)
         {
             this.connector = connector;
+            this.routeName = routeName;
 
             //dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }), dir = (new int[3] { 5, 0, -5 }) };
             //dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }), dir = (new int[3] { 5, 0, 5 }) };

@@ -138,6 +138,42 @@ namespace VR
             //Console.WriteLine(jObject);
         }
 
+        public void DeleteGroundplane()
+        {
+            JObject jObject = GetScene();
+            JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
+            List<JToken> list = array.ToList();
+            foreach (JToken token in list)
+            {
+                if (((string)token.SelectToken("name")).Equals("GroundPlane"))
+                    DeleteNode((string)token.SelectToken("uuid"));
+            }
+        }
+
+        public void DeleteNode(string nodeID)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/delete",
+                        data = new
+                        {
+                            id = nodeID
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            //Console.WriteLine(jObject);
+        }
+
         public JObject GetScene()
         {
             dynamic message = new
@@ -155,7 +191,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
+            Console.WriteLine(jObject);
             return jObject;
         }
 
@@ -194,6 +230,17 @@ namespace VR
             //Console.WriteLine(jObject);
         }
 
+        public void LoadSceneModels()
+        {
+            JObject jObject = GetScene();
+            JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
+            List<JToken> list = array.ToList();
+            foreach (JToken token in list)
+            {
+                models.Add(new Model(this, (string)token.SelectToken("name"), (string)token.SelectToken("uuid")));
+            }
+        }
+
         public void SetId(string id)
         {
             this.tunnelID = id;
@@ -219,9 +266,9 @@ namespace VR
             terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z);
         }
         
-        public void AddRoute(dynamic[] data)
+        public void AddRoute(dynamic[] data, string routeName)
         {
-            routes.Add(new Route(this, data));
+            routes.Add(new Route(this, data, routeName));
         }
 
         public List<Model> GetModels()

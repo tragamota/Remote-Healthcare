@@ -18,6 +18,7 @@ namespace VR
         {
             this.connector = connector;
             InitializeComponent();
+            connector.LoadSceneModels();
         }
 
         private void Add_Model_Click(object sender, EventArgs e)
@@ -66,6 +67,17 @@ namespace VR
         {
             AddStandardModel addModel = new AddStandardModel(connector);
             addModel.Show();
+        }
+
+        private void Delete_Ground_Btn_Click(object sender, EventArgs e)
+        {
+            connector.DeleteGroundplane();
+        }
+
+        private void Delete_Model_Btn_Click(object sender, EventArgs e)
+        {
+            DeleteModel deleteModel = new DeleteModel(connector);
+            deleteModel.Show();
         }
     }
 }

@@ -113,6 +113,12 @@
     <Compile Include="Forms\ControlPanel.Designer.cs">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\DeleteModel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DeleteModel.Designer.cs">
+      <DependentUpon>DeleteModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Forms\ModelFollowRoute.cs">
@@ -168,6 +174,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ControlPanel.resx">
       <DependentUpon>ControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DeleteModel.resx">
+      <DependentUpon>DeleteModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ModelFollowRoute.resx">
       <DependentUpon>ModelFollowRoute.cs</DependentUpon>
