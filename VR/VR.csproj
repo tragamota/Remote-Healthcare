@@ -199,5 +199,6 @@
     <Content Include="Objects\car_white.png" />
     <Content Include="Objects\Tree_01.png" />
   </ItemGroup>
+  <Import Project="..\UserData\UserData.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

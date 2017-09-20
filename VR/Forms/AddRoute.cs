@@ -8,26 +8,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace VR
-{
-    partial class AddRoute : Form
-    {
-        Connector connector;
+namespace VR {
+    partial class AddRoute : Form {
+        private Connector connector;
 
-        int totalRows = 2;
+        private int totalRows = 2;
 
-        List<Label> positions = new List<Label>();
-        List<Label> directions = new List<Label>();
+        private List<Label> positions = new List<Label>();
+        private List<Label> directions = new List<Label>();
 
-        List<TextBox> positionsX = new List<TextBox>();
-        List<TextBox> positionsY = new List<TextBox>();
-        List<TextBox> positionsZ = new List<TextBox>();
-        List<TextBox> directionsX = new List<TextBox>();
-        List<TextBox> directionsY = new List<TextBox>();
-        List<TextBox> directionsZ = new List<TextBox>();
+        private List<TextBox> positionsX = new List<TextBox>();
+        private List<TextBox> positionsY = new List<TextBox>();
+        private List<TextBox> positionsZ = new List<TextBox>();
+        private List<TextBox> directionsX = new List<TextBox>();
+        private List<TextBox> directionsY = new List<TextBox>();
+        private List<TextBox> directionsZ = new List<TextBox>();
 
-        public AddRoute(Connector connector)
-        {
+        public AddRoute(Connector connector) {
             this.connector = connector;
             InitializeComponent();
 
@@ -52,8 +49,7 @@ namespace VR
             directionsZ.Add(Direction_2_Z);
         }
 
-        private void Plus_Btn_Click(object sender, EventArgs e)
-        {
+        private void Plus_Btn_Click(object sender, EventArgs e) {
             totalRows++;
 
             Label position = new Label();
@@ -112,28 +108,25 @@ namespace VR
             directionsZ.Add(directionZ);
         }
 
-        private void Add_Route_Btn_Click(object sender, EventArgs e)
-        {
+        private void Add_Route_Btn_Click(object sender, EventArgs e) {
             dynamic[] data = new dynamic[positions.Count];
 
-            for (int i = 0; i < positions.Count; i++)
-            {
-                dynamic rowData = new { pos = (new int[3] { int.Parse(positionsX[i].Text), int.Parse(positionsY[i].Text), int.Parse(positionsZ[i].Text) }),
-                                        dir = (new int[3] { int.Parse(directionsX[i].Text), int.Parse(directionsY[i].Text), int.Parse(directionsZ[i].Text) }) };
+            for (int i = 0; i < positions.Count; i++) {
+                dynamic rowData = new {
+                    pos = (new int[3] { int.Parse(positionsX[i].Text), int.Parse(positionsY[i].Text), int.Parse(positionsZ[i].Text) }),
+                    dir = (new int[3] { int.Parse(directionsX[i].Text), int.Parse(directionsY[i].Text), int.Parse(directionsZ[i].Text) })
+                };
                 data[i] = rowData;
             }
 
-            if (Route_Name_Txt.Text.Length > 0)
-            {
+            if (Route_Name_Txt.Text.Length > 0) {
                 connector.AddRoute(data, Route_Name_Txt.Text);
                 this.Hide();
             }
         }
 
-        private void Min_Btn_Click(object sender, EventArgs e)
-        {
-            if (positions.Count > 2)
-            {
+        private void Min_Btn_Click(object sender, EventArgs e) {
+            if (positions.Count > 2) {
                 this.Controls.RemoveAt(this.Controls.Count - 1);
                 this.Controls.RemoveAt(this.Controls.Count - 1);
                 this.Controls.RemoveAt(this.Controls.Count - 1);

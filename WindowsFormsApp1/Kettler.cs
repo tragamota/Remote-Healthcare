@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -40,10 +41,10 @@ namespace Remote_Healtcare_Console
                     console.SetWatt(bikeData.Power.ToString());
                 });
             }
-            catch (System.InvalidOperationException e) {
+            catch (InvalidOperationException e) {
                 System.Console.WriteLine(e.StackTrace);
             }
-            catch (System.ComponentModel.InvalidAsynchronousStateException e) {
+            catch(InvalidAsynchronousStateException e) {
                 System.Console.WriteLine(e.StackTrace);
             }
         }

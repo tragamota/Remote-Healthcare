@@ -33,10 +33,5 @@ namespace Remote_Healtcare_Console {
         public string UsingComPort() {
             return serialPort.PortName;
         }
-
-        internal void clearBuffer()
-        {
-            serialPort.DiscardInBuffer();
-        }
     }
 }

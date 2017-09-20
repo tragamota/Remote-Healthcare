@@ -8,35 +8,29 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace VR
-{
-    partial class ModelFollowRoute : Form
-    {
-        Connector connector;
-        List<Model> models;
-        List<Route> routes;
+namespace VR {
+    partial class ModelFollowRoute : Form {
+        private Connector connector;
+        private List<Model> models;
+        private List<Route> routes;
 
-        public ModelFollowRoute(Connector connector)
-        {
+        public ModelFollowRoute(Connector connector) {
             this.connector = connector;
             InitializeComponent();
 
             models = connector.GetModels();
             routes = connector.GetRoutes();
 
-            foreach (Model model in models)
-            {
+            foreach (Model model in models) {
                 model_Box.Items.Add(model.modelName);
             }
 
-            foreach (Route route in routes)
-            {
+            foreach (Route route in routes) {
                 route_Box.Items.Add(route.routeName);
             }
         }
 
-        private void Follow_Btn_Click(object sender, EventArgs e)
-        {
+        private void Follow_Btn_Click(object sender, EventArgs e) {
             Route route = routes[route_Box.SelectedIndex];
             route.MakeModelFollowRoute(models[model_Box.SelectedIndex]);
             this.Hide();

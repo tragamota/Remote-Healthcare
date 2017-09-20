@@ -11,10 +11,10 @@ using System.Windows.Forms;
 namespace Remote_Healtcare_Console {
     class Bike : Kettler {
         //private Client client;
-        private SerialCommunicator serialCommunicator;
-        private Thread BikeThread;
         private bool start;
+        private SerialCommunicator serialCommunicator;
         private Client client;
+        private Thread BikeThread;
 
         public Bike(string port, Console console, Client client) : base(console) {
             this.client = client;

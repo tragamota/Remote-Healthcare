@@ -8,29 +8,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace VR
-{
-    partial class AddRoadToRoute : Form
-    {
-        Connector connector;
+namespace VR {
+    partial class AddRoadToRoute : Form {
+        private Connector connector;
 
-        public AddRoadToRoute(Connector connector)
-        {
+        public AddRoadToRoute(Connector connector) {
             this.connector = connector;
             InitializeComponent();
 
             List<Route> routes = connector.GetRoutes();
-            foreach (Route route in routes)
-            {
+            foreach (Route route in routes) {
                 route_Box.Items.Add(route);
             }
         }
 
-        private void Add_Road_Btn_Click(object sender, EventArgs e)
-        {
+        private void Add_Road_Btn_Click(object sender, EventArgs e) {
             Route route = (Route)route_Box.SelectedItem;
             route.AddRoad();
-            this.Hide();
+            Hide();
         }
     }
 }

@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace UserData
 {
-    class User
+    public class User
     {
-        private string username { get { return username; } set { setUsername; } }
-        private string password { get { return password; } set { setPassword; } }
-        private string fullName { get; set; }
+        private string username;
+        private string password;
+        private string fullName;
+        private string hashcode;
 
-        public User user(string username, string password, string fullName)
+        public User (string username, string password, string fullName)
         {
             this.username = username;
             this.password = password;
             this.fullName = fullName;
+            hashcode = Encoding.UTF8.GetString(new SHA256Managed().ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.Ticks.ToString())));
         }
 
         //this returns a boolean, if the username was accepted, true gets returned, otherwise there was an error or it was denied.
@@ -23,7 +26,7 @@ namespace UserData
             bool isTaken = false;
             foreach(User u in users)
             {
-                if(u == newUsername)
+                if(u.username == newUsername)
                 {
                     isTaken = true;
                 }
@@ -41,7 +44,7 @@ namespace UserData
 
         public bool setPassword(string newPassword)
         {
-            if(this.password == newPassword && newPassword < 3)
+            if(password == newPassword || newPassword.Length < 3)
             {
                 return false;
             }
@@ -51,5 +54,16 @@ namespace UserData
                 return true;
             }
         }
+
+        public void CheckLogin(string username, string password, out bool valid, out string hashcode) {
+            if(this.username == username && this.password == password) {
+                valid = true;
+                hashcode = this.hashcode;
+            }
+            else {
+                valid = false;
+                hashcode = null;
+            }
+        } 
     }
 }

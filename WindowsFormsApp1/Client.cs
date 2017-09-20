@@ -7,80 +7,70 @@ using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-namespace Remote_Healtcare_Console
-{
-    public class Client
-    {
-        TcpClient client;
+namespace Remote_Healtcare_Console {
+    public class Client {
+        private TcpClient client;
+        private NetworkStream stream;
 
-        public Client()
-        {
-            client = new TcpClient("127.0.0.1", 1330);
+        public Client() {
+            try {
+                client = new TcpClient("127.0.0.1", 1330);
+                stream = client.GetStream();
+            }
+            catch (IOException e) {
+                System.Console.WriteLine(e.StackTrace);
+            }
         }
 
-        public string ReadMessage()
-        {
-            NetworkStream stream = client.GetStream();
+        public string ReadMessage() {
             StringBuilder message = new StringBuilder();
+
             int numberOfBytesRead = 0;
             byte[] messageBytes = new byte[4];
-            stream.Read(messageBytes, 0, messageBytes.Length);
-            byte[] receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
+            byte[] receiveBuffer;
 
-            do
-            {
-                numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
+            try {
+                stream.Read(messageBytes, 0, messageBytes.Length);
+                receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
+                do {
+                    numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
 
-                message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
+                    message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
 
+                }
+                while (message.Length < receiveBuffer.Length);
             }
-            while (message.Length < receiveBuffer.Length);
+            catch(Exception e) {
+                System.Console.WriteLine(e.StackTrace);
+                return null;
+            }
 
-            string response = message.ToString();
-            return response;
+            return message.ToString();
         }
 
-        public void SendMessage(string message)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            byte[] prefixArray = BitConverter.GetBytes(message.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(message);
+        public void SendMessage(dynamic message) {
+            string json = null;
 
-            buffer = new Byte[prefixArray.Length + message.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
-        }
+            if (!message is string) {
+                json = JsonConvert.SerializeObject(message);
+            }
+            else {
+                json = message;
+            }
 
-        public void SendMessage(User user)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            string json = JsonConvert.SerializeObject(user);
+            try {
+                byte[] buffer;
+                byte[] prefixArray = BitConverter.GetBytes(json.Length);
+                byte[] requestArray = Encoding.Default.GetBytes(json);
 
-            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-            buffer = new Byte[prefixArray.Length + json.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
-        }
-
-        public void SendMessage(BikeData data)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            string json = JsonConvert.SerializeObject(data);
-
-            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-            buffer = new Byte[prefixArray.Length + json.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
+                buffer = new Byte[prefixArray.Length + json.Length];
+                prefixArray.CopyTo(buffer, 0);
+                requestArray.CopyTo(buffer, prefixArray.Length);
+                stream.Write(buffer, 0, buffer.Length);
+            }
+            catch (Exception e) {
+                System.Console.WriteLine(e.StackTrace);
+            }
         }
     }
 }
