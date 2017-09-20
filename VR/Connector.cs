@@ -155,6 +155,7 @@ namespace VR
 
             SendMessage(message);
             JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
             return jObject;
         }
 
@@ -177,6 +178,37 @@ namespace VR
             SendMessage(message);
             JObject jObject = ReadMessage();
             //Console.WriteLine(jObject);
+        }
+
+        public void UpdateNode(string uuid, string parentID)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/update",
+                        data = new
+                        {
+                            id = uuid,
+                            parent = parentID,
+                            transform = new
+                            {
+                                scale = 1.0
+                            }
+                        }
+                    }
+                }
+                
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            //Console.WriteLine(jObject);
+
         }
 
         public string GetUUID(string name)
@@ -251,6 +283,38 @@ namespace VR
 
         }
 
+        /* 
+         * uuid: uuid van de node van het panel waarop getekend moet worden
+         * text: invoertext
+         * x: positie op panel x-waarde(moet hoger dan 0 zijn)
+         * y: positie op panel y-waarde(moet hoger dan 0 zijn)
+         */
+        public void DrawText(string uuid, string text, int x, int y)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/drawtext",
+                        data = new
+                        {
+                            id = uuid,
+                            text = text,
+                            position = new[] { 50, 40 }
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
+
         public void SetClearColor(string uuid)
         {
             dynamic message = new
@@ -276,6 +340,46 @@ namespace VR
 
         }
 
+        public void AddHUD(string uuid)
+        {
+
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/add",
+                        data = new
+                        {
+                            name = "HUDPanel",
+                            parent = uuid,
+                            components = new
+                            {
+                                transform = new
+                                {
+                                    position = (new int[3] { 1, 1, 0 }),
+                                    scale = 1,
+                                    rotation = (new int[3] { 0, 0, 0 })
+                                },
+                                panel = new
+                                {
+                                    size = (new int[2] { 1, 1 }),
+                                    resolution = (new int[2] { 512, 512 })
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
         public void SetId(string id)
         {
             this.tunnelID = id;
@@ -284,11 +388,6 @@ namespace VR
         public void AddModel(string modelName, string filePath, int x, int y, int z)
         {
             models.Add(new Model(this, modelName, filePath, x, y, z));
-        }
-
-        public void DrawText()
-        {
-            new DrawText(this, "bike", "test");
         }
 
         public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, int[] heightValues)

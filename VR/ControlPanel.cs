@@ -51,7 +51,16 @@ namespace VR
 
         private void button3_Click(object sender, EventArgs e)
         {
-            connector.DrawText();
+            string uuid = connector.GetUUID("HUDPanel");
+            string cameraID = connector.GetUUID("Camera");
+            connector.UpdateNode(uuid, cameraID);
+
+
+        }
+
+        private void HUDButton_Click(object sender, EventArgs e)
+        {
+            HUD hud = new HUD(connector);
         }
     }
 }

@@ -36,6 +36,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
+            this.HUDButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // AddTree
@@ -104,7 +105,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(16, 167);
+            this.button6.Location = new System.Drawing.Point(13, 168);
             this.button6.Margin = new System.Windows.Forms.Padding(4);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(228, 28);
@@ -124,11 +125,23 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.Add_Road_Btn_Click);
             // 
+            // HUDButton
+            // 
+            this.HUDButton.Location = new System.Drawing.Point(13, 204);
+            this.HUDButton.Margin = new System.Windows.Forms.Padding(4);
+            this.HUDButton.Name = "HUDButton";
+            this.HUDButton.Size = new System.Drawing.Size(228, 28);
+            this.HUDButton.TabIndex = 8;
+            this.HUDButton.Text = "Add HUD";
+            this.HUDButton.UseVisualStyleBackColor = true;
+            this.HUDButton.Click += new System.EventHandler(this.HUDButton_Click);
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(263, 210);
+            this.ClientSize = new System.Drawing.Size(263, 240);
+            this.Controls.Add(this.HUDButton);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
@@ -154,5 +167,6 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button HUDButton;
     }
 }

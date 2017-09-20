@@ -69,7 +69,6 @@
     <Compile Include="AddTerrain.Designer.cs">
       <DependentUpon>AddTerrain.cs</DependentUpon>
     </Compile>
-    <Compile Include="DrawText.cs" />
     <Compile Include="Connector.cs" />
     <Compile Include="ConnectForm.cs">
       <SubType>Form</SubType>
@@ -83,6 +82,7 @@
     <Compile Include="ControlPanel.Designer.cs">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="HUD.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelFollowRoute.cs">
