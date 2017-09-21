@@ -60,7 +60,7 @@ namespace VR
 
         private void HUDButton_Click(object sender, EventArgs e)
         {
-            HUD hud = new HUD(connector);
+           HUD hud = new HUD(connector);
         }
     }
 }

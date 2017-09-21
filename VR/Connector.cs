@@ -305,7 +305,7 @@ namespace VR
                             id = uuid,
                             text = text,
                             position = new[] { x, y },
-                            size = 64.0
+                            size = 60.0
                         }
                     }
                 }
@@ -330,7 +330,7 @@ namespace VR
                         data = new
                         {
                             id = uuid,
-                            color = (new int[4] { 1, 1, 1, 1})
+                            color = (new int[4] { 0, 0, 0, 0})
                         }
                     }
                 }
@@ -341,6 +341,41 @@ namespace VR
 
         }
 
+        // x1,y1, x2,y2, r,g,b,a
+        public void DrawLines(string uuid)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/drawlines",
+                        data = new
+                        {
+                            id = uuid,
+                            width = 1,
+                            lines = (new int[16] { 280, 40, 280, 180, 0, 0, 0, 1,
+                                                   280, 40, 600, 40, 0, 0, 0, 1}),
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+    
+        }
+
+        /*
+         * position (x, y, z) 
+         * x= naar je toe
+         * y=
+         * z= naar je toe
+         * 
+         */
         public void AddHUD(string uuid)
         {
 
@@ -361,14 +396,15 @@ namespace VR
                             {
                                 transform = new
                                 {
-                                    position = (new int[3] { 0, 0, 0 }),
+                                    position = (new double[3] { -0.3, 0.9, 0 }),
                                     scale = 1,
-                                    rotation = (new int[3] { 0, 0, 0 })
+                                    rotation = (new int[3] { 0, 90, 50 })
                                 },
                                 panel = new
                                 {
                                     size = (new int[2] { 1, 1 }),
-                                    resolution = (new int[2] { 512, 512 })
+                                    resolution = (new int[2] { 1028, 1028 }),
+                                    background = (new int[4] { 1 ,1 ,1 , 0})
                                 }
                             }
                         }
