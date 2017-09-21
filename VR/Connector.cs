@@ -304,7 +304,8 @@ namespace VR
                         {
                             id = uuid,
                             text = text,
-                            position = new[] { 50, 40 }
+                            position = new[] { x, y },
+                            size = 64.0
                         }
                     }
                 }
@@ -360,7 +361,7 @@ namespace VR
                             {
                                 transform = new
                                 {
-                                    position = (new int[3] { 1, 1, 0 }),
+                                    position = (new int[3] { 0, 0, 0 }),
                                     scale = 1,
                                     rotation = (new int[3] { 0, 0, 0 })
                                 },
