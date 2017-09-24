@@ -13,13 +13,13 @@ namespace Remote_Healtcare_Console {
     class BikeSimulator : Kettler {
 
         private Thread BikeThread;
-        ISet<BikeData> data;
-        private int i;
+        private ISet<BikeData> data;
+        private int count;
 
         public BikeSimulator(Console console) : base(console) {
             this.console = console;
             data = console.data;
-            i = 0;
+            count = 0;
             BikeThread = new Thread(Update);
         }
 
@@ -36,32 +36,27 @@ namespace Remote_Healtcare_Console {
         }
 
         public override void Update() {
-            while (i != data.Count)
-            {
-                try
-                {
-                    console.Invoke((MethodInvoker)delegate
-                    {
+            while (count != data.Count) {
+                try {
+                    console.Invoke((MethodInvoker)delegate {
                         // Running on the UI thread
-                        console.SetPulse(data.ElementAt(i).Pulse.ToString());
-                        console.SetRoundMin(data.ElementAt(i).Rpm.ToString());
-                        console.SetSpeed(data.ElementAt(i).Speed.ToString());
-                        console.SetDistance((data.ElementAt(i).Distance*100).ToString());
-                        console.SetResistance(data.ElementAt(i).Resistance.ToString());
-                        console.SetEnergy(data.ElementAt(i).Energy.ToString());
-                        console.SetTime(((data.ElementAt(i).Time < TimeSpan.Zero) ? "-" : "") + data.ElementAt(i).Time.ToString(@"mm\:ss"));
-                        console.SetWatt(data.ElementAt(i).Power.ToString());
+                        console.SetPulse(data.ElementAt(count).Pulse.ToString());
+                        console.SetRoundMin(data.ElementAt(count).Rpm.ToString());
+                        console.SetSpeed(data.ElementAt(count).Speed.ToString());
+                        console.SetDistance((data.ElementAt(count).Distance * 100).ToString());
+                        console.SetResistance(data.ElementAt(count).Resistance.ToString());
+                        console.SetEnergy(data.ElementAt(count).Energy.ToString());
+                        console.SetTime(((data.ElementAt(count).Time < TimeSpan.Zero) ? "-" : "") + data.ElementAt(count).Time.ToString(@"mm\:ss"));
+                        console.SetWatt(data.ElementAt(count).Power.ToString());
                     });
                 }
-                catch (System.InvalidOperationException e)
-                {
+                catch (System.InvalidOperationException e) {
                     System.Console.WriteLine(e.StackTrace);
                 }
-                catch (System.ComponentModel.InvalidAsynchronousStateException e)
-                {
+                catch (System.ComponentModel.InvalidAsynchronousStateException e) {
                     System.Console.WriteLine(e.StackTrace);
                 }
-                i++;
+                count++;
                 System.Threading.Thread.Sleep(1000);
             }
         }

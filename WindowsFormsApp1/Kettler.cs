@@ -5,10 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Remote_Healtcare_Console
-{
-    abstract class Kettler
-    {
+namespace Remote_Healtcare_Console {
+    abstract class Kettler {
         protected Console console;
         protected ISet<BikeData> RecordedData;
         public abstract void Start();
@@ -34,7 +32,7 @@ namespace Remote_Healtcare_Console
                     console.SetPulse(bikeData.Pulse.ToString());
                     console.SetRoundMin(bikeData.Rpm.ToString());
                     console.SetSpeed(bikeData.Speed.ToString());
-                    console.SetDistance((bikeData.Distance*100).ToString());
+                    console.SetDistance((bikeData.Distance * 100).ToString());
                     console.SetResistance(bikeData.Resistance.ToString());
                     console.SetEnergy(bikeData.Energy.ToString());
                     console.SetTime(((bikeData.Time < TimeSpan.Zero) ? "-" : "") + bikeData.Time.ToString(@"mm\:ss"));
@@ -44,15 +42,14 @@ namespace Remote_Healtcare_Console
             catch (InvalidOperationException e) {
                 System.Console.WriteLine(e.StackTrace);
             }
-            catch(InvalidAsynchronousStateException e) {
+            catch (InvalidAsynchronousStateException e) {
                 System.Console.WriteLine(e.StackTrace);
             }
         }
     }
 
     [Serializable]
-    public struct BikeData
-    {
+    public struct BikeData {
         public int Pulse { get; set; }
         public int Rpm { get; set; }
         public int Distance { get; set; }
@@ -62,8 +59,7 @@ namespace Remote_Healtcare_Console
         public TimeSpan Time { get; set; }
         public double Speed { get; set; }
 
-        public BikeData(int pulse, int rpm, string speed, int distance, int resistance, int energy, string time, int power)
-        {
+        public BikeData(int pulse, int rpm, string speed, int distance, int resistance, int energy, string time, int power) {
             Pulse = pulse;
             Rpm = rpm;
             Distance = distance;
@@ -75,9 +71,8 @@ namespace Remote_Healtcare_Console
             Speed = (double.Parse(speed) / 10);
         }
 
-        public override string ToString()
-        {
-             return $"{Pulse}-{Rpm}-{Speed}-{Distance}-{Resistance}-{Energy}-{Time.Minutes + ":" + Time.Seconds}-{Power}";
+        public override string ToString() {
+            return $"{Pulse}-{Rpm}-{Speed}-{Distance}-{Resistance}-{Energy}-{Time.Minutes + ":" + Time.Seconds}-{Power}";
         }
     }
 }

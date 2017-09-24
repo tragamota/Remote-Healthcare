@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.IO.Ports;
 
 namespace Remote_Healtcare_Console {
@@ -6,24 +7,51 @@ namespace Remote_Healtcare_Console {
         private SerialPort serialPort;
 
         public SerialCommunicator(String port) {
-            serialPort = new SerialPort(port, 9600, Parity.None, 8, StopBits.One);
+            try {
+                serialPort = new SerialPort(port, 9600, Parity.None, 8, StopBits.One);
+            }
+            catch(IOException e) {
+                System.Console.WriteLine(e.StackTrace);
+            }
         }
 
         public void OpenConnection() {
-            if(!IsConnected())
-                serialPort.Open();
+            if (!IsConnected()) {
+                try {
+                    serialPort.Open();
+                }
+                catch (IOException e) {
+                    System.Console.WriteLine(e.StackTrace);
+                }
+            }
         }
 
         public void CloseConnection() {
-            serialPort.Close();
+            try {
+                serialPort.Close();
+            }
+            catch (IOException e) {
+                System.Console.WriteLine(e.StackTrace);
+            }
         }
 
         public void SendMessage(string message) {
-            serialPort.WriteLine(message);
+            try {
+                serialPort.WriteLine(message);
+            }
+            catch(Exception e) {
+                System.Console.WriteLine(e.StackTrace);
+            }
         }
 
         public string ReadInput() {
-            return serialPort.ReadLine();
+            try {
+                return serialPort.ReadLine();
+            }
+            catch(TimeoutException e) {
+                System.Console.WriteLine(e.StackTrace);
+                return "";
+            }
         }
 
         public bool IsConnected() {

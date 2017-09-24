@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 namespace Remote_Healtcare_Console {
     class Bike : Kettler {
-        //private Client client;
         private bool start;
         private SerialCommunicator serialCommunicator;
         private Client client;
@@ -113,10 +112,13 @@ namespace Remote_Healtcare_Console {
                 dataSplitted[6],
                 int.Parse(dataSplitted[7]));
 
-            if (RecordedData.Count == 0)
+            if (RecordedData.Count == 0) {
                 RecordedData.Add(bikeData);
-            else if(RecordedData.Last().Time != bikeData.Time)
+            }
+            else if(RecordedData.Last().Time != bikeData.Time) {
                 RecordedData.Add(bikeData);
+            }
+
 
             client.SendMessage(bikeData);
 

@@ -40,7 +40,7 @@ namespace Remote_Healtcare_Console {
                 }
                 while (message.Length < receiveBuffer.Length);
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 System.Console.WriteLine(e.StackTrace);
                 return null;
             }
@@ -51,11 +51,11 @@ namespace Remote_Healtcare_Console {
         public void SendMessage(dynamic message) {
             string json = null;
 
-            if (!message is string) {
-                json = JsonConvert.SerializeObject(message);
+            if (message is string) {
+                json = message;
             }
             else {
-                json = message;
+                json = JsonConvert.SerializeObject(message);
             }
 
             try {
