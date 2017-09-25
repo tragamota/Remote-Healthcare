@@ -17,7 +17,7 @@ namespace Remote_Healtcare_Console {
                 client = new TcpClient("127.0.0.1", 1330);
                 stream = client.GetStream();
             }
-            catch (IOException e) {
+            catch (SocketException e) {
                 System.Console.WriteLine(e.StackTrace);
             }
         }

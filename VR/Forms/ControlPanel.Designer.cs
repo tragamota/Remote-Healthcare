@@ -1,7 +1,5 @@
-﻿namespace VR
-{
-    partial class ControlPanel
-    {
+﻿namespace VR {
+    partial class ControlPanel {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -11,10 +9,8 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -26,8 +22,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.AddTree = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.Delete_Model_Btn = new System.Windows.Forms.Button();
@@ -77,13 +72,13 @@
             this.Delete_Model_Btn.Click += new System.EventHandler(this.Delete_Model_Btn_Click);
             // 
             // button3
-            this.button2.Location = new System.Drawing.Point(124, 15);
-            this.button2.Margin = new System.Windows.Forms.Padding(4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(120, 28);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Delete model";
-            this.button2.UseVisualStyleBackColor = true;
+            //this.button2.Location = new System.Drawing.Point(124, 15);
+            //this.button2.Margin = new System.Windows.Forms.Padding(4);
+            //this.button2.Name = "button2";
+            //this.button2.Size = new System.Drawing.Size(120, 28);
+            //this.button2.TabIndex = 2;
+            //this.button2.Text = "Delete model";
+            //this.button2.UseVisualStyleBackColor = true;
             // 
             // button3
             // 
@@ -94,7 +89,7 @@
             this.button3.TabIndex = 3;
             this.button3.Text = "Delete terrain";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            //this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
@@ -189,7 +184,7 @@
             this.HUDButton.TabIndex = 8;
             this.HUDButton.Text = "Add HUD";
             this.HUDButton.UseVisualStyleBackColor = true;
-            this.HUDButton.Click += new System.EventHandler(this.HUDButton_Click);
+            //this.HUDButton.Click += new System.EventHandler(this.HUDButton_Click);
             // 
             // ControlPanel
             // 

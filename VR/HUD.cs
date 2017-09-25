@@ -39,9 +39,6 @@ namespace VR
 
             }
             
-
-
-
             JObject jObject = connector.GetScene();
             Console.WriteLine(jObject);
 

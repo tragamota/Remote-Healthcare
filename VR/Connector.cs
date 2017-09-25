@@ -82,6 +82,20 @@ namespace VR {
             return JObject.Parse(response);
         }
 
+        public string GetUUID(string modelName) {
+            var command = new {
+                id = "tunnel/send",
+                data = new {
+                    id = "scene/node/find",
+                    data = new {
+                        name = modelName
+                    }
+                }
+            };
+            SendMessage(command);
+            return (string) ReadMessage()["data"]["uuid"];
+        }
+
         public void ChangeScene(string change) {
             dynamic message = new {
                 id = "tunnel/send",
@@ -445,7 +459,7 @@ namespace VR {
         }
 
         public List<Model> GetModels() {
-            return models;
+            return Models;
         }
 
         public List<Route> GetRoutes() {

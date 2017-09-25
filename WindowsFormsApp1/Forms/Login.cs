@@ -10,12 +10,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UserData;
 
 namespace Remote_Healtcare_Console
 {
     public partial class Login : Form
     {
-        Dictionary<string, string> users;
         Client client;
 
         public Login()
@@ -37,7 +37,7 @@ namespace Remote_Healtcare_Console
 
         private void login() {
             if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0) {
-                User user = new User(txtUsername.Text, txtPassword.Text);
+                User user = new User(txtUsername.Text, txtPassword.Text, null);
                 client.SendMessage(user);
 
                 JObject jObject = JObject.Parse(client.ReadMessage());
