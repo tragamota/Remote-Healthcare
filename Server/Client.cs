@@ -11,16 +11,24 @@ using System.Threading.Tasks;
 using UserData;
 
 namespace Server {
+    [Serializable]
     class Client {
         private TcpClient client;
         private NetworkStream stream;
+        public Thread loginThread { get; }
+
+        private List<Client> connectedClients, connectedDoctors;
         public BikeSession session { get; set; }
         public User User { get; set; }
-
-        public Client(TcpClient client, IList<User> users) {
+  
+        public Client(TcpClient client, List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors) {
             this.client = client;
+            this.connectedClients = connectedClients;
+            this.connectedDoctors = connectedDoctors;
+
             stream = this.client.GetStream();
-            new Thread(() => init(users)).Start();
+            loginThread = new Thread(() => init(users));
+            loginThread.Start();
         }
 
         private void init(IList<User> users) {
@@ -40,6 +48,7 @@ namespace Server {
                         hashcode = hash
                     };
                     writeMessage(response);
+                    found = true;
                     break;
                 }
             }
@@ -50,10 +59,10 @@ namespace Server {
                 };
                 writeMessage(response);
                 closeStream();
-                Thread.CurrentThread.Abort();
             }
 
-            run();
+
+            new Thread(() => run()).Start();
         }
 
         private void run() {
@@ -97,7 +106,7 @@ namespace Server {
             while (numberOfBytesRead < messageBytes.Length && client.Connected) {
                 try {
                     numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
-                    Thread.Sleep(50);
+                    Thread.Yield();
                 }
                 catch (IOException e) {
                     Console.WriteLine(e.StackTrace);

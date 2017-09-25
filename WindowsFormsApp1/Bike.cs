@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using UserData;
 
 namespace Remote_Healtcare_Console {
     class Bike : Kettler {
@@ -33,8 +34,7 @@ namespace Remote_Healtcare_Console {
             serialCommunicator.CloseConnection();
         }
 
-        private void InitBike()
-        {
+        private void InitBike() {
             Thread.Sleep(500);
             Reset();
             Thread.Sleep(500);
@@ -115,7 +115,7 @@ namespace Remote_Healtcare_Console {
             if (RecordedData.Count == 0) {
                 RecordedData.Add(bikeData);
             }
-            else if(RecordedData.Last().Time != bikeData.Time) {
+            else if (RecordedData.Last().Time != bikeData.Time) {
                 RecordedData.Add(bikeData);
             }
 

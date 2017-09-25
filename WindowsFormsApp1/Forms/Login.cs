@@ -37,7 +37,10 @@ namespace Remote_Healtcare_Console
 
         private void login() {
             if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0) {
-                User user = new User(txtUsername.Text, txtPassword.Text, null);
+                dynamic user = new {
+                    username = txtUsername.Text,
+                    password = txtPassword.Text
+                };
                 client.SendMessage(user);
 
                 JObject jObject = JObject.Parse(client.ReadMessage());
