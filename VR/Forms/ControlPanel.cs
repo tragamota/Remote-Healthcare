@@ -48,7 +48,9 @@ namespace VR {
 
         private void Add_Standard_Model_Btn_Click(object sender, EventArgs e) {
             AddStandardModel addModel = new AddStandardModel(connector);
+       
             addModel.Show();
+            connector.getPosition("Camera");
         }
 
         private void Delete_Ground_Btn_Click(object sender, EventArgs e) {

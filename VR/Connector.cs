@@ -183,6 +183,33 @@ namespace VR {
             return null;
         }
 
+        public List<double> getPosition(string objectName)
+        {
+            JObject jObject = GetScene();
+            JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
+
+            //List<JToken> list = array.ToList();
+            foreach (JObject ob in array)
+            {
+                if (((string)ob.SelectToken("name")).Equals(objectName))
+                {
+                    JArray array2 = (JArray)ob.First.SelectToken("position");
+                    for(int i = 0; i < ob.Count; i++)
+                    {
+                        Console.WriteLine("tetetete");
+                        Console.WriteLine(ob.SelectToken("position").ToString());
+                        Console.WriteLine("tetetetest");
+                    }
+
+
+                    //(string)token.SelectToken("uuid");
+                }
+                   
+            }
+
+            return null;
+        }
+
         public void ResetScene() {
             dynamic message = new {
                 id = "tunnel/send",
@@ -240,5 +267,7 @@ namespace VR {
         public List<Route> GetRoutes() {
             return Routes;
         }
+
+        
     }
 }

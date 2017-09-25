@@ -101,5 +101,12 @@ namespace VR
             JObject jObject = connector.ReadMessage();
             //Console.WriteLine(jObject);
         }
+
+        public int UpdatePower()
+        {
+            
+
+            return 0;
+        }
     }
 }
