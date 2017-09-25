@@ -9,7 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Remote_Healtcare_Console {
+namespace Remote_Healtcare_Console
+{
     class BikeSimulator : Kettler {
 
         private Thread BikeThread;

@@ -3,15 +3,13 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using UserData;
 
-namespace Server {
+namespace Server
+{
     class ServerBetter {
         private TcpListener socket;
         private IList<User> users;

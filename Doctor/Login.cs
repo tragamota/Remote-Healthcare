@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using UserData;
 
-namespace Remote_Healtcare_Console
+namespace Doctor
 {
     public partial class Login : Form
     {
@@ -29,7 +29,8 @@ namespace Remote_Healtcare_Console
         }
 
         private void login() {
-            if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0) {
+            if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0)
+            {
                 User user = new User(txtUsername.Text, txtPassword.Text, txtUsername.Text);
                 client.SendMessage(user);
 
@@ -37,7 +38,7 @@ namespace Remote_Healtcare_Console
                 string result = (string)jObject.GetValue("access");
                 if (result.Equals("approved")) {
                     this.Hide();
-                    Form Form1 = new Console(client);
+                    Form Form1 = new Form1(client);
                     Form1.Closed += (s, args) => this.Close();
                     Form1.Show();
                 }

@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Remote_Healtcare_Console {
+namespace Remote_Healtcare_Console
+{
     abstract class Kettler {
         protected Console console;
         protected ISet<BikeData> RecordedData;

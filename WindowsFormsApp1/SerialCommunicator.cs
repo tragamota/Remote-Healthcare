@@ -2,7 +2,8 @@
 using System.IO;
 using System.IO.Ports;
 
-namespace Remote_Healtcare_Console {
+namespace Remote_Healtcare_Console
+{
     class SerialCommunicator {
         private SerialPort serialPort;
 

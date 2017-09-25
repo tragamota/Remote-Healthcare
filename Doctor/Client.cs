@@ -1,14 +1,12 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Doctor;
+using Remote_Healtcare_Console;
 using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using UserData;
 
-namespace Remote_Healtcare_Console
+namespace Doctor
 {
     public class Client {
         private TcpClient client;
@@ -20,7 +18,7 @@ namespace Remote_Healtcare_Console
                 stream = client.GetStream();
             }
             catch (IOException e) {
-                System.Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.StackTrace);
             }
         }
 
@@ -43,7 +41,7 @@ namespace Remote_Healtcare_Console
                 while (message.Length < receiveBuffer.Length);
             }
             catch (Exception e) {
-                System.Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.StackTrace);
                 return null;
             }
 
@@ -71,7 +69,7 @@ namespace Remote_Healtcare_Console
                 stream.Write(buffer, 0, buffer.Length);
             }
             catch (Exception e) {
-                System.Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.StackTrace);
             }
         }
 
