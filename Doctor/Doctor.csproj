@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +101,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Server\Server.csproj">
+      <Project>{e9fd6ee8-f544-4c9d-af42-6033d2ddf97b}</Project>
+      <Name>Server</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WindowsFormsApp1\GUI.csproj">
       <Project>{5E73D397-1A19-450F-944C-7C87261CFE3C}</Project>
       <Name>GUI</Name>

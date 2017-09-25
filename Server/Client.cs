@@ -10,14 +10,14 @@ using UserData;
 
 namespace Server
 {
-    class Client {
+    public class Client {
         private TcpClient client;
         private NetworkStream stream;
         private BikeSession session;
         public User User { get; }
         public Client Docter { get; }
 
-        public Client(TcpClient client, IList<User> users, ref User doctor) {
+        public Client(TcpClient client, IList<User> users) {
             this.client = client;
             stream = this.client.GetStream();
 
@@ -65,6 +65,9 @@ namespace Server
             switch ((string)obj["id"]) {
                 case "update":
                     update((JObject) obj["data"]);
+                    break;
+                case "BikeData":
+                    update((JObject)obj["data"]);
                     break;
             }
         }
@@ -146,6 +149,101 @@ namespace Server
             catch (IOException e) {
                 Console.WriteLine(e.StackTrace);
             }
+        }
+
+        public string ReadMessage()
+        {
+            NetworkStream stream = client.GetStream();
+            StringBuilder message = new StringBuilder();
+            int numberOfBytesRead = 0;
+            byte[] messageBytes = new byte[4];
+            stream.Read(messageBytes, 0, messageBytes.Length);
+            byte[] receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
+
+            do
+            {
+                numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
+
+                message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
+
+            }
+            while (message.Length < receiveBuffer.Length);
+
+            string response = message.ToString();
+            return response;
+        }
+
+        public void SendMessage(dynamic message)
+        {
+            string json = null;
+
+            if (message is string)
+            {
+                json = message;
+            }
+            else
+            {
+                json = JsonConvert.SerializeObject(message);
+            }
+
+            try
+            {
+                byte[] buffer;
+                byte[] prefixArray = BitConverter.GetBytes(json.Length);
+                byte[] requestArray = Encoding.Default.GetBytes(json);
+
+                buffer = new Byte[prefixArray.Length + json.Length];
+                prefixArray.CopyTo(buffer, 0);
+                requestArray.CopyTo(buffer, prefixArray.Length);
+                stream.Write(buffer, 0, buffer.Length);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+            }
+        }
+
+        public void SendMessage(string message)
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] buffer;
+            byte[] prefixArray = BitConverter.GetBytes(message.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(message);
+
+            buffer = new Byte[prefixArray.Length + message.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
+            stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public void SendMessage(User user)
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] buffer;
+            string json = JsonConvert.SerializeObject(user);
+
+            byte[] prefixArray = BitConverter.GetBytes(json.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(json);
+
+            buffer = new Byte[prefixArray.Length + json.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
+            stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public void SendMessage(BikeData data)
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] buffer;
+            string json = JsonConvert.SerializeObject(data);
+
+            byte[] prefixArray = BitConverter.GetBytes(json.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(json);
+
+            buffer = new Byte[prefixArray.Length + json.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
+            stream.Write(buffer, 0, buffer.Length);
         }
 
         private void closeStream() {

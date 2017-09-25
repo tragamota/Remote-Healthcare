@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UserData;
 
 namespace Server {
-    class BikeSession {
+    public class BikeSession {
         private DateTime sessionDateTime;
         private string userHash;
         public List<BikeData> data { get; set; }

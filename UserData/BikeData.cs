@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace UserData { 
+namespace UserData
+{
     [Serializable]
     public struct BikeData {
+        public string id { get; set; }
         public int Pulse { get; set; }
         public int Rpm { get; set; }
         public int Distance { get; set; }
@@ -15,6 +15,7 @@ namespace UserData {
         public double Speed { get; set; }
 
         public BikeData(int pulse, int rpm, string speed, int distance, int resistance, int energy, string time, int power) {
+            id = "BikeData";
             Pulse = pulse;
             Rpm = rpm;
             Distance = distance;

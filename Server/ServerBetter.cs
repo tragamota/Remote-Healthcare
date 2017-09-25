@@ -87,7 +87,7 @@ namespace Server
             }
         }
 
-        static void Main(string args[]) {
+        static void Main(string[] args) {
             new ServerBetter("172.0.0.1", 1337);
         }
     }

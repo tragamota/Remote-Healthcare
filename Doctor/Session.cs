@@ -1,10 +1,9 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Remote_Healtcare_Console;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Threading;
 using System.Windows.Forms;
 using UserData;
+using Server;
 
 namespace Doctor
 {
@@ -29,8 +28,12 @@ namespace Doctor
 
         private void run()
         {
+            BikeSession session = new BikeSession(patient.Hashcode);
+
             while (active)
             {
+                session.SaveSessionToFile();
+
                 string json = client.ReadMessage();
                 BikeData data = (BikeData)JObject.Parse(json).ToObject(typeof(BikeData));
                 SetPulse(data.Pulse.ToString());
