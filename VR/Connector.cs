@@ -43,7 +43,7 @@ namespace VR {
             JArray array = (JArray)jObject.SelectToken("data");
 
             foreach (JObject client in array) {
-                string host = (string)client.SelectToken("clientinfo").SelectToken("host");
+                string host = (string)client.SelectToken("clientinfo").SelectToken("user");
                 string id = (string)client.SelectToken("id");
                 hosts.Add(host + " - " + id, id);
             }
@@ -144,7 +144,6 @@ namespace VR {
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            //Console.WriteLine(jObject);
 
             foreach (Model model in Models) {
                 if (model.uuid.Equals(nodeID)) {
@@ -183,6 +182,37 @@ namespace VR {
             return null;
         }
 
+        public void UpdateNode(string uuid, string parentID)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/update",
+                        data = new
+                        {
+                            id = uuid,
+                            parent = parentID,
+                            transform = new
+                            {
+                                scale = 1.0
+                            }
+                        }
+                    }
+                }
+                
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            //Console.WriteLine(jObject);
+
+        }
+
         public void ResetScene() {
             dynamic message = new {
                 id = "tunnel/send",
@@ -198,6 +228,187 @@ namespace VR {
             SendMessage(message);
             JObject jObject = ReadMessage();
             //Console.WriteLine(jObject);
+        }
+        public void ClearPanel(string uuid)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/clear",
+                        data = new
+                        {
+                            id = uuid
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
+
+        public void SwapText(string uuid)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/swap",
+                        data = new
+                        {
+                            id = uuid
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
+
+        /* 
+         * uuid: uuid van de node van het panel waarop getekend moet worden
+         * text: invoertext
+         * x: positie op panel x-waarde(moet hoger dan 0 zijn)
+         * y: positie op panel y-waarde(moet hoger dan 0 zijn)
+         */
+        public void DrawText(string uuid, string text, int x, int y)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/drawtext",
+                        data = new
+                        {
+                            id = uuid,
+                            text = text,
+                            position = new[] { x, y },
+                            size = 60.0
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
+
+        public void SetClearColor(string uuid)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/setclearcolor",
+                        data = new
+                        {
+                            id = uuid,
+                            color = (new int[4] { 0, 0, 0, 0})
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
+
+        // x1,y1, x2,y2, r,g,b,a
+        public void DrawLines(string uuid)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/panel/drawlines",
+                        data = new
+                        {
+                            id = uuid,
+                            width = 1,
+                            lines = (new int[16] { 280, 40, 280, 180, 0, 0, 0, 1,
+                                                   280, 40, 600, 40, 0, 0, 0, 1}),
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+    
+        }
+
+        /*
+         * position (x, y, z) 
+         * x= naar je toe
+         * y=
+         * z= naar je toe
+         * 
+         */
+        public void AddHUD(string uuid)
+        {
+
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/add",
+                        data = new
+                        {
+                            name = "HUDPanel",
+                            parent = uuid,
+                            components = new
+                            {
+                                transform = new
+                                {
+                                    position = (new double[3] { -0.3, 0.9, 0 }),
+                                    scale = 1,
+                                    rotation = (new int[3] { 0, 90, 50 })
+                                },
+                                panel = new
+                                {
+                                    size = (new int[2] { 1, 1 }),
+                                    resolution = (new int[2] { 1028, 1028 }),
+                                    background = (new int[4] { 1 ,1 ,1 , 0})
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
         }
 
         public void LoadSceneModels() {
@@ -234,7 +445,7 @@ namespace VR {
         }
 
         public List<Model> GetModels() {
-            return Models;
+            return models;
         }
 
         public List<Route> GetRoutes() {

@@ -119,6 +119,7 @@
     <Compile Include="Forms\DeleteModel.Designer.cs">
       <DependentUpon>DeleteModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="HUD.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Forms\ModelFollowRoute.cs">

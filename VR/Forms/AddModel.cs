@@ -19,9 +19,19 @@ namespace VR {
             InitializeComponent();
         }
 
-        private void Add_Btn_Click(object sender, EventArgs e) {
-            if (Name_Txt.Text.Length > 0 && X_Txt.Text.Length > 0 && Y_Txt.Text.Length > 0 && Z_Txt.Text.Length > 0 && Object_Name_Txt.Text.Length > 0) {
-                connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text));
+        private void Add_Btn_Click(object sender, EventArgs e)
+        {
+            if(Name_Txt.Text.Length > 0 && X_Txt.Text.Length > 0 && Y_Txt.Text.Length > 0 && Z_Txt.Text.Length > 0 && Object_Name_Txt.Text.Length > 0)
+            {
+                if (Name_Txt.Text.Equals("Bike"))
+                {
+                    connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text));
+                    HUD hud = new HUD(connector);
+                }
+                else
+                {
+                    connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text));
+                }
                 this.Hide();
             }
             else {
