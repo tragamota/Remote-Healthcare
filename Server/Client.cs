@@ -66,9 +66,6 @@ namespace Server
                 case "update":
                     update((JObject) obj["data"]);
                     break;
-                case "BikeData":
-                    update((JObject)obj["data"]);
-                    break;
             }
         }
 
