@@ -15,12 +15,14 @@ namespace Server {
     class ServerBetter {
         private TcpListener socket;
         private IList<User> users;
+        private IList<Client> connectedClients;
         private Thread loadUsers;
         private bool serverRunning;
 
         public ServerBetter(string IPaddress, int portNumber) {
             loadUsers = null;
             users = new List<User>();
+            connectedClients = new List<Client>();
 
             IPAddress Ip;
             string usersPath = Directory.GetCurrentDirectory() + @"Users.json";
@@ -89,7 +91,7 @@ namespace Server {
             }
         }
 
-        static void Main(string args[]) {
+        static void Main(string[] args) {
             new ServerBetter("172.0.0.1", 1337);
         }
     }

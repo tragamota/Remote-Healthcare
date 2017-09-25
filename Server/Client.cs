@@ -14,14 +14,16 @@ namespace Server {
     class Client {
         private TcpClient client;
         private NetworkStream stream;
-        private BikeSession session;
-        public User User { get; }
-        public Client Docter { get; }
+        public BikeSession session { get; set; }
+        public User User { get; set; }
 
-        public Client(TcpClient client, IList<User> users, ref User doctor) {
+        public Client(TcpClient client, IList<User> users) {
             this.client = client;
             stream = this.client.GetStream();
+            new Thread(() => init(users)).Start();
+        }
 
+        private void init(IList<User> users) {
             string hash, username, password;
             bool valid, found;
             JObject userReceived = readFromStream();
@@ -48,6 +50,7 @@ namespace Server {
                 };
                 writeMessage(response);
                 closeStream();
+                Thread.CurrentThread.Abort();
             }
 
             run();
@@ -83,9 +86,6 @@ namespace Server {
             if(session != null) {
                 BikeData dataConverted = data.ToObject<BikeData>();
                 session.data.Add(dataConverted);
-                if(Docter != null) {
-
-                }
             }
         }
 
