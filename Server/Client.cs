@@ -13,8 +13,11 @@ namespace Server
     class Client {
         private TcpClient client;
         private NetworkStream stream;
+        private BikeSession session;
+        public User User { get; }
+        public Client Docter { get; }
 
-        public Client(TcpClient client, IList<User> users) {
+        public Client(TcpClient client, IList<User> users, ref User doctor) {
             this.client = client;
             stream = this.client.GetStream();
 
@@ -22,12 +25,13 @@ namespace Server
             bool valid, found;
             JObject userReceived = readFromStream();
             found = false;
-            username = (string) userReceived["username"];
-            password = (string) userReceived["password"];
+            username = (string)userReceived["username"];
+            password = (string)userReceived["password"];
 
-            foreach(User user in users) {
+            foreach (User user in users) {
                 user.CheckLogin(username, password, out valid, out hash);
-                if(valid) {
+                if (valid) {
+                    this.User = user;
                     dynamic response = new {
                         access = true,
                         hashcode = hash
@@ -37,24 +41,50 @@ namespace Server
                 }
             }
 
-            if(!found) {
+            if (!found) {
                 dynamic response = new {
                     access = false
                 };
                 writeMessage(response);
-                stream.Close();
-                stream.Dispose();
-                client.Close();
-                client.Dispose();
+                closeStream();
             }
 
             run();
         }
 
         private void run() {
-            while(client.Connected) {
+            while (client.Connected) {
                 JObject message = readFromStream();
-                //handel the incomming message.
+                if (message != null) {
+                    processIncomingMessage(message);
+                }
+            }
+        }
+
+        private void processIncomingMessage(JObject obj) {
+            switch ((string)obj["id"]) {
+                case "update":
+                    update((JObject) obj["data"]);
+                    break;
+            }
+        }
+
+        public void StartRecording() {
+            session = new BikeSession(User.Hashcode);
+        }
+
+        public void StopRecording() {
+            session.SaveSessionToFile();
+            session = null;
+        }
+
+        private void update(JObject data) {
+            if(session != null) {
+                BikeData dataConverted = data.ToObject<BikeData>();
+                session.data.Add(dataConverted);
+                if(Docter != null) {
+
+                }
             }
         }
 
@@ -63,12 +93,12 @@ namespace Server
             byte[] messageBytes = new byte[4];
             byte[] receiveBuffer;
 
-            while(numberOfBytesRead < messageBytes.Length && client.Connected) {
+            while (numberOfBytesRead < messageBytes.Length && client.Connected) {
                 try {
                     numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
                     Thread.Sleep(50);
                 }
-                catch(IOException e) {
+                catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
                 }
             }
@@ -77,16 +107,16 @@ namespace Server
             try {
                 receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
             }
-            catch(ArgumentException e) {
+            catch (ArgumentException e) {
                 Console.WriteLine(e.StackTrace);
                 return null;
             }
 
-            while(numberOfBytesRead < receiveBuffer.Length && client.Connected) {
+            while (numberOfBytesRead < receiveBuffer.Length && client.Connected) {
                 try {
                     numberOfBytesRead += stream.Read(receiveBuffer, numberOfBytesRead, receiveBuffer.Length - numberOfBytesRead);
                 }
-                catch(IOException e) {
+                catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
                 }
             }
@@ -99,11 +129,11 @@ namespace Server
             try {
                 json = JsonConvert.SerializeObject(message);
             }
-            catch(IOException e) {
+            catch (IOException e) {
                 Console.WriteLine(e.StackTrace);
                 return;
             }
-           
+
             byte[] prefixArray = BitConverter.GetBytes(json.Length);
             byte[] requestArray = Encoding.Default.GetBytes(json);
 
@@ -113,14 +143,12 @@ namespace Server
             try {
                 stream.Write(buffer, 0, buffer.Length);
             }
-            catch(IOException e) {
+            catch (IOException e) {
                 Console.WriteLine(e.StackTrace);
             }
         }
 
         private void closeStream() {
-            //write the closeStream message
-
             stream.Dispose();
             client.Close();
         }
