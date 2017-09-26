@@ -15,7 +15,7 @@ namespace Server {
     class Client {
         private TcpClient client;
         private NetworkStream stream;
-        public Thread loginThread { get; }
+        public Thread LoginThread { get; }
 
         private List<Client> connectedClients, connectedDoctors;
         public BikeSession session { get; set; }
@@ -27,8 +27,8 @@ namespace Server {
             this.connectedDoctors = connectedDoctors;
 
             stream = this.client.GetStream();
-            loginThread = new Thread(() => init(users));
-            loginThread.Start();
+            LoginThread = new Thread(() => init(users));
+            LoginThread.Start();
         }
 
         private void init(IList<User> users) {
@@ -61,7 +61,6 @@ namespace Server {
                 closeStream();
             }
 
-
             new Thread(() => run()).Start();
         }
 
@@ -72,6 +71,13 @@ namespace Server {
                     processIncomingMessage(message);
                 }
             }
+            if(User.Type == User.DoctorType.Doctor) {
+                connectedDoctors.Remove(this);
+            }
+            else {
+                connectedClients.Remove(this);
+            }
+            Console.WriteLine(connectedClients.Count + "\t" + connectedDoctors.Count);
         }
 
         private void processIncomingMessage(JObject obj) {
@@ -110,6 +116,7 @@ namespace Server {
                 }
                 catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
+                    return null;
                 }
             }
 
@@ -128,6 +135,7 @@ namespace Server {
                 }
                 catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
+                    return null;
                 }
             }
 
@@ -159,6 +167,8 @@ namespace Server {
         }
 
         private void closeStream() {
+            stream.Close();
+            client.Close();
             stream.Dispose();
             client.Close();
         }

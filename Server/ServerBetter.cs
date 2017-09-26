@@ -89,7 +89,7 @@ namespace Server {
         }
 
         private void sortClients(Client client) {
-            client.loginThread.Join();
+            client.LoginThread.Join();
             if (client != null) {
                 if (client.User.Type == User.DoctorType.Doctor) {
                     connectedDoctors.Add(client);
@@ -98,7 +98,7 @@ namespace Server {
                     connectedClients.Add(client);
                 }
             }
-            Console.WriteLine(connectedClients.Count);
+            Console.WriteLine("connected Clients: {0}\t Connected Doctors: {1}", connectedClients.Count, connectedDoctors.Count);
         }
 
         private void loadAllUsers(string path) {
