@@ -5,12 +5,21 @@ using System.Text;
 
 namespace UserData {
     public class User {
-        public enum DoctorType { Client, Doctor }
-        private string username;
-        private string password;
+        public enum DoctorType { Client, Doctor, None }
+        private string username { get; set; }
+        private string password { get; set; }
         public string FullName { get; set; }
         public string Hashcode { get; }
         public DoctorType Type { get; set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        public User(string username, string password, string fullName, string hashcode, DoctorType type) {
+            this.username = username;
+            this.password = password;
+            this.FullName = fullName;
+            this.Hashcode = Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(hashcode));
+            this.Type = type;
+        }
 
         public User(string username, string password, string fullName) {
             this.username = username;

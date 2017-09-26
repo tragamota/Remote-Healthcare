@@ -3,22 +3,29 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using UserData;
 
-namespace Server
-{
+namespace Server {
     class ServerBetter {
         private TcpListener socket;
-        private IList<User> users;
+        private List<User> users;
+        private List<Client> connectedDoctors;
+        private List<Client> connectedClients;
         private Thread loadUsers;
         private bool serverRunning;
 
         public ServerBetter(string IPaddress, int portNumber) {
+            serverRunning = true;
             loadUsers = null;
             users = new List<User>();
+            connectedClients = new List<Client>();
+            connectedDoctors = new List<Client>();
 
             IPAddress Ip;
             string usersPath = Directory.GetCurrentDirectory() + @"Users.json";
@@ -44,7 +51,10 @@ namespace Server
                 Console.WriteLine(e.StackTrace);
             }
 
-            loadUsers.Join();
+            if(loadUsers != null) {
+                loadUsers.Join();
+            }
+
             new Thread(run).Start();
 
             while (serverRunning) {
@@ -68,8 +78,9 @@ namespace Server
             socket.Start();
             while (serverRunning) {
                 try {
-                    TcpClient client = socket.AcceptTcpClient();
-                    new Thread(() => new Client(client, users)).Start();
+                    TcpClient clientSocket = socket.AcceptTcpClient();
+                    Console.WriteLine("Client Connected");
+                    new Thread(() => sortClients(new Client(clientSocket, users, ref connectedClients, ref connectedDoctors))).Start();
                 }
                 catch (SocketException e) {
                     Console.WriteLine(e.StackTrace);
@@ -77,18 +88,36 @@ namespace Server
             }
         }
 
+        private void sortClients(Client client) {
+            client.loginThread.Join();
+            if (client != null) {
+                if (client.User.Type == User.DoctorType.Doctor) {
+                    connectedDoctors.Add(client);
+                }
+                else if (client.User.Type == User.DoctorType.Client) {
+                    connectedClients.Add(client);
+                }
+            }
+            Console.WriteLine(connectedClients.Count);
+        }
+
         private void loadAllUsers(string path) {
             try {
                 JArray usersObj = (JArray)JsonConvert.DeserializeObject(File.ReadAllText(path));
-                users = (List<User>)usersObj.ToObject(typeof(List<User>));
+                if (usersObj != null) {
+                    foreach (JObject o in usersObj) {
+                        User tempUser = (User)o.ToObject(typeof(UserData.User)); 
+                        users.Add(tempUser);
+                    }
+                }
             }
             catch (Exception e) {
-                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
             }
         }
 
         static void Main(string[] args) {
-            new ServerBetter("172.0.0.1", 1337);
+            new ServerBetter("127.0.0.1", 1337);
         }
     }
 }
