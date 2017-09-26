@@ -61,5 +61,10 @@ namespace Remote_Healtcare_Console
                 MessageBox.Show("Vul de velden in");
             }
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

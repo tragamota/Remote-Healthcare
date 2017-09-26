@@ -4,11 +4,11 @@ using UserData;
 
 namespace Doctor
 {
-    public partial class Form1 : Form
+    public partial class Dokter : Form
     {
         Client client;
         
-        public Form1(Client client)
+        public Dokter(Client client)
         {
             InitializeComponent();
             this.client = client;

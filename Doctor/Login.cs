@@ -38,7 +38,7 @@ namespace Doctor
                 string result = (string)jObject.GetValue("access");
                 if (result.Equals("approved")) {
                     this.Hide();
-                    Form Form1 = new Form1(client);
+                    Form Form1 = new Dokter(client);
                     Form1.Closed += (s, args) => this.Close();
                     Form1.Show();
                 }
