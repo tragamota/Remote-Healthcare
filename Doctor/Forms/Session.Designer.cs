@@ -56,8 +56,8 @@
             this.label17 = new System.Windows.Forms.Label();
             this.Resistance_Track_Bar = new System.Windows.Forms.TrackBar();
             this.Temp_Resistance_Lbl = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.Message_Txt_Box = new System.Windows.Forms.TextBox();
+            this.Send_Message_Btn = new System.Windows.Forms.Button();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             ((System.ComponentModel.ISupportInitialize)(this.Resistance_Track_Bar)).BeginInit();
             this.SuspendLayout();
@@ -328,21 +328,22 @@
             this.Temp_Resistance_Lbl.Text = "0 %";
             this.Temp_Resistance_Lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // textBox1
+            // Message_Txt_Box
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 336);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(301, 20);
-            this.textBox1.TabIndex = 55;
+            this.Message_Txt_Box.Location = new System.Drawing.Point(12, 336);
+            this.Message_Txt_Box.Name = "Message_Txt_Box";
+            this.Message_Txt_Box.Size = new System.Drawing.Size(301, 20);
+            this.Message_Txt_Box.TabIndex = 55;
             // 
-            // button1
+            // Send_Message_Btn
             // 
-            this.button1.Location = new System.Drawing.Point(319, 334);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 56;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.Send_Message_Btn.Location = new System.Drawing.Point(319, 334);
+            this.Send_Message_Btn.Name = "Send_Message_Btn";
+            this.Send_Message_Btn.Size = new System.Drawing.Size(75, 23);
+            this.Send_Message_Btn.TabIndex = 56;
+            this.Send_Message_Btn.Text = "Send";
+            this.Send_Message_Btn.UseVisualStyleBackColor = true;
+            this.Send_Message_Btn.Click += new System.EventHandler(this.Send_Message_Btn_Click);
             // 
             // webBrowser1
             // 
@@ -358,8 +359,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(580, 392);
             this.Controls.Add(this.webBrowser1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.Send_Message_Btn);
+            this.Controls.Add(this.Message_Txt_Box);
             this.Controls.Add(this.Temp_Resistance_Lbl);
             this.Controls.Add(this.Resistance_Track_Bar);
             this.Controls.Add(this.label17);
@@ -427,8 +428,8 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TrackBar Resistance_Track_Bar;
         private System.Windows.Forms.Label Temp_Resistance_Lbl;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox Message_Txt_Box;
+        private System.Windows.Forms.Button Send_Message_Btn;
         private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }

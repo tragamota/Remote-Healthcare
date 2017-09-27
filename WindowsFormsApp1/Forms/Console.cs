@@ -87,6 +87,16 @@ namespace Remote_Healtcare_Console
 
         public void SetWatt(String s) { lblWatt.Text = s; }
 
+        public void AddMessage(String value)
+        {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(AddMessage), new object[] { value });
+                return;
+            }
+            Chat_Box.Text = Chat_Box.Text + value + "\r\n";
+        }
+
         private void Closing(object sender, FormClosingEventArgs e)
         {
             client.SendMessage("bye");

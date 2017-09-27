@@ -35,8 +35,18 @@ namespace Remote_Healtcare_Console
             string data = client.ReadMessage();
             JObject obj = (JObject)JsonConvert.DeserializeObject(data);
 
-            int resistance = (int)obj["resistance"];
-            SetResistance(resistance);
+            switch ((string)obj["id"])
+            {
+                case ("setResistance"):
+                    int resistance = (int)obj["resistance"];
+                    SetResistance(resistance);
+                    break;
+                case ("chat"):
+                    string message = (string)obj["data"]["message"];
+                    console.AddMessage(message);
+                    break;
+            }
+
         }
 
         public override void Start() {

@@ -25,7 +25,7 @@ namespace Doctor
 
             foreach (User user in users)
             {
-                if(user.Type == User.DoctorType.Client)
+                if(user.Type == DoctorType.Client)
                     Awaiting_Patients_Box.Items.Add(user.FullName);
             }
         }
@@ -43,6 +43,23 @@ namespace Doctor
             {
                 MessageBox.Show("Selecteer een patiënt");
             }
+        }
+
+        private void Log_Out_Btn_Click(object sender, EventArgs e)
+        {
+            client.SendMessage("bye");
+            this.Hide();
+        }
+
+        private void Closing(object sender, FormClosingEventArgs e)
+        {
+            client.SendMessage("bye");
+            this.Hide();
+        }
+
+        private void Send_Message_Btn_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

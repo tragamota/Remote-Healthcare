@@ -54,6 +54,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.comPorts = new System.Windows.Forms.ComboBox();
+            this.Chat_Box = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // BStart
@@ -305,12 +306,21 @@
             this.comPorts.Size = new System.Drawing.Size(75, 21);
             this.comPorts.TabIndex = 26;
             // 
+            // Chat_Box
+            // 
+            this.Chat_Box.Location = new System.Drawing.Point(200, 12);
+            this.Chat_Box.Multiline = true;
+            this.Chat_Box.Name = "Chat_Box";
+            this.Chat_Box.Size = new System.Drawing.Size(307, 298);
+            this.Chat_Box.TabIndex = 27;
+            // 
             // Console
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Highlight;
-            this.ClientSize = new System.Drawing.Size(342, 322);
+            this.ClientSize = new System.Drawing.Size(519, 322);
+            this.Controls.Add(this.Chat_Box);
             this.Controls.Add(this.comPorts);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label10);
@@ -374,6 +384,7 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.ComboBox comPorts;
+        private System.Windows.Forms.TextBox Chat_Box;
     }
 }
 

@@ -16,8 +16,7 @@ namespace Doctor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Login());
-            Application.Run(new Session(null, new Client()));
+            Application.Run(new Login());
         }
     }
 }

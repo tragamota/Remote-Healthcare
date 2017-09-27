@@ -79,13 +79,35 @@ namespace Doctor
         private void Stopped_Scrolling(object sender, MouseEventArgs e)
         {
             lblResistence.Text = Temp_Resistance_Lbl.Text;
-            
+
+            string resistance = ((375 / 100) * int.Parse(lblResistence.Text)).ToString();
+
             client.SendMessage(new
             {
                 id = "committingChanges",
                 data = new
                 {
-                    resistance = ((375 / 100) * int.Parse(lblResistence.Text)).ToString()
+                    id = "setResistance",
+                    data = new
+                    {
+                        resistance = resistance
+                    }
+                }
+            });
+        }
+
+        private void Send_Message_Btn_Click(object sender, EventArgs e)
+        {
+            client.SendMessage(new
+            {
+                id = "committingChanges",
+                data = new
+                {
+                    id = "chat",
+                    data = new
+                    {
+                        message = Message_Txt_Box.Text
+                    }
                 }
             });
         }
