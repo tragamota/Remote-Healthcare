@@ -267,6 +267,37 @@ namespace VR {
             return incline;
         }
 
+        public double CalculateInclineNotExactly(string objectName)
+        {
+            List<double> list = getPosition(objectName);
+
+            double incline = 0;
+            double difference = 0;
+
+            double currentHeight = list[1];
+
+            difference = (currentHeight - previousHeight);
+
+            if (difference < 0)
+                throw new ArgumentOutOfRangeException();
+            else if (difference >= 0 && difference <= 1)
+                incline = 100;
+            else if (difference > 1 && difference <= 2)
+                incline = 150;
+            else if (difference > 2 && difference <= 3)
+                incline = 200;
+            else if (difference > 3 && difference <= 4)
+                incline = 300;
+            else if (difference > 4 && difference <= 5)
+                incline = 400;
+            else if (difference > 5)
+                incline = 400;
+
+            previousHeight = currentHeight;
+
+            return incline;
+        }
+
         public void ResetScene() {
             dynamic message = new {
                 id = "tunnel/send",
