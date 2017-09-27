@@ -20,12 +20,17 @@ namespace Server {
         private Thread loadUsers;
         private bool serverRunning;
 
+        private object usersLock, connectedDoctorsLock, connectedClientsLock;
+
         public ServerBetter(string IPaddress, int portNumber) {
             serverRunning = true;
             loadUsers = null;
-            users = new List<User>();
-            connectedClients = new List<Client>();
-            connectedDoctors = new List<Client>();
+            users               = new List<User>();
+            connectedClients    = new List<Client>();
+            connectedDoctors    = new List<Client>();
+            usersLock               = new object();
+            connectedClientsLock    = new object();
+            connectedDoctorsLock    = new object();
 
             IPAddress Ip;
             string usersPath = Directory.GetCurrentDirectory() + @"Users.json";
@@ -81,7 +86,7 @@ namespace Server {
                 try {
                     TcpClient clientSocket = socket.AcceptTcpClient();
                     Console.WriteLine("Client Connected");
-                    new Thread(() => sortClients(new Client(clientSocket, ref users, ref connectedClients, ref connectedDoctors))).Start();
+                    new Thread(() => sortClients(new Client(clientSocket, ref users, ref connectedClients, ref connectedDoctors, ref usersLock, ref connectedClientsLock, ref connectedDoctorsLock))).Start();
                 }
                 catch (SocketException e) {
                     Console.WriteLine(e.StackTrace);
@@ -92,11 +97,15 @@ namespace Server {
         private void sortClients(Client client) {
             client.LoginThread.Join();
             if (client != null) {
-                if (client.User.Type == User.DoctorType.Doctor) {
-                    connectedDoctors.Add(client);
+                if (client.User.Type == DoctorType.Doctor) {
+                    lock (connectedDoctorsLock) {
+                        connectedDoctors.Add(client);
+                    }
                 }
-                else if (client.User.Type == User.DoctorType.Client) {
-                    connectedClients.Add(client);
+                else if (client.User.Type == DoctorType.Client) {
+                    lock (connectedClientsLock) {
+                        connectedClients.Add(client);
+                    }
                 }
             }
             Console.WriteLine("connected Clients: {0}\t Connected Doctors: {1}", connectedClients.Count, connectedDoctors.Count);
@@ -107,8 +116,10 @@ namespace Server {
                 JArray usersObj = (JArray)JsonConvert.DeserializeObject(File.ReadAllText(path));
                 if (usersObj != null) {
                     foreach (JObject o in usersObj) {
-                        User tempUser = (User)o.ToObject(typeof(UserData.User)); 
-                        users.Add(tempUser);
+                        User tempUser = (User)o.ToObject(typeof(UserData.User));
+                        lock (usersLock) {
+                            users.Add(tempUser);
+                        }
                     }
                 }
             }

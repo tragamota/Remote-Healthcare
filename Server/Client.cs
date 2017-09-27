@@ -16,16 +16,23 @@ namespace Server {
         private NetworkStream stream;
         public Thread LoginThread { get; }
 
+        private object sessionLock, connectedClientsLock, connectedDoctorsLock, usersLock;
+
         private List<Client> connectedClients, connectedDoctors;
         private List<User> users;
         public BikeSession session { get; set; }
         public User User { get; set; }
   
-        public Client(TcpClient client, ref List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors) {
+        public Client(TcpClient client, ref List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors, ref object usersLock, ref object connectedClientsLock, ref object connectedDoctorsLock) {
             this.client = client;
             this.connectedClients = connectedClients;
             this.connectedDoctors = connectedDoctors;
             this.users = users;
+            sessionLock = new object();
+            this.usersLock = usersLock;
+            this.connectedClientsLock = connectedClientsLock;
+            this.connectedDoctorsLock = connectedDoctorsLock;
+
 
             stream = this.client.GetStream();
             LoginThread = new Thread(() => init(this.users));
@@ -40,17 +47,19 @@ namespace Server {
             username = (string)userReceived["username"];
             password = (string)userReceived["password"];
 
-            foreach (User user in users) {
-                user.CheckLogin(username, password, out valid, out hash);
-                if (valid) {
-                    this.User = user;
-                    dynamic response = new {
-                        access = true,
-                        hashcode = hash
-                    };
-                    writeMessage(response);
-                    found = true;
-                    break;
+            lock (usersLock) {
+                foreach (User user in users) {
+                    user.CheckLogin(username, password, out valid, out hash);
+                    if (valid) {
+                        this.User = user;
+                        dynamic response = new {
+                            access = true,
+                            hashcode = hash
+                        };
+                        writeMessage(response);
+                        found = true;
+                        break;
+                    }
                 }
             }
 
@@ -73,10 +82,14 @@ namespace Server {
                 }
             }
             if(User.Type == DoctorType.Doctor) {
-                connectedDoctors.Remove(this);
+                lock (connectedDoctorsLock) {
+                    connectedDoctors.Remove(this);
+                }
             }
             else {
-                connectedClients.Remove(this);
+                lock (connectedClientsLock) {
+                    connectedClients.Remove(this);
+                }
             }
             closeStream();
             Console.WriteLine(connectedClients.Count + "\t" + connectedDoctors.Count);
@@ -112,10 +125,12 @@ namespace Server {
                 string hashcode = (string)obj["hashcode"];
                 int power = (int) obj["power"];
 
-                foreach(Client user in connectedClients) {
-                    if(user.User.Hashcode == hashcode) {
-                        Tempuser = user;
-                        break;
+                lock (connectedClientsLock) {
+                    foreach (Client user in connectedClients) {
+                        if (user.User.Hashcode == hashcode) {
+                            Tempuser = user;
+                            break;
+                        }
                     }
                 }
 
@@ -136,15 +151,19 @@ namespace Server {
         }
 
         public void StopRecording() {
-            session.SaveSessionToFile();
-            session = null;
+            lock (sessionLock) {
+                session.SaveSessionToFile();
+                session = null;
+            }
         }
 
         private void update(JObject data) {
             if (User.Type == DoctorType.Client) {
-                if (session != null) {
-                    BikeData dataConverted = data.ToObject<BikeData>();
-                    session.data.Add(dataConverted);
+                lock (sessionLock) {
+                    if (session != null) {
+                        BikeData dataConverted = data.ToObject<BikeData>();
+                        session.data.Add(dataConverted);
+                    }
                 }
             }
         }
@@ -158,14 +177,16 @@ namespace Server {
                 User tempUser = new User(username, password, fullName, (DoctorType)clientType);
 
                 bool exists = false;
-                foreach(User user in users) {
-                    if(user == this.User) {
-                        continue;
-                    }
-                    else {
-                        if(user.Username == tempUser.Username) {
-                            exists = true;
-                            break;
+                lock (usersLock) {
+                    foreach (User user in users) {
+                        if (user == this.User) {
+                            continue;
+                        }
+                        else {
+                            if (user.Username == tempUser.Username) {
+                                exists = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -187,12 +208,14 @@ namespace Server {
                 string username = (string)data["username"];
                 bool deleted = false;
 
-                foreach (User user in users) {
-                    if(user.Username == username) {
-                        users.Remove(user);
-                        //write response user deleted
-                        deleted = true;
-                        break;
+                lock (usersLock) {
+                    foreach (User user in users) {
+                        if (user.Username == username) {
+                            users.Remove(user);
+                            //write response user deleted
+                            deleted = true;
+                            break;
+                        }
                     }
                 }
 
