@@ -1,13 +1,11 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Remote_Healtcare_Console;
 using System;
-using System.IO;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using UserData;
 
-namespace Remote_Healtcare_Console {
+namespace Remote_Healtcare_Console
+{
     public class Client {
         private TcpClient client;
         private NetworkStream stream;
@@ -71,6 +69,49 @@ namespace Remote_Healtcare_Console {
             catch (Exception e) {
                 System.Console.WriteLine(e.StackTrace);
             }
+        }
+
+        public void SendMessage(string message)
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] buffer;
+            byte[] prefixArray = BitConverter.GetBytes(message.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(message);
+
+            buffer = new Byte[prefixArray.Length + message.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
+            stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public void SendMessage(User user)
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] buffer;
+            string json = JsonConvert.SerializeObject(user);
+
+            byte[] prefixArray = BitConverter.GetBytes(json.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(json);
+
+            buffer = new Byte[prefixArray.Length + json.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
+            stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public void SendMessage(BikeData data)
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] buffer;
+            string json = JsonConvert.SerializeObject(data);
+
+            byte[] prefixArray = BitConverter.GetBytes(json.Length);
+            byte[] requestArray = Encoding.Default.GetBytes(json);
+
+            buffer = new Byte[prefixArray.Length + json.Length];
+            prefixArray.CopyTo(buffer, 0);
+            requestArray.CopyTo(buffer, prefixArray.Length);
+            stream.Write(buffer, 0, buffer.Length);
         }
     }
 }
