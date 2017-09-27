@@ -33,7 +33,7 @@ namespace Server {
             connectedDoctorsLock    = new object();
 
             IPAddress Ip;
-            string usersPath = Directory.GetCurrentDirectory() + @"Users.json";
+            string usersPath = Directory.GetCurrentDirectory() + @"\Users.json";
 
             if (!IPAddress.TryParse(IPaddress, out Ip)) {
                 Console.WriteLine("The given IpAddress was not valid....\nClosing the server");
@@ -47,7 +47,9 @@ namespace Server {
                     loadUsers.Start();
                 }
                 else {
-                    File.Create(usersPath);
+                    users.Add(new User("test", "test", "Dokter", DoctorType.Doctor));
+                    users.Add(new User("test1", "test", "client"));
+                    File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
                 }
             }
             catch (Exception e) {
@@ -82,6 +84,7 @@ namespace Server {
 
         private void run() {
             socket.Start();
+            Console.WriteLine("Server Started");
             while (serverRunning) {
                 try {
                     TcpClient clientSocket = socket.AcceptTcpClient();
@@ -96,7 +99,7 @@ namespace Server {
 
         private void sortClients(Client client) {
             client.LoginThread.Join();
-            if (client != null) {
+            if (client.User != null) {
                 if (client.User.Type == DoctorType.Doctor) {
                     lock (connectedDoctorsLock) {
                         connectedDoctors.Add(client);

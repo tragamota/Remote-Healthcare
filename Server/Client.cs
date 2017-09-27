@@ -237,7 +237,6 @@ namespace Server {
             while (numberOfBytesRead < messageBytes.Length && client.Connected) {
                 try {
                     numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
-                    Thread.Yield();
                 }
                 catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
