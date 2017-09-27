@@ -26,12 +26,6 @@ namespace Doctor
             });
         }
 
-        private void Start_Session_Btn_Click(object sender, EventArgs e)
-        {
-            active = true;
-            new Thread(run).Start();
-        }
-
         private void run()
         {
             while (active)
@@ -110,6 +104,26 @@ namespace Doctor
                     }
                 }
             });
+        }
+
+        private void Start_Session_Btn_Click(object sender, EventArgs e)
+        {
+            client.SendMessage(new
+            {
+                id = "startRecording"
+            });
+
+            active = true;
+            new Thread(run).Start();
+        }
+
+        private void Stop_Session_Btn_Click(object sender, EventArgs e)
+        {
+            client.SendMessage(new
+            {
+                id = "stopRecording"
+            });
+            active = false;
         }
     }
 }

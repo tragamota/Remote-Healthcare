@@ -59,6 +59,7 @@
             this.Message_Txt_Box = new System.Windows.Forms.TextBox();
             this.Send_Message_Btn = new System.Windows.Forms.Button();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.Stop_Session_Btn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Resistance_Track_Bar)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,9 +67,9 @@
             // 
             this.Start_Session_Btn.Location = new System.Drawing.Point(413, 12);
             this.Start_Session_Btn.Name = "Start_Session_Btn";
-            this.Start_Session_Btn.Size = new System.Drawing.Size(92, 23);
+            this.Start_Session_Btn.Size = new System.Drawing.Size(71, 23);
             this.Start_Session_Btn.TabIndex = 0;
-            this.Start_Session_Btn.Text = "Start fietssessie";
+            this.Start_Session_Btn.Text = "Start sessie";
             this.Start_Session_Btn.UseVisualStyleBackColor = true;
             this.Start_Session_Btn.Click += new System.EventHandler(this.Start_Session_Btn_Click);
             // 
@@ -353,11 +354,22 @@
             this.webBrowser1.Size = new System.Drawing.Size(382, 293);
             this.webBrowser1.TabIndex = 57;
             // 
+            // Stop_Session_Btn
+            // 
+            this.Stop_Session_Btn.Location = new System.Drawing.Point(490, 12);
+            this.Stop_Session_Btn.Name = "Stop_Session_Btn";
+            this.Stop_Session_Btn.Size = new System.Drawing.Size(75, 23);
+            this.Stop_Session_Btn.TabIndex = 58;
+            this.Stop_Session_Btn.Text = "Stop sessie";
+            this.Stop_Session_Btn.UseVisualStyleBackColor = true;
+            this.Stop_Session_Btn.Click += new System.EventHandler(this.Stop_Session_Btn_Click);
+            // 
             // Session
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(580, 392);
+            this.ClientSize = new System.Drawing.Size(578, 392);
+            this.Controls.Add(this.Stop_Session_Btn);
             this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.Send_Message_Btn);
             this.Controls.Add(this.Message_Txt_Box);
@@ -431,5 +443,6 @@
         private System.Windows.Forms.TextBox Message_Txt_Box;
         private System.Windows.Forms.Button Send_Message_Btn;
         private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.Button Stop_Session_Btn;
     }
 }

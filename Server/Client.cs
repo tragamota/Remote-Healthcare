@@ -113,6 +113,12 @@ namespace Server {
                     User user = (User)obj["user"].ToObject(typeof(User));
                     SetPatient(user);
                     break;
+                case "startRecording":
+                    StartRecording();
+                    break;
+                case "stopRecording":
+                    StopRecording();
+                    break;
                 case "add":
                     new Thread(() => addUser((JObject)obj["data"])).Start();
                     break;
@@ -159,12 +165,20 @@ namespace Server {
             }
         }
 
-        private void writeToPatient(dynamic message)
-        {
+        public void StartRecording() {
+            if(patient != null)
+                session = new BikeSession(patient.User.Hashcode);
+            else
+                session = new BikeSession(User.Hashcode);
+            new Thread(() => SendBikeData()).Start();
         }
 
-        public void StartRecording() {
-            session = new BikeSession(User.Hashcode);
+        public void SendBikeData()
+        {
+            while(session != null)
+            {
+                writeMessage(session.GetLatestBikeData());
+            }
         }
 
         public void StopRecording() {
