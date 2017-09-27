@@ -17,6 +17,7 @@ namespace VR {
         public string tunnelID;
         public List<Model> Models { get; set; }
         public List<Route> Routes { get; set; }
+        private double previousHeight;
 
         public Connector() {
             try {
@@ -225,6 +226,45 @@ namespace VR {
             JObject jObject = ReadMessage();
             //Console.WriteLine(jObject);
 
+        }
+
+        public List<double> getPosition(string objectName)
+        {
+            List<double> list = new List<double>();
+            JObject jObject = GetScene();
+            JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
+
+            //List<JToken> list = array.ToList();
+            foreach (JObject ob in array)
+            {
+                if (((string)ob.SelectToken("name")).Equals(objectName))
+                {
+                    JArray positionArray = (JArray)ob.SelectToken("components").First.SelectToken("position");
+
+                    list = positionArray.ToObject<List<double>>();                
+                }
+            }
+
+            return list;
+        }
+
+
+        public double CalculateIncline(string objectName)
+        {
+            List<double> list = getPosition(objectName);
+
+            double incline = 0;
+            double difference = 0;
+
+            double currentHeight = list[1];
+
+            difference = (currentHeight - previousHeight)/5;
+
+            incline = 400 * difference;
+
+            previousHeight = currentHeight;
+
+            return incline;
         }
 
         public void ResetScene() {
