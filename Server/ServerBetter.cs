@@ -35,8 +35,6 @@ namespace Server {
                 Environment.Exit(1);
             }
 
-            Console.WriteLine();
-
             try {
                 socket = new TcpListener(Ip, portNumber);
                 if (File.Exists(usersPath)) {
@@ -63,6 +61,7 @@ namespace Server {
                     try {
                         serverRunning = false;
                         socket.Stop();
+                        
                     }
                     catch (SocketException e) {
                         Console.WriteLine(e.StackTrace);
@@ -72,6 +71,8 @@ namespace Server {
                     Console.WriteLine("Unknown command");
                 }
             }
+
+            File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
         }
 
         private void run() {
@@ -80,7 +81,7 @@ namespace Server {
                 try {
                     TcpClient clientSocket = socket.AcceptTcpClient();
                     Console.WriteLine("Client Connected");
-                    new Thread(() => sortClients(new Client(clientSocket, users, ref connectedClients, ref connectedDoctors))).Start();
+                    new Thread(() => sortClients(new Client(clientSocket, ref users, ref connectedClients, ref connectedDoctors))).Start();
                 }
                 catch (SocketException e) {
                     Console.WriteLine(e.StackTrace);

@@ -11,27 +11,28 @@ using System.Threading.Tasks;
 using UserData;
 
 namespace Server {
-    [Serializable]
     class Client {
         private TcpClient client;
         private NetworkStream stream;
         public Thread LoginThread { get; }
 
         private List<Client> connectedClients, connectedDoctors;
+        private List<User> users;
         public BikeSession session { get; set; }
         public User User { get; set; }
   
-        public Client(TcpClient client, List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors) {
+        public Client(TcpClient client, ref List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors) {
             this.client = client;
             this.connectedClients = connectedClients;
             this.connectedDoctors = connectedDoctors;
+            this.users = users;
 
             stream = this.client.GetStream();
-            LoginThread = new Thread(() => init(users));
+            LoginThread = new Thread(() => init(this.users));
             LoginThread.Start();
         }
 
-        private void init(IList<User> users) {
+        private void init( List<User> users) {
             string hash, username, password;
             bool valid, found;
             JObject userReceived = readFromStream();
@@ -71,12 +72,13 @@ namespace Server {
                     processIncomingMessage(message);
                 }
             }
-            if(User.Type == User.DoctorType.Doctor) {
+            if(User.Type == DoctorType.Doctor) {
                 connectedDoctors.Remove(this);
             }
             else {
                 connectedClients.Remove(this);
             }
+            closeStream();
             Console.WriteLine(connectedClients.Count + "\t" + connectedDoctors.Count);
         }
 
@@ -85,6 +87,47 @@ namespace Server {
                 case "update":
                     update((JObject) obj["data"]);
                     break;
+                case "add":
+                    new Thread(() => addUser((JObject)obj["data"])).Start();
+                    break;
+                case "delete":
+                    new Thread(() => deleteUser((JObject)obj["data"])).Start();
+                    break;
+                case "power":
+                    new Thread(() => setPower((JObject) obj["data"])).Start();
+                    break;
+                case "manual":
+                    new Thread(() => setManual((JObject)obj["data"])).Start();
+                    break;
+            }
+        }
+
+        private void setManual(JObject jObject) {
+            //send set manual power
+        }
+
+        private void setPower(JObject obj) {
+            if(User.Type == DoctorType.Doctor) {
+                Client Tempuser = null;
+                string hashcode = (string)obj["hashcode"];
+                int power = (int) obj["power"];
+
+                foreach(Client user in connectedClients) {
+                    if(user.User.Hashcode == hashcode) {
+                        Tempuser = user;
+                        break;
+                    }
+                }
+
+                if(Tempuser != null) {
+                    Tempuser.writeMessage("iets");
+                }
+                else {
+                    //write response to doctor back
+                }
+            }
+            else {
+                //write no permission
             }
         }
 
@@ -98,9 +141,68 @@ namespace Server {
         }
 
         private void update(JObject data) {
-            if(session != null) {
-                BikeData dataConverted = data.ToObject<BikeData>();
-                session.data.Add(dataConverted);
+            if (User.Type == DoctorType.Client) {
+                if (session != null) {
+                    BikeData dataConverted = data.ToObject<BikeData>();
+                    session.data.Add(dataConverted);
+                }
+            }
+        }
+
+        private void addUser(JObject data) {
+            if (User.Type == DoctorType.Doctor) {
+                string username = (string)data["username"];
+                string password = (string)data["password"];
+                string fullName = (string)data["fullname"];
+                int clientType = (int)data["type"];
+                User tempUser = new User(username, password, fullName, (DoctorType)clientType);
+
+                bool exists = false;
+                foreach(User user in users) {
+                    if(user == this.User) {
+                        continue;
+                    }
+                    else {
+                        if(user.Username == tempUser.Username) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+                if (!exists) {
+                    users.Add(new User(username, password, fullName, (DoctorType)clientType));
+                    //write response
+                }
+                else {
+                    //write response
+                }
+            }
+            else {
+                //write not permission
+            }
+        }
+
+        private void deleteUser(JObject data) {
+            if(User.Type == DoctorType.Doctor) {
+                string username = (string)data["username"];
+                bool deleted = false;
+
+                foreach (User user in users) {
+                    if(user.Username == username) {
+                        users.Remove(user);
+                        //write response user deleted
+                        deleted = true;
+                        break;
+                    }
+                }
+
+                if(!deleted) {
+                    //write user not found
+                }                
+
+            }
+            else {
+                //write no permission
             }
         }
 
@@ -170,7 +272,7 @@ namespace Server {
             stream.Close();
             client.Close();
             stream.Dispose();
-            client.Close();
+            client.Dispose();
         }
     }
 }
