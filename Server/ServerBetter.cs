@@ -125,8 +125,8 @@ namespace Server {
                         }
                     }
                 }
-                User patient = new User("zwen", "zwen", "Zwen van Erkelens", User.DoctorType.Client);
-                User doctor = new User("bram", "bram", "Bram Stoof", User.DoctorType.Doctor);
+                User patient = new User("zwen", "zwen", "Zwen van Erkelens", DoctorType.Client);
+                User doctor = new User("bram", "bram", "Bram Stoof", DoctorType.Doctor);
 
                 users.Add(patient);
                 users.Add(doctor);

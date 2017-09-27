@@ -125,18 +125,6 @@ namespace Server {
                 case "manual":
                     new Thread(() => setManual((JObject)obj["data"])).Start();
                     break;
-                case "add":
-                    new Thread(() => addUser((JObject)obj["data"])).Start();
-                    break;
-                case "delete":
-                    new Thread(() => deleteUser((JObject)obj["data"])).Start();
-                    break;
-                case "power":
-                    new Thread(() => setPower((JObject) obj["data"])).Start();
-                    break;
-                case "manual":
-                    new Thread(() => setManual((JObject)obj["data"])).Start();
-                    break;
             }
         }
 
