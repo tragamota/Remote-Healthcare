@@ -4,8 +4,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace UserData {
+    public enum DoctorType { Client, Doctor, None }
     public class User {
-        public enum DoctorType { Client, Doctor, None }
         private string username { get; set; }
         private string password { get; set; }
         public string FullName { get; set; }
@@ -35,6 +35,14 @@ namespace UserData {
             this.FullName = fullName;
             this.Type = type;
             Hashcode = Encoding.UTF8.GetString(new SHA256Managed().ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.Ticks.ToString())));
+        }
+
+        public string Password {
+             get { return password; }
+        }
+
+        public string Username {
+            get { return username; }
         }
 
         //this returns a boolean, if the username was accepted, true gets returned, otherwise there was an error or it was denied.

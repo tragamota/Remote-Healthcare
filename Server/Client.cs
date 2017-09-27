@@ -11,30 +11,37 @@ using System.Threading.Tasks;
 using UserData;
 
 namespace Server {
-    [Serializable]
     class Client {
         private TcpClient client;
         private NetworkStream stream;
-        public Thread loginThread { get; }
+        public Thread LoginThread { get; }
+
+        private object sessionLock, connectedClientsLock, connectedDoctorsLock, usersLock;
 
         private List<Client> connectedClients, connectedDoctors;
+        private List<User> users;
         public BikeSession session { get; set; }
         public User User { get; set; }
         public List<User> users;
         public Client patient;
   
-        public Client(TcpClient client, List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors) {
+        public Client(TcpClient client, ref List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors, ref object usersLock, ref object connectedClientsLock, ref object connectedDoctorsLock) {
             this.client = client;
             this.connectedClients = connectedClients;
             this.connectedDoctors = connectedDoctors;
             this.users = users;
+            sessionLock = new object();
+            this.usersLock = usersLock;
+            this.connectedClientsLock = connectedClientsLock;
+            this.connectedDoctorsLock = connectedDoctorsLock;
+
 
             stream = this.client.GetStream();
-            loginThread = new Thread(() => init(users));
-            loginThread.Start();
+            LoginThread = new Thread(() => init(this.users));
+            LoginThread.Start();
         }
 
-        private void init(IList<User> users) {
+        private void init( List<User> users) {
             string hash, username, password;
             bool valid, found;
             JObject userReceived = readFromStream();
@@ -42,17 +49,19 @@ namespace Server {
             username = (string)userReceived["username"];
             password = (string)userReceived["password"];
 
-            foreach (User user in users) {
-                user.CheckLogin(username, password, out valid, out hash);
-                if (valid) {
-                    this.User = user;
-                    dynamic response = new {
-                        access = true,
-                        hashcode = hash
-                    };
-                    writeMessage(response);
-                    found = true;
-                    break;
+            lock (usersLock) {
+                foreach (User user in users) {
+                    user.CheckLogin(username, password, out valid, out hash);
+                    if (valid) {
+                        this.User = user;
+                        dynamic response = new {
+                            access = true,
+                            hashcode = hash
+                        };
+                        writeMessage(response);
+                        found = true;
+                        break;
+                    }
                 }
             }
 
@@ -64,7 +73,6 @@ namespace Server {
                 closeStream();
             }
 
-
             new Thread(() => run()).Start();
         }
 
@@ -75,6 +83,18 @@ namespace Server {
                     processIncomingMessage(message);
                 }
             }
+            if(User.Type == DoctorType.Doctor) {
+                lock (connectedDoctorsLock) {
+                    connectedDoctors.Remove(this);
+                }
+            }
+            else {
+                lock (connectedClientsLock) {
+                    connectedClients.Remove(this);
+                }
+            }
+            closeStream();
+            Console.WriteLine(connectedClients.Count + "\t" + connectedDoctors.Count);
         }
 
         private void processIncomingMessage(JObject obj) {
@@ -106,6 +126,49 @@ namespace Server {
                 case "manual":
                     new Thread(() => setManual((JObject)obj["data"])).Start();
                     break;
+                case "add":
+                    new Thread(() => addUser((JObject)obj["data"])).Start();
+                    break;
+                case "delete":
+                    new Thread(() => deleteUser((JObject)obj["data"])).Start();
+                    break;
+                case "power":
+                    new Thread(() => setPower((JObject) obj["data"])).Start();
+                    break;
+                case "manual":
+                    new Thread(() => setManual((JObject)obj["data"])).Start();
+                    break;
+            }
+        }
+
+        private void setManual(JObject jObject) {
+            //send set manual power
+        }
+
+        private void setPower(JObject obj) {
+            if(User.Type == DoctorType.Doctor) {
+                Client Tempuser = null;
+                string hashcode = (string)obj["hashcode"];
+                int power = (int) obj["power"];
+
+                lock (connectedClientsLock) {
+                    foreach (Client user in connectedClients) {
+                        if (user.User.Hashcode == hashcode) {
+                            Tempuser = user;
+                            break;
+                        }
+                    }
+                }
+
+                if(Tempuser != null) {
+                    Tempuser.writeMessage("iets");
+                }
+                else {
+                    //write response to doctor back
+                }
+            }
+            else {
+                //write no permission
             }
         }
 
@@ -118,14 +181,81 @@ namespace Server {
         }
 
         public void StopRecording() {
-            session.SaveSessionToFile();
-            session = null;
+            lock (sessionLock) {
+                session.SaveSessionToFile();
+                session = null;
+            }
         }
 
         private void update(JObject data) {
-            if(session != null) {
-                BikeData dataConverted = data.ToObject<BikeData>();
-                session.data.Add(dataConverted);
+            if (User.Type == DoctorType.Client) {
+                lock (sessionLock) {
+                    if (session != null) {
+                        BikeData dataConverted = data.ToObject<BikeData>();
+                        session.data.Add(dataConverted);
+                    }
+                }
+            }
+        }
+
+        private void addUser(JObject data) {
+            if (User.Type == DoctorType.Doctor) {
+                string username = (string)data["username"];
+                string password = (string)data["password"];
+                string fullName = (string)data["fullname"];
+                int clientType = (int)data["type"];
+                User tempUser = new User(username, password, fullName, (DoctorType)clientType);
+
+                bool exists = false;
+                lock (usersLock) {
+                    foreach (User user in users) {
+                        if (user == this.User) {
+                            continue;
+                        }
+                        else {
+                            if (user.Username == tempUser.Username) {
+                                exists = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (!exists) {
+                    users.Add(new User(username, password, fullName, (DoctorType)clientType));
+                    //write response
+                }
+                else {
+                    //write response
+                }
+            }
+            else {
+                //write not permission
+            }
+        }
+
+        private void deleteUser(JObject data) {
+            if(User.Type == DoctorType.Doctor) {
+                string username = (string)data["username"];
+                bool deleted = false;
+
+                lock (usersLock) {
+                    foreach (User user in users) {
+                        if (user.Username == username) {
+                            users.Remove(user);
+                            //write response user deleted
+                            deleted = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(!deleted) {
+                    //write user not found
+                }                
+
+            }
+            else {
+                //write no permission
             }
         }
 
@@ -137,10 +267,10 @@ namespace Server {
             while (numberOfBytesRead < messageBytes.Length && client.Connected) {
                 try {
                     numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
-                    Thread.Yield();
                 }
                 catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
+                    return null;
                 }
             }
 
@@ -159,6 +289,7 @@ namespace Server {
                 }
                 catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
+                    return null;
                 }
             }
 
@@ -195,8 +326,10 @@ namespace Server {
         }
 
         private void closeStream() {
-            stream.Dispose();
+            stream.Close();
             client.Close();
+            stream.Dispose();
+            client.Dispose();
         }
 
         public void SetPatient(User user)

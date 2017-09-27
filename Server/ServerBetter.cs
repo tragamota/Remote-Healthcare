@@ -20,12 +20,17 @@ namespace Server {
         private Thread loadUsers;
         private bool serverRunning;
 
+        private object usersLock, connectedDoctorsLock, connectedClientsLock;
+
         public ServerBetter(string IPaddress, int portNumber) {
             serverRunning = true;
             loadUsers = null;
-            users = new List<User>();
-            connectedClients = new List<Client>();
-            connectedDoctors = new List<Client>();
+            users               = new List<User>();
+            connectedClients    = new List<Client>();
+            connectedDoctors    = new List<Client>();
+            usersLock               = new object();
+            connectedClientsLock    = new object();
+            connectedDoctorsLock    = new object();
 
             IPAddress Ip;
             string usersPath = Directory.GetCurrentDirectory() + @"\Users.json";
@@ -35,8 +40,6 @@ namespace Server {
                 Environment.Exit(1);
             }
 
-            Console.WriteLine();
-
             try {
                 socket = new TcpListener(Ip, portNumber);
                 if (File.Exists(usersPath)) {
@@ -44,7 +47,9 @@ namespace Server {
                     loadUsers.Start();
                 }
                 else {
-                    File.Create(usersPath);
+                    users.Add(new User("test", "test", "Dokter", DoctorType.Doctor));
+                    users.Add(new User("test1", "test", "client"));
+                    File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
                 }
             }
             catch (Exception e) {
@@ -63,6 +68,7 @@ namespace Server {
                     try {
                         serverRunning = false;
                         socket.Stop();
+                        
                     }
                     catch (SocketException e) {
                         Console.WriteLine(e.StackTrace);
@@ -72,15 +78,18 @@ namespace Server {
                     Console.WriteLine("Unknown command");
                 }
             }
+
+            File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
         }
 
         private void run() {
             socket.Start();
+            Console.WriteLine("Server Started");
             while (serverRunning) {
                 try {
                     TcpClient clientSocket = socket.AcceptTcpClient();
                     Console.WriteLine("Client Connected");
-                    new Thread(() => sortClients(new Client(clientSocket, users, ref connectedClients, ref connectedDoctors))).Start();
+                    new Thread(() => sortClients(new Client(clientSocket, ref users, ref connectedClients, ref connectedDoctors, ref usersLock, ref connectedClientsLock, ref connectedDoctorsLock))).Start();
                 }
                 catch (SocketException e) {
                     Console.WriteLine(e.StackTrace);
@@ -89,16 +98,20 @@ namespace Server {
         }
 
         private void sortClients(Client client) {
-            client.loginThread.Join();
-            if (client != null) {
-                if (client.User.Type == User.DoctorType.Doctor) {
-                    connectedDoctors.Add(client);
+            client.LoginThread.Join();
+            if (client.User != null) {
+                if (client.User.Type == DoctorType.Doctor) {
+                    lock (connectedDoctorsLock) {
+                        connectedDoctors.Add(client);
+                    }
                 }
-                else if (client.User.Type == User.DoctorType.Client) {
-                    connectedClients.Add(client);
+                else if (client.User.Type == DoctorType.Client) {
+                    lock (connectedClientsLock) {
+                        connectedClients.Add(client);
+                    }
                 }
             }
-            Console.WriteLine(connectedClients.Count);
+            Console.WriteLine("connected Clients: {0}\t Connected Doctors: {1}", connectedClients.Count, connectedDoctors.Count);
         }
 
         private void loadAllUsers(string path) {
@@ -106,8 +119,10 @@ namespace Server {
                 JArray usersObj = (JArray)JsonConvert.DeserializeObject(File.ReadAllText(path));
                 if (usersObj == null) {
                     foreach (JObject o in usersObj) {
-                        User tempUser = (User)o.ToObject(typeof(UserData.User)); 
-                        users.Add(tempUser);
+                        User tempUser = (User)o.ToObject(typeof(UserData.User));
+                        lock (usersLock) {
+                            users.Add(tempUser);
+                        }
                     }
                 }
                 User patient = new User("zwen", "zwen", "Zwen van Erkelens", User.DoctorType.Client);
