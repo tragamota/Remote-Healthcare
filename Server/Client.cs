@@ -22,7 +22,6 @@ namespace Server {
         private List<User> users;
         public BikeSession session { get; set; }
         public User User { get; set; }
-        public List<User> users;
         public Client patient;
   
         public Client(TcpClient client, ref List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors, ref object usersLock, ref object connectedClientsLock, ref object connectedDoctorsLock) {
