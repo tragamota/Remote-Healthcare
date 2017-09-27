@@ -20,11 +20,14 @@ namespace Server {
         private List<Client> connectedClients, connectedDoctors;
         public BikeSession session { get; set; }
         public User User { get; set; }
+        public List<User> users;
+        public Client patient;
   
         public Client(TcpClient client, List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors) {
             this.client = client;
             this.connectedClients = connectedClients;
             this.connectedDoctors = connectedDoctors;
+            this.users = users;
 
             stream = this.client.GetStream();
             loginThread = new Thread(() => init(users));
@@ -75,11 +78,27 @@ namespace Server {
         }
 
         private void processIncomingMessage(JObject obj) {
-            switch ((string)obj["id"]) {
+            switch ((string)obj["id"])
+            {
                 case "update":
-                    update((JObject) obj["data"]);
+                    update((JObject)obj["data"]);
+                    break;
+                case "committingChanges":
+                    JObject data = (JObject)obj["data"];
+                    patient.writeMessage(data);
+                    break;
+                case "getPatients":
+                    writeMessage(users);
+                    break;
+                case "setPatient":
+                    User user = (User)obj["user"].ToObject(typeof(User));
+                    SetPatient(user);
                     break;
             }
+        }
+
+        private void writeToPatient(dynamic message)
+        {
         }
 
         public void StartRecording() {
@@ -134,12 +153,15 @@ namespace Server {
             return JObject.Parse(Encoding.UTF8.GetString(receiveBuffer));
         }
 
-        private void writeMessage(dynamic message) {
+        private void writeMessage(dynamic message)
+        {
             string json;
-            try {
+            try
+            {
                 json = JsonConvert.SerializeObject(message);
             }
-            catch (IOException e) {
+            catch (IOException e)
+            {
                 Console.WriteLine(e.StackTrace);
                 return;
             }
@@ -150,10 +172,12 @@ namespace Server {
             byte[] buffer = new Byte[prefixArray.Length + json.Length];
             prefixArray.CopyTo(buffer, 0);
             requestArray.CopyTo(buffer, prefixArray.Length);
-            try {
+            try
+            {
                 stream.Write(buffer, 0, buffer.Length);
             }
-            catch (IOException e) {
+            catch (IOException e)
+            {
                 Console.WriteLine(e.StackTrace);
             }
         }
@@ -161,6 +185,20 @@ namespace Server {
         private void closeStream() {
             stream.Dispose();
             client.Close();
+        }
+
+        public void SetPatient(User user)
+        {
+            foreach (Client patientClient in connectedClients)
+            {
+                byte[] bytes = Encoding.Default.GetBytes(patientClient.User.Hashcode);
+                string patientString = Encoding.UTF8.GetString(bytes);
+                bytes = Encoding.Default.GetBytes(user.Hashcode);
+                string userString = Encoding.UTF8.GetString(bytes);
+
+                if (patientString.Equals(userString))
+                    patient = patientClient;
+            }
         }
     }
 }

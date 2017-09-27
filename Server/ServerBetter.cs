@@ -28,7 +28,7 @@ namespace Server {
             connectedDoctors = new List<Client>();
 
             IPAddress Ip;
-            string usersPath = Directory.GetCurrentDirectory() + @"Users.json";
+            string usersPath = Directory.GetCurrentDirectory() + @"\Users.json";
 
             if (!IPAddress.TryParse(IPaddress, out Ip)) {
                 Console.WriteLine("The given IpAddress was not valid....\nClosing the server");
@@ -104,12 +104,17 @@ namespace Server {
         private void loadAllUsers(string path) {
             try {
                 JArray usersObj = (JArray)JsonConvert.DeserializeObject(File.ReadAllText(path));
-                if (usersObj != null) {
+                if (usersObj == null) {
                     foreach (JObject o in usersObj) {
                         User tempUser = (User)o.ToObject(typeof(UserData.User)); 
                         users.Add(tempUser);
                     }
                 }
+                User patient = new User("zwen", "zwen", "Zwen van Erkelens", User.DoctorType.Client);
+                User doctor = new User("bram", "bram", "Bram Stoof", User.DoctorType.Doctor);
+
+                users.Add(patient);
+                users.Add(doctor);
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);

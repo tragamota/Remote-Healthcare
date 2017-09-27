@@ -45,7 +45,7 @@ namespace Remote_Healtcare_Console
 
                 JObject jObject = JObject.Parse(client.ReadMessage());
                 string result = (string)jObject.GetValue("access");
-                if (result.Equals("approved")) {
+                if (result.Equals("True")) {
                     this.Hide();
                     Form Form1 = new Console(client);
                     Form1.Closed += (s, args) => this.Close();
@@ -60,11 +60,6 @@ namespace Remote_Healtcare_Console
             {
                 MessageBox.Show("Vul de velden in");
             }
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

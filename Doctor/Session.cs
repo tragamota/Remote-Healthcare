@@ -18,6 +18,12 @@ namespace Doctor
             InitializeComponent();
             this.patient = patient;
             this.client = client;
+
+            client.SendMessage(new
+            {
+                id = "setPatient",
+                user = patient
+            });
         }
 
         private void Start_Session_Btn_Click(object sender, EventArgs e)
@@ -28,12 +34,8 @@ namespace Doctor
 
         private void run()
         {
-            BikeSession session = new BikeSession(patient.Hashcode);
-
             while (active)
             {
-                session.SaveSessionToFile();
-
                 string json = client.ReadMessage();
                 BikeData data = (BikeData)JObject.Parse(json).ToObject(typeof(BikeData));
                 SetPulse(data.Pulse.ToString());
@@ -67,6 +69,25 @@ namespace Doctor
         {
             active = false;
             client.SendMessage("bye");
+        }
+
+        private void Scrolling(object sender, EventArgs e)
+        {
+            Temp_Resistance_Lbl.Text = Resistance_Track_Bar.Value + " %";
+        }
+
+        private void Stopped_Scrolling(object sender, MouseEventArgs e)
+        {
+            lblResistence.Text = Temp_Resistance_Lbl.Text;
+            
+            client.SendMessage(new
+            {
+                id = "committingChanges",
+                data = new
+                {
+                    resistance = ((375 / 100) * int.Parse(lblResistence.Text)).ToString()
+                }
+            });
         }
     }
 }

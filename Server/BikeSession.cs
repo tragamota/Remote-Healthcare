@@ -36,5 +36,10 @@ namespace Server {
                 Console.WriteLine(e.StackTrace);
             }
         }
+
+        public BikeData GetBikeData()
+        {
+            return data.Last();
+        }
     }
 }

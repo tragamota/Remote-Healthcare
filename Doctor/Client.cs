@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using UserData;
 
-namespace Remote_Healtcare_Console
+namespace Doctor
 {
     public class Client {
         private TcpClient client;
@@ -19,24 +19,21 @@ namespace Remote_Healtcare_Console
                 stream = client.GetStream();
             }
             catch (SocketException e) {
-                System.Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.StackTrace);
             }
         }
 
-        public string ReadMessage()
-        {
+        public string ReadMessage() {
             StringBuilder message = new StringBuilder();
 
             int numberOfBytesRead = 0;
             byte[] messageBytes = new byte[4];
             byte[] receiveBuffer;
 
-            try
-            {
+            try {
                 stream.Read(messageBytes, 0, messageBytes.Length);
                 receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
-                do
-                {
+                do {
                     numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
 
                     message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
@@ -44,58 +41,12 @@ namespace Remote_Healtcare_Console
                 }
                 while (message.Length < receiveBuffer.Length);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 System.Console.WriteLine(e.StackTrace);
                 return null;
             }
 
             return message.ToString();
-        }
-
-        public JObject ReadChanges()
-        {
-            int numberOfBytesRead = 0;
-            byte[] messageBytes = new byte[4];
-            byte[] receiveBuffer;
-
-            while (numberOfBytesRead < messageBytes.Length && client.Connected)
-            {
-                try
-                {
-                    numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
-                    Thread.Yield();
-                }
-                catch (IOException e)
-                {
-                    System.Console.WriteLine(e.StackTrace);
-                }
-            }
-
-            numberOfBytesRead = 0;
-            try
-            {
-                receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
-            }
-            catch (ArgumentException e)
-            {
-                System.Console.WriteLine(e.StackTrace);
-                return null;
-            }
-
-            while (numberOfBytesRead < receiveBuffer.Length && client.Connected)
-            {
-                try
-                {
-                    numberOfBytesRead += stream.Read(receiveBuffer, numberOfBytesRead, receiveBuffer.Length - numberOfBytesRead);
-                }
-                catch (IOException e)
-                {
-                    System.Console.WriteLine(e.StackTrace);
-                }
-            }
-
-            return JObject.Parse(Encoding.UTF8.GetString(receiveBuffer));
         }
 
         public void SendMessage(dynamic message) {

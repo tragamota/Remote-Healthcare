@@ -31,12 +31,17 @@ namespace Doctor
         private void login() {
             if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0)
             {
-                User user = new User(txtUsername.Text, txtPassword.Text, txtUsername.Text);
+                dynamic user = new
+                {
+                    username = txtUsername.Text,
+                    password = txtPassword.Text
+                };
                 client.SendMessage(user);
 
                 JObject jObject = JObject.Parse(client.ReadMessage());
                 string result = (string)jObject.GetValue("access");
-                if (result.Equals("approved")) {
+                if (result.Equals("True"))
+                {
                     this.Hide();
                     Form Form1 = new Dokter(client);
                     Form1.Closed += (s, args) => this.Close();

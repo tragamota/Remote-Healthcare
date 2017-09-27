@@ -1,32 +1,49 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
+using Newtonsoft.Json.Linq;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using UserData;
 
-namespace Remote_Healtcare_Console {
+namespace Remote_Healtcare_Console
+{
     class Bike : Kettler {
         private bool start;
         private SerialCommunicator serialCommunicator;
         private Client client;
         private Thread BikeThread;
+        private Thread ChangesThread;
 
         public Bike(string port, Console console, Client client) : base(console) {
             this.client = client;
             start = false;
             serialCommunicator = new SerialCommunicator(port);
             BikeThread = new Thread(InitBike);
+            ChangesThread = new Thread(changes);
+        }
+
+        private void changes()
+        {
+            while (serialCommunicator.IsConnected() && start)
+            {
+                SetChanges();
+                Thread.Sleep(500);
+            }
+        }
+
+        private void SetChanges()
+        {
+            string data = client.ReadMessage();
+            JObject obj = (JObject)JsonConvert.DeserializeObject(data);
+
+            int resistance = (int)obj["resistance"];
+            SetResistance(resistance);
         }
 
         public override void Start() {
             start = true;
             serialCommunicator.OpenConnection();
             BikeThread.Start();
+            ChangesThread.Start();
         }
 
         public override void Stop() {
@@ -118,8 +135,7 @@ namespace Remote_Healtcare_Console {
             else if (RecordedData.Last().Time != bikeData.Time) {
                 RecordedData.Add(bikeData);
             }
-
-
+            
             client.SendMessage(bikeData);
 
             SetDataToGUI();
