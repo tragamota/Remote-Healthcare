@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -21,7 +22,7 @@ namespace Doctor
             this.client = client;
             this.hashcode = hashcode;
             client.SendMessage(new{
-                id = "getpatients"
+                id = "getPatients"
             });
 
             JObject data = client.ReadMessage();
@@ -30,7 +31,7 @@ namespace Doctor
             foreach (User user in users)
             {
                 if(user.Type == DoctorType.Client)
-                    Awaiting_Patients_Box.Items.Add(user.FullName);
+                    Awaiting_Patients_Box.Items.Add(user);
             }
         }
 
@@ -39,7 +40,7 @@ namespace Doctor
             if(Awaiting_Patients_Box.SelectedItem != null)
             {
                 this.Hide();
-                Form session = new Session(users.Find(x => x.FullName.Equals(Awaiting_Patients_Box.SelectedItem)), client, hashcode);
+                Form session = new Session((User)Awaiting_Patients_Box.SelectedItem, client, hashcode);
                 session.Closed += (s, args) => this.Close();
                 session.Show();
             }
@@ -68,7 +69,15 @@ namespace Doctor
 
         private void Send_Message_Btn_Click(object sender, EventArgs e)
         {
-
+            string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + ((User)Awaiting_Patients_Box.SelectedItem).Hashcode + @"\";
+            if (Directory.Exists(pathToUserDir))
+            {
+                string[] files = Directory.GetFiles(pathToUserDir);
+                foreach (string file in files)
+                {
+                    Old_Sessions_Box.Items.Add(file);
+                }
+            }
         }
 
         private void button1_Click(object sender, EventArgs e) {
@@ -85,6 +94,19 @@ namespace Doctor
             };
             client.SendMessage(newUser);
             //Console.WriteLine(client.ReadMessage());
+        }
+
+        private void Selecting_Patient(object sender, EventArgs e)
+        {
+            string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + ((User)Awaiting_Patients_Box.SelectedItem).Hashcode + @"\";
+            if (Directory.Exists(pathToUserDir))
+            {
+                string[] files = Directory.GetFiles(pathToUserDir);
+                foreach (string file in files)
+                {
+                    Old_Sessions_Box.Items.Add(file);
+                }
+            }
         }
     }
 }

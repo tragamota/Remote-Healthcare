@@ -36,6 +36,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.Old_Sessions_Box = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // Awaiting_Patients_Box
@@ -58,16 +59,16 @@
             // 
             // Message_Txt_Box
             // 
-            this.Message_Txt_Box.Location = new System.Drawing.Point(190, 281);
+            this.Message_Txt_Box.Location = new System.Drawing.Point(361, 281);
             this.Message_Txt_Box.Multiline = true;
             this.Message_Txt_Box.Name = "Message_Txt_Box";
             this.Message_Txt_Box.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Message_Txt_Box.Size = new System.Drawing.Size(441, 78);
+            this.Message_Txt_Box.Size = new System.Drawing.Size(337, 78);
             this.Message_Txt_Box.TabIndex = 2;
             // 
             // Send_Message_Btn
             // 
-            this.Send_Message_Btn.Location = new System.Drawing.Point(637, 281);
+            this.Send_Message_Btn.Location = new System.Drawing.Point(704, 281);
             this.Send_Message_Btn.Name = "Send_Message_Btn";
             this.Send_Message_Btn.Size = new System.Drawing.Size(61, 78);
             this.Send_Message_Btn.TabIndex = 3;
@@ -109,11 +110,21 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // Old_Sessions_Box
+            // 
+            this.Old_Sessions_Box.FormattingEnabled = true;
+            this.Old_Sessions_Box.Location = new System.Drawing.Point(190, 12);
+            this.Old_Sessions_Box.Name = "Old_Sessions_Box";
+            this.Old_Sessions_Box.Size = new System.Drawing.Size(165, 303);
+            this.Old_Sessions_Box.TabIndex = 8;
+            this.Old_Sessions_Box.SelectedIndexChanged += new System.EventHandler(this.Selecting_Patient);
+            // 
             // Dokter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(777, 371);
+            this.Controls.Add(this.Old_Sessions_Box);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
@@ -140,6 +151,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ListBox Old_Sessions_Box;
     }
 }
 

@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -37,9 +38,10 @@ namespace Remote_Healtcare_Console
 
         private void login() {
             if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0) {
-                dynamic user = new {
-                    username = txtUsername.Text,
-                    password = txtPassword.Text
+                dynamic user = new
+                {
+                    username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(txtUsername.Text))),
+                    password = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(txtPassword.Text)))
                 };
                 client.SendMessage(user);
 
