@@ -2,6 +2,8 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
 using UserData;
 
@@ -19,7 +21,7 @@ namespace Doctor
             this.client = client;
             this.hashcode = hashcode;
             client.SendMessage(new{
-                id = "getPatients"
+                id = "getpatients"
             });
 
             JObject data = client.ReadMessage();
@@ -49,8 +51,13 @@ namespace Doctor
 
         private void Log_Out_Btn_Click(object sender, EventArgs e)
         {
-            client.SendMessage("bye");
-            this.Hide();
+            dynamic message = new {
+                id = "disconnect"
+            };
+            client.SendMessage(message);
+
+            Hide();
+            Environment.Exit(0);
         }
 
         private void Closing(object sender, FormClosingEventArgs e)
@@ -62,6 +69,22 @@ namespace Doctor
         private void Send_Message_Btn_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e) {
+            string username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(textBox1.Text)));
+            string password = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(textBox2.Text)));
+            dynamic newUser = new {
+                id = "add",
+                data = new {
+                    username = username,
+                    password = password,
+                    fullname = "Ian van de Poll",
+                    type = DoctorType.Client
+                }
+            };
+            client.SendMessage(newUser);
+            //Console.WriteLine(client.ReadMessage());
         }
     }
 }

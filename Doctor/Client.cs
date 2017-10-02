@@ -10,7 +10,7 @@ using UserData;
 namespace Doctor
 {
     public class Client {
-        private TcpClient client;
+        public TcpClient client { get; set; }
         private NetworkStream stream;
 
         public Client() {
@@ -23,7 +23,14 @@ namespace Doctor
             }
         }
 
-        public JObject ReadMessage() {
+        public void Reconnect() {
+            client.Close();
+            stream.Close();
+            client = new TcpClient("localhost", 1337);
+            stream = client.GetStream();
+        }
+
+        public string ReadMessage() {
             StringBuilder message = new StringBuilder();
 
             int numberOfBytesRead = 0;
@@ -31,13 +38,14 @@ namespace Doctor
             byte[] receiveBuffer;
 
             try {
-                stream.Read(messageBytes, 0, messageBytes.Length);
+                while (numberOfBytesRead < messageBytes.Length) {
+                    numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
+                }
                 receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
                 do {
                     numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
 
-                    message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
-
+                    message.AppendFormat("{0}", Encoding.Default.GetString(receiveBuffer, 0, numberOfBytesRead));
                 }
                 while (message.Length < receiveBuffer.Length);
             }
@@ -45,8 +53,8 @@ namespace Doctor
                 System.Console.WriteLine(e.StackTrace);
                 return null;
             }
-            
-            return JObject.Parse(message.ToString());
+
+            return message.ToString();
         }
 
         public void SendMessage(dynamic message) {

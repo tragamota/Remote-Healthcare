@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,8 +24,8 @@ namespace Server {
         private object usersLock, connectedDoctorsLock, connectedClientsLock;
 
         public ServerBetter(string IPaddress, int portNumber) {
-            serverRunning = true;
-            loadUsers = null;
+            serverRunning       = true;
+            loadUsers           = null;
             users               = new List<User>();
             connectedClients    = new List<Client>();
             connectedDoctors    = new List<Client>();
@@ -47,8 +48,8 @@ namespace Server {
                     loadUsers.Start();
                 }
                 else {
-                    users.Add(new User("test", "test", "Dokter", DoctorType.Doctor));
-                    users.Add(new User("test1", "test", "client"));
+                    string username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes("admin")));
+                    users.Add(new User(username, username, "Root", DoctorType.Doctor));
                     File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
                 }
             }
@@ -79,7 +80,13 @@ namespace Server {
                 }
             }
 
-            File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
+            try {
+                File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
+            }
+            catch(Exception e) {
+                Console.WriteLine(e.Source);
+            }
+            Environment.Exit(0);
         }
 
         private void run() {
@@ -117,7 +124,7 @@ namespace Server {
         private void loadAllUsers(string path) {
             try {
                 JArray usersObj = (JArray)JsonConvert.DeserializeObject(File.ReadAllText(path));
-                if (usersObj == null) {
+                if (usersObj != null) {
                     foreach (JObject o in usersObj) {
                         User tempUser = (User)o.ToObject(typeof(UserData.User));
                         lock (usersLock) {
@@ -125,11 +132,11 @@ namespace Server {
                         }
                     }
                 }
-                User patient = new User("zwen", "zwen", "Zwen van Erkelens", DoctorType.Client);
-                User doctor = new User("bram", "bram", "Bram Stoof", DoctorType.Doctor);
+                //User patient = new User("zwen", "zwen", "Zwen van Erkelens", DoctorType.Client);
+                //User doctor = new User("bram", "bram", "Bram Stoof", DoctorType.Doctor);
 
-                users.Add(patient);
-                users.Add(doctor);
+                //users.Add(patient);
+                //users.Add(doctor);
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
