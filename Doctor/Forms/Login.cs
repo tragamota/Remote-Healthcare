@@ -14,11 +14,11 @@ namespace Doctor
         public Login()
         {
             InitializeComponent();
-            client = new Client();
         }
 
         private void BLog_in_Click(object sender, EventArgs e)
         {
+            client = new Client();
             login();
         }
 

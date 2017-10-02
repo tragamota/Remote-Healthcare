@@ -60,6 +60,7 @@ namespace Server {
                         };
                         writeMessage(response);
                         found = true;
+                        new Thread(() => run()).Start();
                         break;
                     }
                 }
@@ -72,8 +73,6 @@ namespace Server {
                 writeMessage(response);
                 closeStream();
             }
-
-            new Thread(() => run()).Start();
         }
 
         private void run() {
