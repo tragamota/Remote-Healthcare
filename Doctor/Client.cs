@@ -30,7 +30,7 @@ namespace Doctor
             stream = client.GetStream();
         }
 
-        public string ReadMessage() {
+        public JObject ReadMessage() {
             StringBuilder message = new StringBuilder();
 
             int numberOfBytesRead = 0;
@@ -54,7 +54,7 @@ namespace Doctor
                 return null;
             }
 
-            return message.ToString();
+            return JObject.Parse(message.ToString());
         }
 
         public void SendMessage(dynamic message) {

@@ -210,10 +210,13 @@ namespace Server {
             }
         }
 
-        public void StartRecording() {
-            if (User.Type == DoctorType.Client) {
+        public void StartRecording()
+        {
+            if (User.Type == DoctorType.Client)
+            {
                 session = new BikeSession(User.Hashcode);
-            //new Thread(() => SendBikeData()).Start();
+                //new Thread(() => SendBikeData()).Start();
+            }
         }
 
         public void SendBikeData()
@@ -347,7 +350,7 @@ namespace Server {
             }
         }
 
-        private void writeMessage(dynamic message) {
+        public void writeMessage(dynamic message) {
             string json;
             try {
                 json = JsonConvert.SerializeObject(message);

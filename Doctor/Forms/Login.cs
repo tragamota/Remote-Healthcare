@@ -42,7 +42,7 @@ namespace Doctor {
                     client.SendMessage(user);
                 }
 
-                JObject jObject = JObject.Parse(client.ReadMessage());
+                JObject jObject = client.ReadMessage();
                 bool result = (bool)jObject["access"];
                
                 if (result == true) {
@@ -61,7 +61,7 @@ namespace Doctor {
                     }
 
                     Hide();
-                    Form Form1 = new Dokter(client);
+                    Form Form1 = new Dokter(client, Credentials.Hashcode);
                     Form1.Closed += (s, args) => this.Close();
                     Form1.Show();
                 }
