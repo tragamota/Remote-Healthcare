@@ -113,7 +113,6 @@ namespace Remote_Healtcare_Console
                 trueResistance = resistance;
             }
             serialCommunicator.SendMessage("PW " + trueResistance);
-            serialCommunicator.ReadInput();
         }
 
         public override void SetTime(int mm, int ss) {
