@@ -38,7 +38,7 @@ namespace Doctor
                 };
                 client.SendMessage(user);
 
-                JObject jObject = JObject.Parse(client.ReadMessage());
+                JObject jObject = client.ReadMessage();
                 string result = (string)jObject.GetValue("access");
                 if (result.Equals("True"))
                 {

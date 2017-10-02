@@ -23,7 +23,7 @@ namespace Doctor
             }
         }
 
-        public string ReadMessage() {
+        public JObject ReadMessage() {
             StringBuilder message = new StringBuilder();
 
             int numberOfBytesRead = 0;
@@ -45,8 +45,8 @@ namespace Doctor
                 System.Console.WriteLine(e.StackTrace);
                 return null;
             }
-
-            return message.ToString();
+            
+            return JObject.Parse(message.ToString());
         }
 
         public void SendMessage(dynamic message) {
@@ -72,49 +72,6 @@ namespace Doctor
             catch (Exception e) {
                 System.Console.WriteLine(e.StackTrace);
             }
-        }
-
-        public void SendMessage(string message)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            byte[] prefixArray = BitConverter.GetBytes(message.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(message);
-
-            buffer = new Byte[prefixArray.Length + message.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
-        }
-
-        public void SendMessage(User user)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            string json = JsonConvert.SerializeObject(user);
-
-            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-            buffer = new Byte[prefixArray.Length + json.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
-        }
-
-        public void SendMessage(BikeData data)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            string json = JsonConvert.SerializeObject(data);
-
-            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-            buffer = new Byte[prefixArray.Length + json.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
         }
     }
 }

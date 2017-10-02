@@ -23,7 +23,7 @@ namespace Remote_Healtcare_Console
             }
         }
 
-        public string ReadMessage()
+        public JObject ReadMessage()
         {
             StringBuilder message = new StringBuilder();
 
@@ -50,52 +50,7 @@ namespace Remote_Healtcare_Console
                 return null;
             }
 
-            return message.ToString();
-        }
-
-        public JObject ReadChanges()
-        {
-            int numberOfBytesRead = 0;
-            byte[] messageBytes = new byte[4];
-            byte[] receiveBuffer;
-
-            while (numberOfBytesRead < messageBytes.Length && client.Connected)
-            {
-                try
-                {
-                    numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
-                    Thread.Yield();
-                }
-                catch (IOException e)
-                {
-                    System.Console.WriteLine(e.StackTrace);
-                }
-            }
-
-            numberOfBytesRead = 0;
-            try
-            {
-                receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
-            }
-            catch (ArgumentException e)
-            {
-                System.Console.WriteLine(e.StackTrace);
-                return null;
-            }
-
-            while (numberOfBytesRead < receiveBuffer.Length && client.Connected)
-            {
-                try
-                {
-                    numberOfBytesRead += stream.Read(receiveBuffer, numberOfBytesRead, receiveBuffer.Length - numberOfBytesRead);
-                }
-                catch (IOException e)
-                {
-                    System.Console.WriteLine(e.StackTrace);
-                }
-            }
-
-            return JObject.Parse(Encoding.UTF8.GetString(receiveBuffer));
+            return JObject.Parse(message.ToString());
         }
 
         public void SendMessage(dynamic message) {
@@ -121,49 +76,6 @@ namespace Remote_Healtcare_Console
             catch (Exception e) {
                 System.Console.WriteLine(e.StackTrace);
             }
-        }
-
-        public void SendMessage(string message)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            byte[] prefixArray = BitConverter.GetBytes(message.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(message);
-
-            buffer = new Byte[prefixArray.Length + message.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
-        }
-
-        public void SendMessage(User user)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            string json = JsonConvert.SerializeObject(user);
-
-            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-            buffer = new Byte[prefixArray.Length + json.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
-        }
-
-        public void SendMessage(BikeData data)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            string json = JsonConvert.SerializeObject(data);
-
-            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-            buffer = new Byte[prefixArray.Length + json.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
         }
     }
 }

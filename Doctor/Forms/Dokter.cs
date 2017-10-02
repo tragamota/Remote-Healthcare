@@ -20,8 +20,8 @@ namespace Doctor
                 id = "getPatients"
             });
 
-            string data = client.ReadMessage();
-            users = JsonConvert.DeserializeObject<List<User>>(data);
+            JObject data = client.ReadMessage();
+            users = (List<User>)data["users"].ToObject(typeof(List<User>));
 
             foreach (User user in users)
             {

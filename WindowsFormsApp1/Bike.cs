@@ -32,8 +32,7 @@ namespace Remote_Healtcare_Console
 
         private void SetChanges()
         {
-            string data = client.ReadMessage();
-            JObject obj = (JObject)JsonConvert.DeserializeObject(data);
+            JObject obj = client.ReadMessage();
 
             switch ((string)obj["id"])
             {
@@ -45,6 +44,13 @@ namespace Remote_Healtcare_Console
                     string message = (string)obj["data"]["message"];
                     console.AddMessage(message);
                     break;
+                case ("start"):
+                    client.SendMessage(new
+                    {
+                        id = "start"
+                    });
+                    BikeThread.Start();
+                    break;
             }
 
         }
@@ -52,7 +58,6 @@ namespace Remote_Healtcare_Console
         public override void Start() {
             start = true;
             serialCommunicator.OpenConnection();
-            BikeThread.Start();
             ChangesThread.Start();
         }
 
@@ -146,7 +151,15 @@ namespace Remote_Healtcare_Console
                 RecordedData.Add(bikeData);
             }
             
-            client.SendMessage(bikeData);
+            client.SendMessage(new
+            {
+                id = "sendData",
+                data = new
+                {
+                    id = "receiveData",
+                    bikeData = bikeData
+                }
+            });
 
             SetDataToGUI();
         }

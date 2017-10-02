@@ -23,6 +23,7 @@ namespace Server {
         public BikeSession session { get; set; }
         public User User { get; set; }
         public Client patient;
+        public Client doctor;
   
         public Client(TcpClient client, ref List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors, ref object usersLock, ref object connectedClientsLock, ref object connectedDoctorsLock) {
             this.client = client;
@@ -107,17 +108,39 @@ namespace Server {
                     patient.writeMessage(data);
                     break;
                 case "getPatients":
-                    writeMessage(users);
+                    writeMessage(new
+                    {
+                        users = users
+                    });
                     break;
                 case "setPatient":
-                    User user = (User)obj["user"].ToObject(typeof(User));
-                    SetPatient(user);
+                    User patientUser = (User)obj["data"]["patient"].ToObject(typeof(User));
+                    SetPatient(patientUser);
+                    patient.writeMessage(obj["data"]["doctor"]);
+                    break;
+                case "setDoctor":
+                    Client doctorClient = (Client)obj["doctor"].ToObject(typeof(Client));
+                    doctor = doctorClient;
                     break;
                 case "startRecording":
-                    StartRecording();
+                    patient.writeMessage(new
+                    {
+                        id = "start"
+                    });
+                    break;
+                case "start":
                     break;
                 case "stopRecording":
                     StopRecording();
+                    break;
+                case "sendData":
+                    if(session == null)
+                        StartRecording();
+                    session.AddBikeData((BikeData)obj["data"]["bikeData"].ToObject(typeof(BikeData)));
+                    doctor.writeMessage(obj["data"]);
+                    break;
+                case "receiveData":
+                    writeMessage(obj["bikeData"]);
                     break;
                 case "add":
                     new Thread(() => addUser((JObject)obj["data"])).Start();
@@ -170,7 +193,7 @@ namespace Server {
                 session = new BikeSession(patient.User.Hashcode);
             else
                 session = new BikeSession(User.Hashcode);
-            new Thread(() => SendBikeData()).Start();
+            //new Thread(() => SendBikeData()).Start();
         }
 
         public void SendBikeData()
@@ -344,6 +367,20 @@ namespace Server {
 
                 if (patientString.Equals(userString))
                     patient = patientClient;
+            }
+        }
+
+        private void SetDoctor(User user)
+        {
+            foreach (Client doctorClient in connectedDoctors)
+            {
+                byte[] bytes = Encoding.Default.GetBytes(doctorClient.User.Hashcode);
+                string doctorString = Encoding.UTF8.GetString(bytes);
+                bytes = Encoding.Default.GetBytes(user.Hashcode);
+                string userString = Encoding.UTF8.GetString(bytes);
+
+                if (doctorString.Equals(userString))
+                    doctor = doctorClient;
             }
         }
     }

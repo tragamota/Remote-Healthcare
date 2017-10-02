@@ -22,7 +22,15 @@ namespace Doctor
             client.SendMessage(new
             {
                 id = "setPatient",
-                user = patient
+                data = new
+                {
+                    doctor = new
+                    {
+                        id = "setDoctor",
+                        doctor = client
+                    },
+                    patient = patient
+                }
             });
         }
 
@@ -30,8 +38,7 @@ namespace Doctor
         {
             while (active)
             {
-                string json = client.ReadMessage();
-                BikeData data = (BikeData)JObject.Parse(json).ToObject(typeof(BikeData));
+                BikeData data = (BikeData)client.ReadMessage().ToObject(typeof(BikeData));
                 SetPulse(data.Pulse.ToString());
                 SetRoundMin(data.Rpm.ToString());
                 SetSpeed(data.Speed.ToString());
