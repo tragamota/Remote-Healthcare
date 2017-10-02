@@ -33,6 +33,9 @@
             this.Message_Txt_Box = new System.Windows.Forms.TextBox();
             this.Send_Message_Btn = new System.Windows.Forms.Button();
             this.Log_Out_Btn = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Awaiting_Patients_Box
@@ -40,12 +43,12 @@
             this.Awaiting_Patients_Box.FormattingEnabled = true;
             this.Awaiting_Patients_Box.Location = new System.Drawing.Point(12, 12);
             this.Awaiting_Patients_Box.Name = "Awaiting_Patients_Box";
-            this.Awaiting_Patients_Box.Size = new System.Drawing.Size(172, 186);
+            this.Awaiting_Patients_Box.Size = new System.Drawing.Size(172, 303);
             this.Awaiting_Patients_Box.TabIndex = 0;
             // 
             // Connect_Btn
             // 
-            this.Connect_Btn.Location = new System.Drawing.Point(190, 12);
+            this.Connect_Btn.Location = new System.Drawing.Point(12, 323);
             this.Connect_Btn.Name = "Connect_Btn";
             this.Connect_Btn.Size = new System.Drawing.Size(75, 36);
             this.Connect_Btn.TabIndex = 1;
@@ -55,16 +58,16 @@
             // 
             // Message_Txt_Box
             // 
-            this.Message_Txt_Box.Location = new System.Drawing.Point(190, 120);
+            this.Message_Txt_Box.Location = new System.Drawing.Point(190, 281);
             this.Message_Txt_Box.Multiline = true;
             this.Message_Txt_Box.Name = "Message_Txt_Box";
             this.Message_Txt_Box.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.Message_Txt_Box.Size = new System.Drawing.Size(271, 78);
+            this.Message_Txt_Box.Size = new System.Drawing.Size(441, 78);
             this.Message_Txt_Box.TabIndex = 2;
             // 
             // Send_Message_Btn
             // 
-            this.Send_Message_Btn.Location = new System.Drawing.Point(467, 120);
+            this.Send_Message_Btn.Location = new System.Drawing.Point(637, 281);
             this.Send_Message_Btn.Name = "Send_Message_Btn";
             this.Send_Message_Btn.Size = new System.Drawing.Size(61, 78);
             this.Send_Message_Btn.TabIndex = 3;
@@ -74,7 +77,7 @@
             // 
             // Log_Out_Btn
             // 
-            this.Log_Out_Btn.Location = new System.Drawing.Point(451, 12);
+            this.Log_Out_Btn.Location = new System.Drawing.Point(93, 323);
             this.Log_Out_Btn.Name = "Log_Out_Btn";
             this.Log_Out_Btn.Size = new System.Drawing.Size(77, 36);
             this.Log_Out_Btn.TabIndex = 4;
@@ -82,11 +85,38 @@
             this.Log_Out_Btn.UseVisualStyleBackColor = true;
             this.Log_Out_Btn.Click += new System.EventHandler(this.Log_Out_Btn_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(361, 12);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(214, 20);
+            this.textBox1.TabIndex = 5;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(361, 50);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(214, 20);
+            this.textBox2.TabIndex = 6;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(591, 32);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Dokter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(540, 207);
+            this.ClientSize = new System.Drawing.Size(777, 371);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.Log_Out_Btn);
             this.Controls.Add(this.Send_Message_Btn);
             this.Controls.Add(this.Message_Txt_Box);
@@ -107,6 +137,9 @@
         private System.Windows.Forms.TextBox Message_Txt_Box;
         private System.Windows.Forms.Button Send_Message_Btn;
         private System.Windows.Forms.Button Log_Out_Btn;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button button1;
     }
 }
 

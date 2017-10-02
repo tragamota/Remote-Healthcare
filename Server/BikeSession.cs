@@ -19,11 +19,6 @@ namespace Server {
             data = new List<BikeData>();
         }
 
-        public void AddBikeData(BikeData bikeData)
-        {
-            data.Add(bikeData);
-        }
-
         public void SaveSessionToFile() {
             string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + userHash;
             string pathToSessionFile = pathToUserDir + @"\" + sessionDateTime + ".json";
@@ -40,11 +35,6 @@ namespace Server {
             catch(IOException e) {
                 Console.WriteLine(e.StackTrace);
             }
-        }
-
-        public BikeData GetLatestBikeData()
-        {
-            return data.Last();
         }
     }
 }

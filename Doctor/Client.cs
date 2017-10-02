@@ -10,7 +10,7 @@ using UserData;
 namespace Doctor
 {
     public class Client {
-        private TcpClient client;
+        public TcpClient client { get; set; }
         private NetworkStream stream;
 
         public Client() {
@@ -23,6 +23,13 @@ namespace Doctor
             }
         }
 
+        public void Reconnect() {
+            client.Close();
+            stream.Close();
+            client = new TcpClient("localhost", 1337);
+            stream = client.GetStream();
+        }
+
         public string ReadMessage() {
             StringBuilder message = new StringBuilder();
 
@@ -31,13 +38,14 @@ namespace Doctor
             byte[] receiveBuffer;
 
             try {
-                stream.Read(messageBytes, 0, messageBytes.Length);
+                while (numberOfBytesRead < messageBytes.Length) {
+                    numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
+                }
                 receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
                 do {
                     numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
 
-                    message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
-
+                    message.AppendFormat("{0}", Encoding.Default.GetString(receiveBuffer, 0, numberOfBytesRead));
                 }
                 while (message.Length < receiveBuffer.Length);
             }
@@ -72,49 +80,6 @@ namespace Doctor
             catch (Exception e) {
                 System.Console.WriteLine(e.StackTrace);
             }
-        }
-
-        public void SendMessage(string message)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            byte[] prefixArray = BitConverter.GetBytes(message.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(message);
-
-            buffer = new Byte[prefixArray.Length + message.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
-        }
-
-        public void SendMessage(User user)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            string json = JsonConvert.SerializeObject(user);
-
-            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-            buffer = new Byte[prefixArray.Length + json.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
-        }
-
-        public void SendMessage(BikeData data)
-        {
-            NetworkStream stream = client.GetStream();
-            byte[] buffer;
-            string json = JsonConvert.SerializeObject(data);
-
-            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-            buffer = new Byte[prefixArray.Length + json.Length];
-            prefixArray.CopyTo(buffer, 0);
-            requestArray.CopyTo(buffer, prefixArray.Length);
-            stream.Write(buffer, 0, buffer.Length);
         }
     }
 }

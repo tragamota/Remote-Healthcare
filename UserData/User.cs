@@ -17,7 +17,7 @@ namespace UserData {
             this.username = username;
             this.password = password;
             this.FullName = fullName;
-            this.Hashcode = Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(hashcode));
+            this.Hashcode = hashcode;
             this.Type = type;
         }
 
@@ -26,7 +26,7 @@ namespace UserData {
             this.password = password;
             this.FullName = fullName;
             this.Type = DoctorType.Client;
-            Hashcode = Encoding.UTF8.GetString(new SHA256Managed().ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.Ticks.ToString())));
+            Hashcode = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(DateTime.UtcNow.Ticks.ToString() + username)));
         }
 
         public User(string username, string password, string fullName, DoctorType type) {
@@ -34,7 +34,7 @@ namespace UserData {
             this.password = password;
             this.FullName = fullName;
             this.Type = type;
-            Hashcode = Encoding.UTF8.GetString(new SHA256Managed().ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.Ticks.ToString())));
+            Hashcode = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(DateTime.UtcNow.Ticks.ToString() + username)));
         }
 
         public string Password {
