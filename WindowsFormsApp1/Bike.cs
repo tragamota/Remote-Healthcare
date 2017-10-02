@@ -37,12 +37,15 @@ namespace Remote_Healtcare_Console
             switch ((string)obj["id"])
             {
                 case ("setResistance"):
-                    int resistance = (int)obj["resistance"];
+                    int resistance = (int)obj["data"]["resistance"];
                     SetResistance(resistance);
                     break;
                 case ("chat"):
                     string message = (string)obj["data"]["message"];
                     console.AddMessage(message);
+                    break;
+                case "setDoctor":
+                    client.SendMessage(obj);
                     break;
                 case ("start"):
                     client.SendMessage(new
@@ -50,6 +53,9 @@ namespace Remote_Healtcare_Console
                         id = "start"
                     });
                     BikeThread.Start();
+                    break;
+                case ("stopRecording"):
+                    client.SendMessage(obj);
                     break;
             }
 
@@ -156,7 +162,6 @@ namespace Remote_Healtcare_Console
                 id = "sendData",
                 data = new
                 {
-                    id = "receiveData",
                     bikeData = bikeData
                 }
             });

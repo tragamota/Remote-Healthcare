@@ -25,8 +25,8 @@ namespace Server {
         }
 
         public void SaveSessionToFile() {
-            string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + userHash;
-            string pathToSessionFile = pathToUserDir + @"\" + sessionDateTime + ".json";
+            string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + userHash + @"\";
+            string pathToSessionFile = Path.Combine(pathToUserDir, sessionDateTime.ToString().Replace(":", "-") + ".json");
             if(!Directory.Exists(pathToUserDir)) {
                 Directory.CreateDirectory(pathToUserDir);
             }

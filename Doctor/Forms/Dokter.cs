@@ -11,11 +11,13 @@ namespace Doctor
     {
         Client client;
         List<User> users;
+        string hashcode;
         
-        public Dokter(Client client)
+        public Dokter(Client client, string hashcode)
         {
             InitializeComponent();
             this.client = client;
+            this.hashcode = hashcode;
             client.SendMessage(new{
                 id = "getPatients"
             });
@@ -35,7 +37,7 @@ namespace Doctor
             if(Awaiting_Patients_Box.SelectedItem != null)
             {
                 this.Hide();
-                Form session = new Session(users.Find(x => x.FullName.Equals(Awaiting_Patients_Box.SelectedItem)), client);
+                Form session = new Session(users.Find(x => x.FullName.Equals(Awaiting_Patients_Box.SelectedItem)), client, hashcode);
                 session.Closed += (s, args) => this.Close();
                 session.Show();
             }

@@ -119,8 +119,8 @@ namespace Server {
                     patient.writeMessage(obj["data"]["doctor"]);
                     break;
                 case "setDoctor":
-                    Client doctorClient = (Client)obj["doctor"].ToObject(typeof(Client));
-                    doctor = doctorClient;
+                    string hashcode = (string)obj["doctor"];
+                    SetDoctor(hashcode);
                     break;
                 case "startRecording":
                     patient.writeMessage(new
@@ -128,19 +128,17 @@ namespace Server {
                         id = "start"
                     });
                     break;
-                case "start":
-                    break;
                 case "stopRecording":
-                    StopRecording();
+                    if (patient != null)
+                        patient.writeMessage(obj);
+                    else
+                        StopRecording();
                     break;
                 case "sendData":
                     if(session == null)
                         StartRecording();
                     session.AddBikeData((BikeData)obj["data"]["bikeData"].ToObject(typeof(BikeData)));
                     doctor.writeMessage(obj["data"]);
-                    break;
-                case "receiveData":
-                    writeMessage(obj["bikeData"]);
                     break;
                 case "add":
                     new Thread(() => addUser((JObject)obj["data"])).Start();
@@ -361,23 +359,23 @@ namespace Server {
             foreach (Client patientClient in connectedClients)
             {
                 byte[] bytes = Encoding.Default.GetBytes(patientClient.User.Hashcode);
-                string patientString = Encoding.UTF8.GetString(bytes);
+                string patientString = Encoding.Unicode.GetString(bytes);
                 bytes = Encoding.Default.GetBytes(user.Hashcode);
-                string userString = Encoding.UTF8.GetString(bytes);
+                string userString = Encoding.Unicode.GetString(bytes);
 
                 if (patientString.Equals(userString))
                     patient = patientClient;
             }
         }
 
-        private void SetDoctor(User user)
+        private void SetDoctor(string hashcode)
         {
             foreach (Client doctorClient in connectedDoctors)
             {
                 byte[] bytes = Encoding.Default.GetBytes(doctorClient.User.Hashcode);
-                string doctorString = Encoding.UTF8.GetString(bytes);
-                bytes = Encoding.Default.GetBytes(user.Hashcode);
-                string userString = Encoding.UTF8.GetString(bytes);
+                string doctorString = Encoding.Unicode.GetString(bytes);
+                bytes = Encoding.Default.GetBytes(hashcode);
+                string userString = Encoding.Unicode.GetString(bytes);
 
                 if (doctorString.Equals(userString))
                     doctor = doctorClient;

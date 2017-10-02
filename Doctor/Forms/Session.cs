@@ -13,7 +13,7 @@ namespace Doctor
         Client client;
         bool active;
 
-        public Session(User patient, Client client)
+        public Session(User patient, Client client, string hashcode)
         {
             InitializeComponent();
             this.patient = patient;
@@ -27,7 +27,7 @@ namespace Doctor
                     doctor = new
                     {
                         id = "setDoctor",
-                        doctor = client
+                        doctor = hashcode
                     },
                     patient = patient
                 }
@@ -38,7 +38,8 @@ namespace Doctor
         {
             while (active)
             {
-                BikeData data = (BikeData)client.ReadMessage().ToObject(typeof(BikeData));
+                JObject json = client.ReadMessage();
+                BikeData data = (BikeData)json["bikeData"].ToObject(typeof(BikeData));
                 SetPulse(data.Pulse.ToString());
                 SetRoundMin(data.Rpm.ToString());
                 SetSpeed(data.Speed.ToString());
@@ -50,21 +51,69 @@ namespace Doctor
             }
         }
 
-        public void SetPulse(String s) { lblPulse.Text = s; }
+        public void SetPulse(String s) {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(SetPulse), new object[] { s });
+                return;
+            }
+            lblPulse.Text = s; }
 
-        public void SetRoundMin(String s) { lblRoundMin.Text = s; }
+        public void SetRoundMin(String s) {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(SetRoundMin), new object[] { s });
+                return;
+            }
+            lblRoundMin.Text = s; }
 
-        public void SetSpeed(String s) { lblSpeed.Text = s; }
+        public void SetSpeed(String s) {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(SetSpeed), new object[] { s });
+                return;
+            }
+            lblSpeed.Text = s; }
 
-        public void SetDistance(String s) { lblDistance.Text = s; }
+        public void SetDistance(String s) {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(SetDistance), new object[] { s });
+                return;
+            }
+            lblDistance.Text = s; }
 
-        public void SetResistance(String s) { lblResistence.Text = s; }
+        public void SetResistance(String s) {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(SetResistance), new object[] { s });
+                return;
+            }
+            lblResistence.Text = s; }
 
-        public void SetEnergy(String s) { lblEnergy.Text = s; }
+        public void SetEnergy(String s) {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(SetEnergy), new object[] { s });
+                return;
+            }
+            lblEnergy.Text = s; }
 
-        public void SetTime(String s) { lblTime.Text = s; }
+        public void SetTime(String s) {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(SetTime), new object[] { s });
+                return;
+            }
+            lblTime.Text = s; }
 
-        public void SetWatt(String s) { lblWatt.Text = s; }
+        public void SetWatt(String s) {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(SetWatt), new object[] { s });
+                return;
+            }
+            lblWatt.Text = s; }
 
         private void Closing(object sender, FormClosingEventArgs e)
         {
@@ -81,7 +130,7 @@ namespace Doctor
         {
             lblResistence.Text = Temp_Resistance_Lbl.Text;
 
-            string resistance = ((375 / 100) * int.Parse(lblResistence.Text)).ToString();
+            int resistance = (375 / 100) * (Resistance_Track_Bar.Value - (Resistance_Track_Bar.Value  % 5)) + 25;
 
             client.SendMessage(new
             {
@@ -121,7 +170,7 @@ namespace Doctor
             });
 
             active = true;
-            new Thread(run).Start();
+            new Thread(() => run()).Start();
         }
 
         private void Stop_Session_Btn_Click(object sender, EventArgs e)
