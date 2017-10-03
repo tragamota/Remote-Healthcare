@@ -146,8 +146,20 @@ namespace Server {
             }
         }
 
-        private void sendBroadcastMessage(JObject jObject) {
-            throw new NotImplementedException();
+        private void sendBroadcastMessage(JObject data) {
+            string messageFromDoc = (string)data["message"];
+            dynamic message = new {
+                id = "message",
+                data = new {
+                    message = messageFromDoc
+                }
+            };
+
+            lock(connectedDoctorsLock) {
+                foreach(Client user in connectedClients) {
+                    new Thread(() => user.writeMessage(message)).Start();
+                }
+            }
         }
 
         private void sendPM(JObject jObject) {

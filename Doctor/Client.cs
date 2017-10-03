@@ -15,19 +15,12 @@ namespace Doctor
 
         public Client() {
             try {
-                client = new TcpClient("localhost", 1337);
+                client = new TcpClient("192.168.0.39", 1337);
                 stream = client.GetStream();
             }
             catch (SocketException e) {
                 Console.WriteLine(e.StackTrace);
             }
-        }
-
-        public void Reconnect() {
-            client.Close();
-            stream.Close();
-            client = new TcpClient("localhost", 1337);
-            stream = client.GetStream();
         }
 
         public string ReadMessage() {

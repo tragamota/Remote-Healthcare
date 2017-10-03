@@ -42,7 +42,7 @@ namespace Server {
             }
 
             try {
-                socket = new TcpListener(Ip, portNumber);
+                socket = new TcpListener(IPAddress.Any, portNumber);
                 if (File.Exists(usersPath)) {
                     loadUsers = new Thread(() => loadAllUsers(usersPath));
                     loadUsers.Start();
