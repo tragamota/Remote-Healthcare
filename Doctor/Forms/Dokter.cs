@@ -27,7 +27,7 @@ namespace Doctor
 
             foreach (User user in users)
             {
-                if(user.Type == DoctorType.Client)
+                if(user.Type == UserType.Client)
                     Awaiting_Patients_Box.Items.Add(user.FullName);
             }
         }
@@ -78,7 +78,7 @@ namespace Doctor
                     username = username,
                     password = password,
                     fullname = "Ian van de Poll",
-                    type = DoctorType.Client
+                    type = UserType.Client
                 }
             };
             client.SendMessage(newUser);

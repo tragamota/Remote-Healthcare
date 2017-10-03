@@ -84,7 +84,7 @@ namespace Server {
                     processIncomingMessage(message);
                 }
             }
-            if (User.Type == DoctorType.Doctor) {
+            if (User.Type == UserType.Doctor) {
                 lock (connectedDoctorsLock) {
                     connectedDoctors.Remove(this);
                 }
@@ -108,7 +108,7 @@ namespace Server {
                     //patient.writeMessage(data);
                     break;
                 case "getpatients":
-                    new Thread(() => sendAllClients()).Start();
+                    new Thread(() => getAllClients()).Start();
                     break;
                 case "startrecording":
                     StartRecording();
@@ -116,11 +116,23 @@ namespace Server {
                 case "stoprecording":
                     StopRecording();
                     break;
+                case "sendmessagetoperson":
+                    new Thread(() => sendPM((JObject)obj["data"])).Start();
+                    break;
+                case "sendbroadcast":
+                    new Thread(() => sendBroadcastMessage((JObject)obj["data"])).Start();
+                    break;
                 case "add":
                     new Thread(() => addUser((JObject)obj["data"])).Start();
                     break;
                 case "delete":
                     new Thread(() => deleteUser((JObject)obj["data"])).Start();
+                    break;
+                case "changepass":
+                    new Thread(() => changePassword((JObject)obj["data"]));
+                    break;
+                case "changeuser":
+                    new Thread(() => changeUsername((JObject)obj["data"])).Start();
                     break;
                 case "power":
                     new Thread(() => setPower((JObject)obj["data"])).Start();
@@ -134,7 +146,15 @@ namespace Server {
             }
         }
 
-        private void sendAllClients() {
+        private void sendBroadcastMessage(JObject jObject) {
+            throw new NotImplementedException();
+        }
+
+        private void sendPM(JObject jObject) {
+            throw new NotImplementedException();
+        }
+
+        private void getAllClients() {
             writeMessage(users);
         }
 
@@ -143,7 +163,7 @@ namespace Server {
         }
 
         private void setPower(JObject obj) {
-            if (User.Type == DoctorType.Doctor) {
+            if (User.Type == UserType.Doctor) {
                 Client Tempuser = null;
                 string hashcode = (string)obj["hashcode"];
                 int power = (int)obj["power"];
@@ -186,13 +206,15 @@ namespace Server {
         }
 
         public void StartRecording() {
-            if (User.Type == DoctorType.Client) {
-                session = new BikeSession(User.Hashcode);
+            if (User.Type == UserType.Client) {
+                if (session != null) {
+                    session = new BikeSession(User.Hashcode);
+                }
             }
         }
 
         public void StopRecording() {
-            if (User.Type == DoctorType.Client) {
+            if (User.Type == UserType.Client) {
                 lock (sessionLock) {
                     session.SaveSessionToFile();
                     session = null;
@@ -201,7 +223,7 @@ namespace Server {
         }
 
         private void update(JObject data) {
-            if (User.Type == DoctorType.Client) {
+            if (User.Type == UserType.Client) {
                 lock (sessionLock) {
                     if (session != null) {
                         BikeData dataConverted = data.ToObject<BikeData>();
@@ -212,17 +234,17 @@ namespace Server {
         }
 
         private void addUser(JObject data) {
-            if (User.Type == DoctorType.Doctor) {
+            if (User.Type == UserType.Doctor) {
                 string username = (string)data["username"];
                 string password = (string)data["password"];
                 string fullName = (string)data["fullname"];
                 int clientType = (int)data["type"];
-                User tempUser = new User(username, password, fullName, (DoctorType)clientType);
+                User tempUser = new User(username, password, fullName, (UserType)clientType);
 
                 bool exists = false;
                 lock (usersLock) {
                     foreach (User user in users) {
-                        if (user == this.User) {
+                        if (user == User) {
                             continue;
                         }
                         else {
@@ -233,21 +255,31 @@ namespace Server {
                         }
                     }
                 }
+
                 if (!exists) {
-                    users.Add(new User(username, password, fullName, (DoctorType)clientType));
-                    //write response
+                    users.Add(new User(username, password, fullName, (UserType)clientType));
+                    dynamic response = new {
+                        status = "ok"
+                    };
+                    writeMessage(response);
                 }
                 else {
-                    //write response
+                    dynamic response = new {
+                        status = "User already exist"
+                    };
+                    writeMessage(response);
                 }
             }
             else {
-                //write not permission
+                dynamic response = new {
+                    status = "no permission"
+                };
+                writeMessage(response);
             }
         }
 
         private void deleteUser(JObject data) {
-            if (User.Type == DoctorType.Doctor) {
+            if (User.Type == UserType.Doctor) {
                 string hashcode = (string)data["hashcode"];
                 bool deleted = false;
 
@@ -255,7 +287,6 @@ namespace Server {
                     foreach (User user in users) {
                         if (user.Hashcode == hashcode) {
                             users.Remove(user);
-                            //write response user deleted
                             deleted = true;
                             break;
                         }
@@ -263,12 +294,98 @@ namespace Server {
                 }
 
                 if (!deleted) {
-                    //write user not found
+                    dynamic response = new {
+                        status = "not found"
+                    };
+                    writeMessage(response);
+                }
+                else {
+                    dynamic response = new {
+                        status = "ok"
+                    };
+                    writeMessage(response);
                 }
 
             }
             else {
-                //write no permission
+                dynamic response = new {
+                    status = "no permission"
+                };
+                writeMessage(response);
+            }
+        }
+
+        private void changePassword(JObject data) {
+            string hashcode = (string)data["hashcode"];
+            string newPassword = (string) data["password"];
+            bool found = false;
+            lock (usersLock) {
+                foreach (User u in users) {
+                    if (u.Hashcode == hashcode) {
+                        u.SetPassword(newPassword);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            dynamic response;
+            if (found) {
+                response = new {
+                    status = "ok"
+                };
+            }
+            else {
+                response = new {
+                    status = "not found"
+                };
+            }
+            writeMessage(response);
+        }
+    
+
+        private void changeUsername(JObject data) {
+            string newUsername = (string)data["username"];
+            string hashcode = (string)data["hashcode"];
+
+
+            Boolean inUse = false;
+            lock (usersLock) {
+                foreach (User u in users) {
+                    if (u.Username == newUsername) {
+                        inUse = true;
+                    }
+                }
+            }
+
+            if (!inUse) {
+                bool found = false;
+                lock (usersLock) {
+                    foreach (User u in users) {
+                        if (u.Hashcode == hashcode) {
+                            u.SetUsername(newUsername);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                dynamic response;
+                if (found) {
+                    response = new {
+                        status = "ok"
+                    };
+                }
+                else {
+                    response = new {
+                        status = "not found"
+                    };
+                }
+                writeMessage(response);
+            }
+            else {
+                dynamic respsone = new {
+                    status = "already in use"
+                };
+                writeMessage(respsone);
             }
         }
 
