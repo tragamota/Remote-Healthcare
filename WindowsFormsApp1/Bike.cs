@@ -7,13 +7,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Remote_Healtcare_Console;
 
 namespace Remote_Healtcare_Console {
     class Bike : Kettler {
         private bool start;
         private SerialCommunicator serialCommunicator;
+        private Connector connector;
         private Client client;
         private Thread BikeThread;
+        private bool autoCalculateResistance;
+        private bool autoCalculateResistanceNotExactly;
 
         public Bike(string port, Console console, Client client) : base(console) {
             this.client = client;
@@ -46,6 +50,16 @@ namespace Remote_Healtcare_Console {
         private void Run() {
             while (serialCommunicator.IsConnected() && start) {
                 Update();
+                if (autoCalculateResistance == true)
+                {
+                    string objectName = "bike"; //name of bike object in our simulator.
+                    SetResistance((int)connector.CalculateIncline(objectName));
+                } else
+                if(autoCalculateResistanceNotExactly == true)
+                {
+                    string objectName = "bike"; //name of bike object in our simulator.
+                    SetResistance((int)connector.CalculateInclineNotExactly(objectName));
+                }
                 Thread.Sleep(500);
             }
         }

@@ -2,16 +2,14 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Remote_Healtcare_Console;
 
 
-namespace VR {
+namespace Remote_Healtcare_Console {
     class Connector {
         private TcpClient tcp;
         private NetworkStream stream;
@@ -27,7 +25,7 @@ namespace VR {
                 stream = tcp.GetStream();
             }
             catch (IOException e) {
-                Console.WriteLine(e.StackTrace);
+                System.Console.WriteLine(e.StackTrace);
             }
             Models = new List<Model>();
             Routes = new List<Route>();
@@ -183,7 +181,7 @@ namespace VR {
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            System.Console.WriteLine(jObject);
             return jObject;
         }
 
@@ -337,7 +335,7 @@ namespace VR {
             };
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            System.Console.WriteLine(jObject);
 
         }
 
@@ -361,7 +359,7 @@ namespace VR {
             };
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            System.Console.WriteLine(jObject);
 
         }
 
@@ -394,7 +392,7 @@ namespace VR {
             };
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            System.Console.WriteLine(jObject);
 
         }
 
@@ -419,7 +417,7 @@ namespace VR {
             };
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            System.Console.WriteLine(jObject);
 
         }
 
@@ -447,7 +445,7 @@ namespace VR {
             };
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            System.Console.WriteLine(jObject);
     
         }
 
@@ -496,7 +494,7 @@ namespace VR {
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            Console.WriteLine(jObject);
+            System.Console.WriteLine(jObject);
         }
 
         public void LoadSceneModels() {
