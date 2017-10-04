@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -117,11 +118,8 @@ namespace Server {
                 case "setPatient":
                     User patientUser = (User)obj["data"]["patient"].ToObject(typeof(User));
                     SetPatient(patientUser);
+                    SetDoctor((string)obj["data"]["doctor"]["doctor"]);
                     patient.writeMessage(obj["data"]["doctor"]);
-                    break;
-                case "setDoctor":
-                    string hashcode = (string)obj["doctor"];
-                    SetDoctor(hashcode);
                     break;
                 case "startRecording":
                     patient.writeMessage(new
@@ -385,10 +383,8 @@ namespace Server {
         {
             foreach (Client patientClient in connectedClients)
             {
-                byte[] bytes = Encoding.Default.GetBytes(patientClient.User.Hashcode);
-                string patientString = Encoding.Unicode.GetString(bytes);
-                bytes = Encoding.Default.GetBytes(user.Hashcode);
-                string userString = Encoding.Unicode.GetString(bytes);
+                string patientString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(patientClient.User.Hashcode)));
+                string userString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(user.Hashcode)));
 
                 if (patientString.Equals(userString))
                     patient = patientClient;
@@ -399,10 +395,8 @@ namespace Server {
         {
             foreach (Client doctorClient in connectedDoctors)
             {
-                byte[] bytes = Encoding.Default.GetBytes(doctorClient.User.Hashcode);
-                string doctorString = Encoding.Unicode.GetString(bytes);
-                bytes = Encoding.Default.GetBytes(hashcode);
-                string userString = Encoding.Unicode.GetString(bytes);
+                string doctorString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(doctorClient.User.Hashcode)));
+                string userString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(hashcode)));
 
                 if (doctorString.Equals(userString))
                     doctor = doctorClient;
