@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Windows.Forms;
 
 namespace VR {
@@ -58,6 +59,30 @@ namespace VR {
         private void Delete_Model_Btn_Click(object sender, EventArgs e) {
             DeleteModel deleteModel = new DeleteModel(connector);
             deleteModel.Show();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            //connector.Moveto(connector.GetUUID("Camera"));
+            connector.UpdateNode(connector.GetUUID("Camera"),connector.GetUUID("Bike"));
+            //connector.Moveto(connector.GetUUID("Head"));
+            //connector.DeleteNode(connector.GetUUID("Camera"));
+            //connector.CameraNode();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine(connector.GetScene().ToString());
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            connector.Save("3A_Test");
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            connector.Load("3A_Test");
         }
     }
 }

@@ -33,11 +33,6 @@ namespace VR {
                                     cullbackfaces = true,
                                     animated = false,
                                     animation = "animationname"
-                                },
-                                panel = new {
-                                    size = (new int[2] { 1, 1 }),
-                                    resolution = (new int[2] { 512, 512 }),
-                                    background = (new int[4] { 1, 1, 1, 1 })
                                 }
                             }
                         }

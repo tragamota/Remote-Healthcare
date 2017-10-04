@@ -17,6 +17,10 @@ namespace VR {
         public string tunnelID;
         public List<Model> Models { get; set; }
         public List<Route> Routes { get; set; }
+        private int x = 1 ;
+        private int y = 1;
+        private int z = 1;
+
 
         public Connector() {
             try {
@@ -81,19 +85,31 @@ namespace VR {
             string response = message.ToString();
             return JObject.Parse(response);
         }
-
+      
         public string GetUUID(string modelName) {
-            var command = new {
+            foreach (var model in Models)
+                if (model.modelName.Equals(model))
+                    return model.uuid;
+            var command = new
+            {
                 id = "tunnel/send",
-                data = new {
-                    id = "scene/node/find",
-                    data = new {
-                        name = modelName
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/find",
+                        data = new
+                        {
+                            name = modelName
+                        }
                     }
                 }
             };
             SendMessage(command);
-            return (string) ReadMessage()["data"]["uuid"];
+            JObject jObject = ReadMessage();
+            string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").First.SelectToken("uuid");
+            return uuid;
         }
 
         public void ChangeScene(string change) {
@@ -158,6 +174,7 @@ namespace VR {
 
             SendMessage(message);
             JObject jObject = ReadMessage();
+            Console.WriteLine(jObject.ToString());
 
             foreach (Model model in Models) {
                 if (model.uuid.Equals(nodeID)) {
@@ -165,6 +182,38 @@ namespace VR {
                     break;
                 }
             }
+        }
+
+        public void Moveto(string nodeID)
+        {
+
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/moveto",
+                        data = new
+                        {
+                            id = nodeID,
+                            position = new[] { x, y, z },
+                            speed = 1,
+                           
+                           
+                        }
+                    }
+                }
+            };
+            x++;
+            y++;
+            z++;
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject.ToString());
         }
 
         public JObject GetScene() {
@@ -210,11 +259,7 @@ namespace VR {
                         data = new
                         {
                             id = uuid,
-                            parent = parentID,
-                            transform = new
-                            {
-                                scale = 1.0
-                            }
+                            parent = parentID
                         }
                     }
                 }
@@ -313,7 +358,8 @@ namespace VR {
                             id = uuid,
                             text = text,
                             position = new[] { x, y },
-                            size = 60.0
+                            size = 50.0,
+                            font = "COOPBL"
                         }
                     }
                 }
@@ -412,7 +458,9 @@ namespace VR {
                                 {
                                     size = (new int[2] { 1, 1 }),
                                     resolution = (new int[2] { 1028, 1028 }),
-                                    background = (new int[4] { 1 ,1 ,1 , 0})
+                                    background = (new int[4] { 1 ,1 ,1 , 0}),
+                                    color = new[] {1,1,1,1 },
+                                    font = "Cooper Zwart",
                                 }
                             }
                         }
@@ -423,6 +471,55 @@ namespace VR {
             SendMessage(message);
             JObject jObject = ReadMessage();
             Console.WriteLine(jObject);
+        }
+
+        public void Save(string filen)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/save",
+                        data = new
+                        {
+                            filename = filen,
+                            overwrite = true
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
+        }
+        public void Load(string filen)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/load",
+                        data = new
+                        {
+                            filename = filen,
+
+                        }
+                    }
+                }
+            };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+
         }
 
         public void LoadSceneModels() {
@@ -465,5 +562,38 @@ namespace VR {
         public List<Route> GetRoutes() {
             return Routes;
         }
+        public void CameraNode() {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/add",
+                        data = new
+                        {
+                            name = "Camera",
+                            parent = GetUUID("Head"),
+                            components = new
+                            {
+                                transform = new
+                                {
+                                    position = (new int[3] { 1, 1, 1 }),
+                                    scale = 1,
+                                    rotation = (new int[3] { 0, 0, 0 })
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+        SendMessage(message);
+            JObject jObject = ReadMessage();
+        //uuid = (string) jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
+        Console.WriteLine(jObject);
     }
+}
 }
