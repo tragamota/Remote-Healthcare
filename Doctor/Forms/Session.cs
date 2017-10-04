@@ -288,7 +288,6 @@ namespace Doctor
             {
                 grafiek.Series.FindByName("Weerstand").Points.AddY((375 / 100) * (weerstand - (weerstand % 5)) + 25);
             }
-
         }
     }   
 
