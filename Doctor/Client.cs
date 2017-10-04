@@ -23,14 +23,7 @@ namespace Doctor
             }
         }
 
-        public void Reconnect() {
-            client.Close();
-            stream.Close();
-            client = new TcpClient("localhost", 1337);
-            stream = client.GetStream();
-        }
-
-        public JObject ReadMessage() {
+        public string ReadMessage() {
             StringBuilder message = new StringBuilder();
 
             int numberOfBytesRead = 0;
@@ -54,7 +47,7 @@ namespace Doctor
                 return null;
             }
 
-            return JObject.Parse(message.ToString());
+            return message.ToString();
         }
 
         public void SendMessage(dynamic message) {

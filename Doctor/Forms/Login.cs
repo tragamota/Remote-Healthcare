@@ -46,9 +46,9 @@ namespace Doctor {
                 bool result = (bool)jObject["access"];
                
                 if (result == true) {
-                    DoctorType type = (DoctorType)((int)jObject["doctortype"]);
-                    if (type == DoctorType.Doctor) {
-                        Credentials = new User(user.username, user.password, (string)jObject["fullname"], (string)jObject["hashcode"], DoctorType.Client);
+                    UserType type = (UserType)((int)jObject["doctortype"]);
+                    if (type == UserType.Doctor) {
+                        Credentials = new User(user.username, user.password, (string)jObject["fullname"], (string)jObject["hashcode"], UserType.Client);
                     }
                     else {
                         MessageBox.Show("This is not a Doctor account, please use the Client Application");

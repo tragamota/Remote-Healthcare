@@ -25,8 +25,8 @@ namespace Doctor
                 id = "getPatients"
             });
 
-            JObject data = client.ReadMessage();
-            users = (List<User>)data["users"].ToObject(typeof(List<User>));
+            string data = client.ReadMessage();
+            users = JsonConvert.DeserializeObject<List<User>>(data);
 
             foreach (User user in users)
             {
@@ -69,15 +69,7 @@ namespace Doctor
 
         private void Send_Message_Btn_Click(object sender, EventArgs e)
         {
-            string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + ((User)Awaiting_Patients_Box.SelectedItem).Hashcode + @"\";
-            if (Directory.Exists(pathToUserDir))
-            {
-                string[] files = Directory.GetFiles(pathToUserDir);
-                foreach (string file in files)
-                {
-                    Old_Sessions_Box.Items.Add(file);
-                }
-            }
+
         }
 
         private void button1_Click(object sender, EventArgs e) {
@@ -89,24 +81,11 @@ namespace Doctor
                     username = username,
                     password = password,
                     fullname = "Ian van de Poll",
-                    type = DoctorType.Client
+                    type = UserType.Client
                 }
             };
             client.SendMessage(newUser);
             //Console.WriteLine(client.ReadMessage());
-        }
-
-        private void Selecting_Patient(object sender, EventArgs e)
-        {
-            string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + ((User)Awaiting_Patients_Box.SelectedItem).Hashcode + @"\";
-            if (Directory.Exists(pathToUserDir))
-            {
-                string[] files = Directory.GetFiles(pathToUserDir);
-                foreach (string file in files)
-                {
-                    Old_Sessions_Box.Items.Add(file);
-                }
-            }
         }
     }
 }
