@@ -12,11 +12,13 @@ namespace Server {
         private DateTime sessionDateTime;
         private string userHash;
         public List<BikeData> data { get; set; }
+        public List<BikeData> notSendData { get; set; }
 
         public BikeSession(string userHash) {
             this.userHash = userHash;
             sessionDateTime = DateTime.UtcNow;
             data = new List<BikeData>();
+            notSendData = new List<BikeData>();
         }
 
         public void SaveSessionToFile() {

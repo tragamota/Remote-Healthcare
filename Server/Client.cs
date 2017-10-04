@@ -94,6 +94,7 @@ namespace Server {
                     connectedClients.Remove(this);
                 }
             }
+
             closeStream();
             Console.WriteLine(connectedClients.Count + "\t" + connectedDoctors.Count);
         }
@@ -107,14 +108,23 @@ namespace Server {
                     JObject data = (JObject)obj["data"];
                     //patient.writeMessage(data);
                     break;
+                case "reqSession":
+                    new Thread(() => sendSessionData((JObject)obj["data"]));
+                    break;
+                case "oldsession":
+                    new Thread(() => sendOldSession((JObject)obj["data"]));
+                    break;
                 case "getpatients":
                     new Thread(() => getAllClients()).Start();
                     break;
+                case "getconPatients":
+                    new Thread(() => getConClients()).Start();
+                    break;
                 case "startrecording":
-                    StartRecording();
+                    new Thread(() => StartRecording((JObject)obj["data"]));
                     break;
                 case "stoprecording":
-                    StopRecording();
+                    new Thread(() => StopRecording((JObject)obj["data"]));
                     break;
                 case "sendmessagetoperson":
                     new Thread(() => sendPM((JObject)obj["data"])).Start();
@@ -146,6 +156,62 @@ namespace Server {
             }
         }
 
+        private void sendSessionData(JObject data) {
+            foreach(Client client in connectedClients) {
+                if(client.User.Hashcode == (string) data["hashcode"]) {
+                    lock (sessionLock) {
+                        if (session != null) {
+                            writeMessage(session.notSendData);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void getOldSessionsName(JObject data) {
+            string path = Directory.GetCurrentDirectory() + $@"\data\{data["hashcode"]}";
+
+            if (Directory.Exists(path)) {
+                dynamic response = new {
+                    status = "alloldfiles",
+                    data = Directory.GetFiles(path)
+                };
+                writeMessage(response);
+            }
+            else {
+                dynamic response = new {
+                    status = "not found"
+                };
+                writeMessage(response);
+            }
+        }
+
+        private void sendOldSession(JObject data) {
+            string hashcode = (string)data["hashcode"];
+            string file = (string)data["file"];
+
+            string path = Directory.GetCurrentDirectory() + $@"\data\{hashcode}\{file}";
+            if(File.Exists(path)) {
+                try {
+                    dynamic response = new {
+                        status = "oldsession",
+                        data = File.ReadAllText(path)
+                    };
+                    writeMessage(response);
+                }
+                catch(Exception e) {
+                    Console.WriteLine(e.Source);
+                }
+            }
+            else {
+                dynamic response = new {
+                    status = "not found"
+                };
+                writeMessage(response);
+            }
+        }
+
         private void sendBroadcastMessage(JObject data) {
             string messageFromDoc = (string)data["message"];
             dynamic message = new {
@@ -155,19 +221,36 @@ namespace Server {
                 }
             };
 
-            lock(connectedDoctorsLock) {
-                foreach(Client user in connectedClients) {
+            lock (connectedDoctorsLock) {
+                foreach (Client user in connectedClients) {
                     new Thread(() => user.writeMessage(message)).Start();
                 }
             }
         }
 
-        private void sendPM(JObject jObject) {
-            throw new NotImplementedException();
+        private void sendPM(JObject data) {
+            string messageFromDoc = (string)data["message"];
+            string hashcode = (string)data["hashcode"];
+
+            lock (connectedClientsLock) {
+                foreach (Client client in connectedClients) {
+                    if (client.User.Hashcode == hashcode) {
+                        writeMessage(messageFromDoc);
+                    }
+                }
+            }
         }
 
         private void getAllClients() {
-            writeMessage(users);
+            lock (usersLock) {
+                writeMessage(users);
+            }
+        }
+
+        private void getConClients() {
+            lock(connectedClients) {
+                new Thread(() => writeMessage(connectedClients));
+            }
         }
 
         private void setManual(JObject jObject) {
@@ -217,20 +300,33 @@ namespace Server {
             }
         }
 
-        public void StartRecording() {
-            if (User.Type == UserType.Client) {
-                if (session != null) {
-                    session = new BikeSession(User.Hashcode);
+        public void StartRecording(JObject data) {
+            if (User.Type == UserType.Doctor) {
+                foreach (Client client in connectedClients) {
+                    if(client.User.Hashcode == (string)data["hashcode"]) {
+                        lock (sessionLock) {
+                            if (session != null) {
+                                session = new BikeSession(User.Hashcode);
+                            }
+                        }
+                        break;
+                    }
                 }
             }
         }
 
-        public void StopRecording() {
-            if (User.Type == UserType.Client) {
-                lock (sessionLock) {
-                    session.SaveSessionToFile();
-                    session = null;
+        public void StopRecording(JObject data) {
+            if (User.Type == UserType.Doctor) {
+                foreach(Client client in connectedClients) {
+                    if(client.User.Hashcode == (string)data["hashcode"]) {
+                        lock (sessionLock) {
+                            session.SaveSessionToFile();
+                            session = null;
+                        }
+                        break;
+                    }
                 }
+               
             }
         }
 
@@ -329,7 +425,7 @@ namespace Server {
 
         private void changePassword(JObject data) {
             string hashcode = (string)data["hashcode"];
-            string newPassword = (string) data["password"];
+            string newPassword = (string)data["password"];
             bool found = false;
             lock (usersLock) {
                 foreach (User u in users) {
@@ -353,7 +449,7 @@ namespace Server {
             }
             writeMessage(response);
         }
-    
+
 
         private void changeUsername(JObject data) {
             string newUsername = (string)data["username"];
