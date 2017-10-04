@@ -288,16 +288,6 @@ namespace Doctor
             {
                 grafiek.Series.FindByName("Weerstand").Points.AddY(weerstand);
             }
-
-            foreach (int energie in energyhistory)
-            {
-                grafiek.Series.FindByName("Energie").Points.AddY(energie);
-            }
-
-            foreach (int watt in generatedhistory)
-            {
-                grafiek.Series.FindByName("Vermogen").Points.AddY(watt);
-            }
         }
     }   
 
