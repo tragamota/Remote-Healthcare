@@ -175,9 +175,9 @@ namespace Doctor
 
         private void Stopped_Scrolling(object sender, MouseEventArgs e)
         {
-            lblResistence.Text = Temp_Resistance_Lbl.Text;
+            lblResistence.Text = Resistance_Track_Bar.Value.ToString();
 
-            int resistance = (375 / 100) * (Resistance_Track_Bar.Value - (Resistance_Track_Bar.Value % 5)) + 25;
+            int resistance = Resistance_Track_Bar.Value * 375 / 100 + 25;
 
             client.SendMessage(new
             {
@@ -286,7 +286,7 @@ namespace Doctor
 
             foreach (int weerstand in resistancehistory)
             {
-                grafiek.Series.FindByName("Weerstand").Points.AddY((375 / 100) * (weerstand - (weerstand % 5)) + 25);
+                grafiek.Series.FindByName("Weerstand").Points.AddY((weerstand-25) * 100 / 375);
             }
         }
     }   
