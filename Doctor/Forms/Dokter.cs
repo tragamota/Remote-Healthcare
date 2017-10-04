@@ -22,15 +22,15 @@ namespace Doctor
             this.client = client;
             this.hashcode = hashcode;
             client.SendMessage(new{
-                id = "getPatients"
+                id = "getpatients"
             });
 
             string data = client.ReadMessage();
-            users = JsonConvert.DeserializeObject<List<User>>(data);
+            users = (List<User>)((JArray)JsonConvert.DeserializeObject(data)).ToObject(typeof(List<User>));
 
             foreach (User user in users)
             {
-                if(user.Type == DoctorType.Client)
+                if(user.Type == UserType.Client)
                     Awaiting_Patients_Box.Items.Add(user);
             }
         }
@@ -39,9 +39,7 @@ namespace Doctor
         {
             if(Awaiting_Patients_Box.SelectedItem != null)
             {
-                this.Hide();
                 Form session = new Session((User)Awaiting_Patients_Box.SelectedItem, client, hashcode);
-                session.Closed += (s, args) => this.Close();
                 session.Show();
             }
             else
@@ -69,7 +67,7 @@ namespace Doctor
 
         private void Send_Message_Btn_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void button1_Click(object sender, EventArgs e) {
@@ -86,6 +84,23 @@ namespace Doctor
             };
             client.SendMessage(newUser);
             //Console.WriteLine(client.ReadMessage());
+        }
+
+        private void Patient_Selected(object sender, EventArgs e)
+        {
+            Old_Sessions_Box.Items.Clear();
+
+            client.SendMessage(new
+            {
+                id = "oldsessions"
+            });
+
+            string data = client.ReadMessage();
+            string[] files = (string[])((JObject)JsonConvert.DeserializeObject(data))["data"].ToObject(typeof(string[]));
+            foreach (string file in files)
+            {
+                Old_Sessions_Box.Items.Add(Path.GetFileName(file));
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ using Server;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Doctor
 {
@@ -14,7 +15,6 @@ namespace Doctor
     {
         User patient;
         Client client;
-        bool active;
 
         List<BikeData> graphhistory;
         List<int> pulsehistory;
@@ -25,7 +25,9 @@ namespace Doctor
         List<int> energyhistory;
         List<int> generatedhistory;
 
+        object sessionLock = new object();
 
+        Thread UpdateThread;
         Thread GraphThread;
 
         public Session(User patient, Client client, string hashcode)
@@ -36,17 +38,19 @@ namespace Doctor
 
             client.SendMessage(new
             {
-                id = "setPatient",
+                id = "setpatient",
                 data = new
                 {
                     doctor = new
                     {
-                        id = "setDoctor",
+                        id = "setdoctor",
                         doctor = hashcode
                     },
                     patient = patient
                 }
             });
+
+            UpdateThread = new Thread(run);
         }
 
         private void run()
@@ -58,14 +62,18 @@ namespace Doctor
             resistancehistory = new List<int>();
             energyhistory = new List<int>();
             generatedhistory = new List<int>();
-
-
-
-
-            while (active)
+            
+            while (true)
             {
-                JObject json = client.ReadMessage();
-                BikeData data = (BikeData)json["bikeData"].ToObject(typeof(BikeData));
+                client.SendMessage(new
+                {
+                    id = "reqSession",
+                    data = new
+                    {
+                        hashcode = patient.Hashcode
+                    }
+                });
+                BikeData data = (BikeData)((JObject)JsonConvert.DeserializeObject(client.ReadMessage())).ToObject(typeof(BikeData));
                 SetPulse(data.Pulse.ToString());
                 SetRoundMin(data.Rpm.ToString());
                 SetSpeed(data.Speed.ToString());
@@ -74,10 +82,9 @@ namespace Doctor
                 SetEnergy(data.Energy.ToString());
                 SetTime(data.Time.ToString());
                 SetWatt(data.Power.ToString());
+                Application.DoEvents();
 
-                GraphThread = new Thread(() => AddToGraphHistory(data));
-                GraphThread.Start();
-
+                AddToGraphHistory(data);
             }
         }
 
@@ -90,6 +97,9 @@ namespace Doctor
                 return;
             }
             lblPulse.Text = s;
+            lblPulse.Invalidate();
+            lblPulse.Update();
+            lblPulse.Refresh();
         }
 
         public void SetRoundMin(String s)
@@ -100,6 +110,9 @@ namespace Doctor
                 return;
             }
             lblRoundMin.Text = s;
+            lblRoundMin.Invalidate();
+            lblRoundMin.Update();
+            lblRoundMin.Refresh();
         }
 
         public void SetSpeed(String s)
@@ -110,6 +123,9 @@ namespace Doctor
                 return;
             }
             lblSpeed.Text = s;
+            lblSpeed.Invalidate();
+            lblSpeed.Update();
+            lblSpeed.Refresh();
         }
 
         public void SetDistance(String s)
@@ -120,6 +136,9 @@ namespace Doctor
                 return;
             }
             lblDistance.Text = s;
+            lblDistance.Invalidate();
+            lblDistance.Update();
+            lblDistance.Refresh();
         }
 
         public void SetResistance(String s)
@@ -130,6 +149,15 @@ namespace Doctor
                 return;
             }
             lblResistence.Text = s;
+            lblResistence.Invalidate();
+            lblResistence.Update();
+            lblResistence.Refresh();
+
+            if (!s.Equals("0"))
+            {
+                Resistance_Track_Bar.Value = (int.Parse(s) - 25) * 100 / 375;
+                Scrolling(null, null);
+            }
         }
 
         public void SetEnergy(String s)
@@ -140,6 +168,9 @@ namespace Doctor
                 return;
             }
             lblEnergy.Text = s;
+            lblEnergy.Invalidate();
+            lblEnergy.Update();
+            lblEnergy.Refresh();
         }
 
         public void SetTime(String s)
@@ -150,6 +181,9 @@ namespace Doctor
                 return;
             }
             lblTime.Text = s;
+            lblTime.Invalidate();
+            lblTime.Update();
+            lblTime.Refresh();
         }
 
         public void SetWatt(String s)
@@ -160,17 +194,23 @@ namespace Doctor
                 return;
             }
             lblWatt.Text = s;
+            lblWatt.Invalidate();
+            lblWatt.Update();
+            lblWatt.Refresh();
         }
 
         private void Closing(object sender, FormClosingEventArgs e)
         {
-            active = false;
+            Stop_Session_Btn_Click(null, null);
             client.SendMessage("bye");
         }
 
         private void Scrolling(object sender, EventArgs e)
         {
             Temp_Resistance_Lbl.Text = Resistance_Track_Bar.Value + " %";
+            Temp_Resistance_Lbl.Invalidate();
+            Temp_Resistance_Lbl.Update();
+            Temp_Resistance_Lbl.Refresh();
         }
 
         private void Stopped_Scrolling(object sender, MouseEventArgs e)
@@ -184,10 +224,14 @@ namespace Doctor
                 id = "committingChanges",
                 data = new
                 {
-                    id = "setResistance",
+                    hashcode = patient.Hashcode,
                     data = new
                     {
-                        resistance = resistance
+                        id = "setResistance",
+                        data = new
+                        {
+                            resistance = resistance
+                        }
                     }
                 }
             });
@@ -213,34 +257,40 @@ namespace Doctor
         {
             client.SendMessage(new
             {
-                id = "startRecording"
+                id = "startrecording",
+                data = new
+                {
+                    hashcode = patient.Hashcode
+                }
             });
-
-            active = true;
-            new Thread(() => run()).Start();
+            
+            UpdateThread.Start();
         }
 
         private void Stop_Session_Btn_Click(object sender, EventArgs e)
         {
             client.SendMessage(new
             {
-                id = "stopRecording"
+                id = "stoprecording"
             });
-            active = false;
+
+            UpdateThread.Abort();
         }
 
 
         private void AddToGraphHistory(BikeData bike)
         {
-            pulsehistory.Add(bike.Pulse);
-            roundhistory.Add(bike.Rpm);
-            speedhistory.Add(bike.Speed);
-            distancehistory.Add(bike.Distance);
-            resistancehistory.Add(bike.Resistance);
-            energyhistory.Add(bike.Energy);
-            generatedhistory.Add(bike.Power);
-
-
+            lock (sessionLock)
+            {
+                pulsehistory.Add(bike.Pulse);
+                roundhistory.Add(bike.Rpm);
+                speedhistory.Add(bike.Speed);
+                distancehistory.Add(bike.Distance);
+                resistancehistory.Add(bike.Resistance);
+                energyhistory.Add(bike.Energy);
+                generatedhistory.Add(bike.Power);
+            }
+            
             if (grafiek.IsHandleCreated)
             {
                 this.Invoke(
@@ -258,35 +308,52 @@ namespace Doctor
 
         private void UpdateGrafiek()
         {
-            foreach (var Serie in grafiek.Series) {
-                Serie.Points.Clear();
+            lock (sessionLock)
+            {
+                foreach (var Serie in grafiek.Series)
+                {
+                    Serie.Points.Clear();
+                }
             }
 
-            foreach (int hartslag in pulsehistory)
+            lock (sessionLock)
             {
-                grafiek.Series.FindByName("Hartslag").Points.AddY(hartslag);
+                foreach (int hartslag in pulsehistory)
+                {
+                    grafiek.Series.FindByName("Hartslag").Points.AddY(hartslag);
+                }
             }
 
-            foreach (int round in roundhistory)
+            lock (sessionLock)
             {
-                grafiek.Series.FindByName("RPM").Points.AddY(round);
+                foreach (int round in roundhistory)
+                {
+                    grafiek.Series.FindByName("RPM").Points.AddY(round);
+                }
             }
 
-
-            foreach (int speed in speedhistory)
+            lock (sessionLock)
             {
-                grafiek.Series.FindByName("Snelheid").Points.AddY(speed);
+                foreach (int speed in speedhistory)
+                {
+                    grafiek.Series.FindByName("Snelheid").Points.AddY(speed);
+                }
             }
 
-            foreach (int distance in distancehistory)
+            lock (sessionLock)
             {
-                grafiek.Series.FindByName("Afstand").Points.AddY(distance);
+                foreach (int distance in distancehistory)
+                {
+                    grafiek.Series.FindByName("Afstand").Points.AddY(distance);
+                }
             }
 
-
-            foreach (int weerstand in resistancehistory)
+            lock (sessionLock)
             {
-                grafiek.Series.FindByName("Weerstand").Points.AddY((weerstand-25) * 100 / 375);
+                foreach (int weerstand in resistancehistory)
+                {
+                    grafiek.Series.FindByName("Weerstand").Points.AddY((weerstand - 25) * 100 / 375);
+                }
             }
         }
     }   

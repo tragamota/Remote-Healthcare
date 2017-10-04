@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -42,7 +43,7 @@ namespace Doctor {
                     client.SendMessage(user);
                 }
 
-                JObject jObject = client.ReadMessage();
+                JObject jObject = (JObject)JsonConvert.DeserializeObject(client.ReadMessage());
                 bool result = (bool)jObject["access"];
                
                 if (result == true) {

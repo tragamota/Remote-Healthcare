@@ -107,47 +107,34 @@ namespace Server {
                     update((JObject)obj["data"]);
                     break;
                 case "committingChanges":
-                    JObject data = (JObject)obj["data"];
-                    //patient.writeMessage(data);
+                    new Thread(() => sendChanges((JObject)obj["data"])).Start();
                     break;
                 case "reqSession":
-                    new Thread(() => sendSessionData((JObject)obj["data"]));
+                    new Thread(() => sendSessionData((JObject)obj["data"])).Start();
+                    break;
+                case "oldsessions":
+                    new Thread(() => getOldSessionsName(new JObject())).Start();
                     break;
                 case "oldsession":
-                    new Thread(() => sendOldSession((JObject)obj["data"]));
+                    new Thread(() => sendOldSession((JObject)obj["data"])).Start();
                     break;
                 case "getpatients":
                     new Thread(() => getAllClients()).Start();
-                case "getPatients":
-                    writeMessage(new
-                    {
-                        users = users
-                    });
                     break;
                 case "getconPatients":
                     new Thread(() => getConClients()).Start();
                     break;
-                case "startrecording":
-                    new Thread(() => StartRecording((JObject)obj["data"]));
-                case "setPatient":
+                case "setpatient":
                     User patientUser = (User)obj["data"]["patient"].ToObject(typeof(User));
                     SetPatient(patientUser);
                     SetDoctor((string)obj["data"]["doctor"]["doctor"]);
                     patient.writeMessage(obj["data"]["doctor"]);
                     break;
-                case "stoprecording":
-                    new Thread(() => StopRecording((JObject)obj["data"]));
-                case "startRecording":
-                    patient.writeMessage(new
-                    {
-                        id = "start"
-                    });
+                case "startrecording":
+                    new Thread(() => StartRecording((JObject)obj["data"])).Start();
                     break;
-                case "stopRecording":
-                    if (patient != null)
-                        patient.writeMessage(obj);
-                    else
-                        StopRecording();
+                case "stoprecording":
+                    new Thread(() => StopRecording((JObject)obj["data"])).Start();
                     break;
                 case "sendmessagetoperson":
                     new Thread(() => sendPM((JObject)obj["data"])).Start();
@@ -156,10 +143,7 @@ namespace Server {
                     new Thread(() => sendBroadcastMessage((JObject)obj["data"])).Start();
                     break;
                 case "sendData":
-                    if(session == null)
-                        StartRecording();
                     session.AddBikeData((BikeData)obj["data"]["bikeData"].ToObject(typeof(BikeData)));
-                    doctor.writeMessage(obj["data"]);
                     break;
                 case "add":
                     new Thread(() => addUser((JObject)obj["data"])).Start();
@@ -185,12 +169,27 @@ namespace Server {
             }
         }
 
+        private void sendChanges(JObject data)
+        {
+            foreach (Client client in connectedClients){
+                if (client.User.Hashcode == (string)data["hashcode"]){
+                    lock (sessionLock){
+                        client.writeMessage(data["data"]);
+                    }
+                    break;
+                }
+            }
+        }
+
         private void sendSessionData(JObject data) {
             foreach(Client client in connectedClients) {
                 if(client.User.Hashcode == (string) data["hashcode"]) {
                     lock (sessionLock) {
-                        if (session != null) {
-                            writeMessage(session.notSendData);
+                        if (client.session != null) {
+                            if (client.session.data.Count != 0)
+                                writeMessage(client.session.data.Last());
+                            else
+                                writeMessage(new BikeData());
                         }
                     }
                     break;
@@ -221,7 +220,7 @@ namespace Server {
             string file = (string)data["file"];
 
             string path = Directory.GetCurrentDirectory() + $@"\data\{hashcode}\{file}";
-            if(File.Exists(path)) {
+            if (File.Exists(path)) {
                 try {
                     dynamic response = new {
                         status = "oldsession",
@@ -334,9 +333,13 @@ namespace Server {
                 foreach (Client client in connectedClients) {
                     if(client.User.Hashcode == (string)data["hashcode"]) {
                         lock (sessionLock) {
-                            if (session != null) {
-                                session = new BikeSession(User.Hashcode);
+                            if (client.session == null) {
+                                client.session = new BikeSession(client.User.Hashcode);
                             }
+                            client.writeMessage(new
+                            {
+                                id = "start"
+                            });
                         }
                         break;
                     }
@@ -349,8 +352,12 @@ namespace Server {
                 foreach(Client client in connectedClients) {
                     if(client.User.Hashcode == (string)data["hashcode"]) {
                         lock (sessionLock) {
-                            session.SaveSessionToFile();
-                            session = null;
+                            client.writeMessage(new
+                            {
+                                id = "stop"
+                            });
+                            client.session.SaveSessionToFile();
+                            client.session = null;
                         }
                         break;
                     }

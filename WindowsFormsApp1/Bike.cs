@@ -12,6 +12,7 @@ namespace Remote_Healtcare_Console
         private Client client;
         private Thread BikeThread;
         private Thread ChangesThread;
+        private string hashcode;
 
         public Bike(string port, Console console, Client client) : base(console) {
             this.client = client;
@@ -44,18 +45,14 @@ namespace Remote_Healtcare_Console
                     string message = (string)obj["data"]["message"];
                     console.AddMessage(message);
                     break;
-                case "setDoctor":
+                case "setdoctor":
                     client.SendMessage(obj);
                     break;
                 case ("start"):
-                    client.SendMessage(new
-                    {
-                        id = "start"
-                    });
                     BikeThread.Start();
                     break;
-                case ("stopRecording"):
-                    client.SendMessage(obj);
+                case ("stop"):
+                    BikeThread.Abort();
                     break;
             }
 

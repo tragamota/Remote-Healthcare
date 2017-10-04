@@ -46,6 +46,7 @@
             this.Awaiting_Patients_Box.Name = "Awaiting_Patients_Box";
             this.Awaiting_Patients_Box.Size = new System.Drawing.Size(172, 303);
             this.Awaiting_Patients_Box.TabIndex = 0;
+            this.Awaiting_Patients_Box.SelectedIndexChanged += new System.EventHandler(this.Patient_Selected);
             // 
             // Connect_Btn
             // 
@@ -117,7 +118,6 @@
             this.Old_Sessions_Box.Name = "Old_Sessions_Box";
             this.Old_Sessions_Box.Size = new System.Drawing.Size(165, 303);
             this.Old_Sessions_Box.TabIndex = 8;
-            this.Old_Sessions_Box.SelectedIndexChanged += new System.EventHandler(this.Selecting_Patient);
             // 
             // Dokter
             // 

@@ -47,9 +47,12 @@ namespace Server {
                     loadUsers = new Thread(() => loadAllUsers(usersPath));
                     loadUsers.Start();
                 }
-                else {
+                else
+                {
                     string username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes("admin")));
                     users.Add(new User(username, username, "Root", UserType.Doctor));
+                    username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes("test")));
+                    users.Add(new User(username, username, "Patient", UserType.Client));
                     File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
                 }
             }
