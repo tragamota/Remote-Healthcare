@@ -286,18 +286,9 @@ namespace Doctor
 
             foreach (int weerstand in resistancehistory)
             {
-                grafiek.Series.FindByName("Weerstand").Points.AddY(weerstand);
+                grafiek.Series.FindByName("Weerstand").Points.AddY((375 / 100) * (weerstand - (weerstand % 5)) + 25);
             }
 
-            foreach (int energie in energyhistory)
-            {
-                grafiek.Series.FindByName("Energie").Points.AddY(energie);
-            }
-
-            foreach (int watt in generatedhistory)
-            {
-                grafiek.Series.FindByName("Vermogen").Points.AddY(watt);
-            }
         }
     }   
 
