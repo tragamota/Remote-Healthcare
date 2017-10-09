@@ -544,8 +544,8 @@ namespace VR {
             this.tunnelID = id;
         }
 
-        public void AddModel(string modelName, string filePath, int x, int y, int z) {
-            Models.Add(new Model(this, modelName, filePath, x, y, z));
+        public void AddModel(string modelName, string filePath, int x, int y, int z, double s, int zRotation) {
+            Models.Add(new Model(this, modelName, filePath, x, y, z, s, zRotation));
         }
 
         public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, int[] heightValues) {
