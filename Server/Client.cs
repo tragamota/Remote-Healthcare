@@ -99,7 +99,6 @@ namespace Server {
 
             if(session != null)
             {
-                //session.SaveSessionToFile();
                 session = null;
             }
             closeStream();
@@ -192,9 +191,17 @@ namespace Server {
                         if (client.session != null)
                         {
                             if (client.session.data.Count != 0)
-                                writeMessage(client.session.data.Last());
+                                writeMessage(new
+                                {
+                                    id = "bikeData",
+                                    bikeData = client.session.data.Last()
+                                });
                             else
-                                writeMessage(new BikeData());
+                                writeMessage(new
+                                {
+                                    id = "bikeData",
+                                    bikeData = new BikeData()
+                                });
                         }
                     }
                     break;
