@@ -123,7 +123,7 @@ namespace Server {
                 case "oldsession":
                     new Thread(() => sendOldSession((JObject)obj["data"])).Start();
                     break;
-                case "getpatients":
+                case "getPatients":
                     new Thread(() => getAllClients()).Start();
                     break;
                 case "getconPatients":
@@ -285,7 +285,7 @@ namespace Server {
         }
 
         private void getConClients() {
-            lock(connectedClients) {
+            lock(connectedClientsLock) {
                 new Thread(() => writeMessage(connectedClients)).Start();
             }
         }

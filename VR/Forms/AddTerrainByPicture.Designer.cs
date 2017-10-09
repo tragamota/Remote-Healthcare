@@ -44,8 +44,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.Z_Txt = new System.Windows.Forms.TextBox();
             this.Y_Txt = new System.Windows.Forms.TextBox();
@@ -54,8 +52,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.Picture_Browse_btn = new System.Windows.Forms.Button();
             this.Browse_Path_Lbl = new System.Windows.Forms.Label();
-            this.Width_Txt = new System.Windows.Forms.TextBox();
-            this.Length_Txt = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label11
@@ -128,7 +124,7 @@
             // 
             // Normal_Texture_Btn
             // 
-            this.Normal_Texture_Btn.Location = new System.Drawing.Point(99, 197);
+            this.Normal_Texture_Btn.Location = new System.Drawing.Point(99, 148);
             this.Normal_Texture_Btn.Name = "Normal_Texture_Btn";
             this.Normal_Texture_Btn.Size = new System.Drawing.Size(100, 23);
             this.Normal_Texture_Btn.TabIndex = 44;
@@ -138,7 +134,7 @@
             // 
             // Diffuse_Texture_Btn
             // 
-            this.Diffuse_Texture_Btn.Location = new System.Drawing.Point(99, 168);
+            this.Diffuse_Texture_Btn.Location = new System.Drawing.Point(99, 119);
             this.Diffuse_Texture_Btn.Name = "Diffuse_Texture_Btn";
             this.Diffuse_Texture_Btn.Size = new System.Drawing.Size(100, 23);
             this.Diffuse_Texture_Btn.TabIndex = 43;
@@ -148,7 +144,7 @@
             // 
             // Add_Btn
             // 
-            this.Add_Btn.Location = new System.Drawing.Point(71, 269);
+            this.Add_Btn.Location = new System.Drawing.Point(71, 220);
             this.Add_Btn.Name = "Add_Btn";
             this.Add_Btn.Size = new System.Drawing.Size(75, 23);
             this.Add_Btn.TabIndex = 42;
@@ -159,7 +155,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(15, 202);
+            this.label8.Location = new System.Drawing.Point(15, 153);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(75, 13);
             this.label8.TabIndex = 41;
@@ -168,7 +164,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 173);
+            this.label7.Location = new System.Drawing.Point(15, 124);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(78, 13);
             this.label7.TabIndex = 40;
@@ -177,7 +173,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 145);
+            this.label6.Location = new System.Drawing.Point(15, 96);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(17, 13);
             this.label6.TabIndex = 39;
@@ -186,7 +182,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(15, 119);
+            this.label5.Location = new System.Drawing.Point(15, 70);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(17, 13);
             this.label5.TabIndex = 38;
@@ -195,29 +191,11 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 93);
+            this.label4.Location = new System.Drawing.Point(15, 44);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(17, 13);
             this.label4.TabIndex = 37;
             this.label4.Text = "X:";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 67);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(43, 13);
-            this.label3.TabIndex = 36;
-            this.label3.Text = "Length:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(15, 41);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
-            this.label2.TabIndex = 35;
-            this.label2.Text = "Width:";
             // 
             // label1
             // 
@@ -230,21 +208,21 @@
             // 
             // Z_Txt
             // 
-            this.Z_Txt.Location = new System.Drawing.Point(99, 142);
+            this.Z_Txt.Location = new System.Drawing.Point(99, 93);
             this.Z_Txt.Name = "Z_Txt";
             this.Z_Txt.Size = new System.Drawing.Size(100, 20);
             this.Z_Txt.TabIndex = 33;
             // 
             // Y_Txt
             // 
-            this.Y_Txt.Location = new System.Drawing.Point(99, 116);
+            this.Y_Txt.Location = new System.Drawing.Point(99, 67);
             this.Y_Txt.Name = "Y_Txt";
             this.Y_Txt.Size = new System.Drawing.Size(100, 20);
             this.Y_Txt.TabIndex = 32;
             // 
             // X_Txt
             // 
-            this.X_Txt.Location = new System.Drawing.Point(99, 90);
+            this.X_Txt.Location = new System.Drawing.Point(99, 41);
             this.X_Txt.Name = "X_Txt";
             this.X_Txt.Size = new System.Drawing.Size(100, 20);
             this.X_Txt.TabIndex = 31;
@@ -259,7 +237,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(17, 232);
+            this.label12.Location = new System.Drawing.Point(17, 183);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(40, 13);
             this.label12.TabIndex = 55;
@@ -267,7 +245,7 @@
             // 
             // Picture_Browse_btn
             // 
-            this.Picture_Browse_btn.Location = new System.Drawing.Point(99, 227);
+            this.Picture_Browse_btn.Location = new System.Drawing.Point(99, 178);
             this.Picture_Browse_btn.Name = "Picture_Browse_btn";
             this.Picture_Browse_btn.Size = new System.Drawing.Size(100, 23);
             this.Picture_Browse_btn.TabIndex = 56;
@@ -284,27 +262,11 @@
             this.Browse_Path_Lbl.Size = new System.Drawing.Size(0, 13);
             this.Browse_Path_Lbl.TabIndex = 57;
             // 
-            // Width_Txt
-            // 
-            this.Width_Txt.Location = new System.Drawing.Point(99, 38);
-            this.Width_Txt.Name = "Width_Txt";
-            this.Width_Txt.Size = new System.Drawing.Size(100, 20);
-            this.Width_Txt.TabIndex = 58;
-            // 
-            // Length_Txt
-            // 
-            this.Length_Txt.Location = new System.Drawing.Point(99, 64);
-            this.Length_Txt.Name = "Length_Txt";
-            this.Length_Txt.Size = new System.Drawing.Size(100, 20);
-            this.Length_Txt.TabIndex = 59;
-            // 
             // AddTerrainByPicture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(417, 313);
-            this.Controls.Add(this.Length_Txt);
-            this.Controls.Add(this.Width_Txt);
+            this.ClientSize = new System.Drawing.Size(417, 261);
             this.Controls.Add(this.Browse_Path_Lbl);
             this.Controls.Add(this.Picture_Browse_btn);
             this.Controls.Add(this.label12);
@@ -324,8 +286,6 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Z_Txt);
             this.Controls.Add(this.Y_Txt);
@@ -355,8 +315,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox Z_Txt;
         private System.Windows.Forms.TextBox Y_Txt;
@@ -365,7 +323,5 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button Picture_Browse_btn;
         private System.Windows.Forms.Label Browse_Path_Lbl;
-        private System.Windows.Forms.TextBox Width_Txt;
-        private System.Windows.Forms.TextBox Length_Txt;
     }
 }

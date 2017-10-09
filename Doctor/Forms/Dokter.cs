@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using UserData;
 
@@ -22,7 +23,7 @@ namespace Doctor
             this.client = client;
             this.hashcode = hashcode;
             client.SendMessage(new{
-                id = "getconPatients"
+                id = "getPatients"
             });
 
             string data = client.ReadMessage();
@@ -32,6 +33,30 @@ namespace Doctor
             {
                 if(user.Type == UserType.Client)
                     Awaiting_Patients_Box.Items.Add(user);
+            }
+
+            WhileFocused();
+        }
+
+        private void WhileFocused()
+        {
+            while (Focused)
+            {
+                //Awaiting_Patients_Box.Items.Clear();
+
+                client.SendMessage(new
+                {
+                    id = "getPatients"
+                });
+
+                string data = client.ReadMessage();
+                users = (List<User>)((JArray)JsonConvert.DeserializeObject(data)).ToObject(typeof(List<User>));
+
+                foreach (User user in users)
+                {
+                    if (user.Type == UserType.Client)
+                        Awaiting_Patients_Box.Items.Add(user);
+                }
             }
         }
 

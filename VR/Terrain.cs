@@ -112,8 +112,6 @@ namespace VR {
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
             this.fadeDist = fadeDist;
-            this.width = width;
-            this.length = length;
             this.x = x;
             this.y = y;
             this.z = z;
@@ -130,7 +128,7 @@ namespace VR {
                 }
             }
 
-            int[] measure = new int[2] { width, length };
+            int[] measure = new int[2] { heightImage.Width, heightImage.Height };
 
             dynamic message = new {
                 id = "tunnel/send",

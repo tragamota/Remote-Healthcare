@@ -78,7 +78,7 @@ namespace Doctor
                 if ((string)obj["id"] == "clientDisconnected")
                 {
                     MessageBox.Show($"{patient.FullName} disconnected");
-                    UpdateThread.Abort();
+                    this.Hide();
                 }
                 else
                 {
