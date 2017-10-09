@@ -42,7 +42,7 @@ namespace VR
 
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
-            routeID = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
+            routeID = jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid").ToString();
             //Console.WriteLine(jObject);
         }
 

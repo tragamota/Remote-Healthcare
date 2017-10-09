@@ -84,5 +84,14 @@ namespace VR {
         {
             connector.Load("3A_Test");
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if(cameraCheck.Checked)
+                connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("Bike"));
+            else
+                connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("GroundPlane"));
+
+        }
     }
 }

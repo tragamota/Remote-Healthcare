@@ -38,6 +38,7 @@
             this.HUDButton = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.cameraCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // AddTree
@@ -194,11 +195,23 @@
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
+            // cameraCheck
+            // 
+            this.cameraCheck.AutoSize = true;
+            this.cameraCheck.Location = new System.Drawing.Point(13, 126);
+            this.cameraCheck.Name = "cameraCheck";
+            this.cameraCheck.Size = new System.Drawing.Size(80, 17);
+            this.cameraCheck.TabIndex = 14;
+            this.cameraCheck.Text = "Follow Bike";
+            this.cameraCheck.UseVisualStyleBackColor = true;
+            this.cameraCheck.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(313, 391);
+            this.Controls.Add(this.cameraCheck);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.Delete_Ground_Btn);
@@ -217,6 +230,7 @@
             this.Name = "ControlPanel";
             this.Text = "ControlPanel";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -237,5 +251,6 @@
         private System.Windows.Forms.Button HUDButton;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.CheckBox cameraCheck;
     }
 }
