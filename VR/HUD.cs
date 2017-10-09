@@ -17,8 +17,8 @@ namespace VR
         public HUD(Connector connector)
         {
             this.connector = connector;
-            this.cameraID = connector.GetUUID("Head");
-            Console.WriteLine("Camera ID: {0}", cameraID);
+            this.cameraID = connector.GetUUID("Bike");
+           // Console.WriteLine("Camera ID: {0}", cameraID);
 
             connector.AddHUD(cameraID);
 
@@ -30,14 +30,16 @@ namespace VR
             double y = 2;
             double z = 3;
             
-            while(x < 1000 && y < 1000 && z < 1000)
-            {
+
+            
+            //while(x < 1000 && y < 1000 && z < 1000)
+            //{
                 x++;
                 y++;
                 z++;
-                Update(x, y, z,23,23,23, DateTime.Now.ToString("h:mm:ss tt"), 34);
+                Update2(x, y, z,x + 23,y + 23,z + 23, DateTime.Now.ToString("mm:ss tt"), x + y + 34);
 
-            }
+             //}
             
             JObject jObject = connector.GetScene();
             Console.WriteLine(jObject);
@@ -51,11 +53,24 @@ namespace VR
             string heartrate = $"Heartrate: {rate}bpm";
             connector.DrawText(uuid, heartrate, 300, 80);
         }
+        public void DrawHeartRate2(double rate)
+        {
+            string heartrate = $"{rate}";
+            connector.DrawText(uuid, "puls", 620, 260);
+            connector.DrawText(uuid, heartrate, 620, 300);
+        }
 
         public void DrawSpeed(double sp)
         {
             string speed = $"Speed: {sp}km/H";
             connector.DrawText(uuid, speed, 300, 120);
+        }
+        public void DrawSpeed2(double sp)
+        {
+            string speed = $"{sp}";
+
+            connector.DrawText(uuid, "km/H", 450, 40);
+            connector.DrawText(uuid, speed, 450, 80);
         }
 
         public void DrawDistance(double dist)
@@ -64,10 +79,24 @@ namespace VR
             connector.DrawText(uuid, distance, 300, 160);
         }
 
+        public void DrawDistance2(double dist)
+        {
+            string distance = $"{dist}";
+            connector.DrawText(uuid, "km", 620, 80);
+            connector.DrawText(uuid, distance, 620, 120);
+        }
+
         public void DrawRoundMin(double round)
         {
-            string roundmin = $"RoundMin: {round}R/MIN";
+            string roundmin = $"RoundMin: {round}R/M";
             connector.DrawText(uuid, roundmin, 300, 200);
+        }
+
+        public void DrawRoundMin2(double round)
+        {
+            string roundmin = $"{round}";
+            connector.DrawText(uuid, "RPM", 300, 80);
+            connector.DrawText(uuid, roundmin, 300, 120);
         }
 
         public void DrawResistance(double res)
@@ -76,16 +105,35 @@ namespace VR
             connector.DrawText(uuid, resistance, 300, 240);
         }
 
+        public void DrawResistance2(double res)
+        {
+            string resistance = $"{res}";
+            connector.DrawText(uuid, "Power", 300, 260);
+            connector.DrawText(uuid, resistance, 300, 300);
+        }
+
         public void DrawEnergy(double en)
         {
             string energy = $"Energy: {en}K/J";
             connector.DrawText(uuid, energy, 300, 280);
         }
 
+        public void DrawEnergy2(double en)
+        {
+            string energy = $"{en}";
+            connector.DrawText(uuid, "Energy", 450, 300);
+            connector.DrawText(uuid, energy, 450, 340);
+        }
+
         public void DrawTime(String ti)
         {
             string time = $"Time: {ti}";
             connector.DrawText(uuid, time, 300, 40);
+        }
+        public void DrawTime2(String ti)
+        {
+            string time = $"{ti}";
+            connector.DrawText(uuid, time, 450, 190);
         }
 
         public void DrawWatt(double wat)
@@ -107,8 +155,24 @@ namespace VR
             DrawTime(ti);
             DrawWatt(wat);
 
+            connector.SetClearColor(uuid);
             connector.SwapText(uuid);
         }
 
+        public void Update2(double rate, double sp, double dist, double round, double res, double en, string ti, double wat)
+        {
+            connector.ClearPanel(uuid);
+
+            DrawHeartRate2(rate);
+            DrawDistance2(sp);
+            DrawSpeed2(dist);
+            DrawRoundMin2(round);
+            DrawResistance2(res);
+            DrawEnergy2(en);
+            DrawTime2(ti);
+
+            connector.SetClearColor(uuid);
+            connector.SwapText(uuid);
+        }
     }
 }
