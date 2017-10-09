@@ -35,28 +35,25 @@ namespace Doctor
                     Awaiting_Patients_Box.Items.Add(user);
             }
 
-            WhileFocused();
+            this.Activated += (s, a) => Update();
         }
 
-        private void WhileFocused()
+        private void Update()
         {
-            while (Focused)
+            Awaiting_Patients_Box.Items.Clear();
+
+            client.SendMessage(new
             {
-                //Awaiting_Patients_Box.Items.Clear();
+                id = "getPatients"
+            });
 
-                client.SendMessage(new
-                {
-                    id = "getPatients"
-                });
+            string data = client.ReadMessage();
+            users = (List<User>)((JArray)JsonConvert.DeserializeObject(data)).ToObject(typeof(List<User>));
 
-                string data = client.ReadMessage();
-                users = (List<User>)((JArray)JsonConvert.DeserializeObject(data)).ToObject(typeof(List<User>));
-
-                foreach (User user in users)
-                {
-                    if (user.Type == UserType.Client)
-                        Awaiting_Patients_Box.Items.Add(user);
-                }
+            foreach (User user in users)
+            {
+                if (user.Type == UserType.Client)
+                    Awaiting_Patients_Box.Items.Add(user);
             }
         }
 
