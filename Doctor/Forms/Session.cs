@@ -356,6 +356,35 @@ namespace Doctor
                 }
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            client.SendMessage(new
+            {
+                id = "committingChanges",
+                data = new
+                {
+                    hashcode = patient.Hashcode,
+                    data = new
+                    {
+                        id = "setResistance",
+                        data = new
+                        {
+                            resistance = 25
+                        }
+                    }
+                }
+            });
+
+            client.SendMessage(new
+            {
+                id = "stoprecording"
+            });
+
+            UpdateThread.Abort();
+
+
+        }
     }   
 
 }
