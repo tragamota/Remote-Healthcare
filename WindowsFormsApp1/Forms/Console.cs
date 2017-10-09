@@ -51,17 +51,6 @@ namespace Remote_Healtcare_Console
             else
             {
                 bike = new Bike(combo.SelectedItem.ToString(), this, client);
-
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
-                saveFileDialog.Filter = "JSON (.json)|*.json;";
-                saveFileDialog.FileName = "sessie.json";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    path = Path.GetFullPath(saveFileDialog.FileName);
-                }
-
                 bike.Start();
             }
         }

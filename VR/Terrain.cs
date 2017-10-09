@@ -117,17 +117,17 @@ namespace VR {
             this.x = x;
             this.y = y;
             this.z = z;
+            
+            Bitmap heightImage = (Bitmap)Image.FromFile(imagepath);
+            double[] heightValues = new double[heightImage.Width * heightImage.Height];
 
-            Bitmap image = (Bitmap)Image.FromFile(imagepath);
-            int[] heightValues = new int[(length * width)];
-
-            for (int i = 0; i <= length - 1; i++) {
-                for (int j = 0; j <= width - 1; j++) {
-                    if ((image.GetPixel(j, i).R < 0x21) || (image.GetPixel(j, i).G < 0x21) || (image.GetPixel(j, i).B < 0x21)) {
-                        heightValues[((i * width) + j)] = 10;
-                    }
+            for (int i = 0; i < heightImage.Height; i++)
+            {
+                for (int j = 0; j < heightImage.Width; j++)
+                {
+                    int alpha = int.Parse(heightImage.GetPixel(j, i).A.ToString());
+                    heightValues[(i * (heightImage.Width - 1)) + j] = alpha / 8.75;
                 }
-
             }
 
             int[] measure = new int[2] { width, length };

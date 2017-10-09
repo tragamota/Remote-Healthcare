@@ -97,6 +97,11 @@ namespace Server {
                 }
             }
 
+            if(session != null)
+            {
+                //session.SaveSessionToFile();
+                session = null;
+            }
             closeStream();
             Console.WriteLine(connectedClients.Count + "\t" + connectedDoctors.Count);
         }
@@ -128,7 +133,6 @@ namespace Server {
                     User patientUser = (User)obj["data"]["patient"].ToObject(typeof(User));
                     SetPatient(patientUser);
                     SetDoctor((string)obj["data"]["doctor"]["doctor"]);
-                    patient.writeMessage(obj["data"]["doctor"]);
                     break;
                 case "startrecording":
                     new Thread(() => StartRecording((JObject)obj["data"])).Start();
@@ -185,7 +189,8 @@ namespace Server {
             foreach(Client client in connectedClients) {
                 if(client.User.Hashcode == (string) data["hashcode"]) {
                     lock (sessionLock) {
-                        if (client.session != null) {
+                        if (client.session != null)
+                        {
                             if (client.session.data.Count != 0)
                                 writeMessage(client.session.data.Last());
                             else
@@ -195,6 +200,10 @@ namespace Server {
                     break;
                 }
             }
+            doctor.writeMessage(new
+            {
+                id = "clientDisconnected"
+            });
         }
 
         private void getOldSessionsName(JObject data) {
@@ -271,13 +280,13 @@ namespace Server {
 
         private void getAllClients() {
             lock (usersLock) {
-                writeMessage(users);
+                new Thread(() => writeMessage(users)).Start();
             }
         }
 
         private void getConClients() {
             lock(connectedClients) {
-                new Thread(() => writeMessage(connectedClients));
+                new Thread(() => writeMessage(connectedClients)).Start();
             }
         }
 
@@ -362,7 +371,6 @@ namespace Server {
                         break;
                     }
                 }
-               
             }
         }
 
@@ -544,6 +552,7 @@ namespace Server {
                 }
                 catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
+                    Console.WriteLine($"Verbinding verloren met patiënt {patient}");
                     return null;
                 }
             }

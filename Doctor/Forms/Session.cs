@@ -73,18 +73,28 @@ namespace Doctor
                         hashcode = patient.Hashcode
                     }
                 });
-                BikeData data = (BikeData)((JObject)JsonConvert.DeserializeObject(client.ReadMessage())).ToObject(typeof(BikeData));
-                SetPulse(data.Pulse.ToString());
-                SetRoundMin(data.Rpm.ToString());
-                SetSpeed(data.Speed.ToString());
-                SetDistance(data.Distance.ToString());
-                SetResistance(data.Resistance.ToString());
-                SetEnergy(data.Energy.ToString());
-                SetTime(data.Time.ToString());
-                SetWatt(data.Power.ToString());
-                Application.DoEvents();
 
-                AddToGraphHistory(data);
+                JObject obj = (JObject)JsonConvert.DeserializeObject(client.ReadMessage());
+                if ((string)obj["id"] == "clientDisconnected")
+                {
+                    MessageBox.Show($"{patient.FullName} disconnected");
+                    UpdateThread.Abort();
+                }
+                else
+                {
+                    BikeData data = (BikeData)(obj).ToObject(typeof(BikeData));
+                    SetPulse(data.Pulse.ToString());
+                    SetRoundMin(data.Rpm.ToString());
+                    SetSpeed(data.Speed.ToString());
+                    SetDistance(data.Distance.ToString());
+                    SetResistance(data.Resistance.ToString());
+                    SetEnergy(data.Energy.ToString());
+                    SetTime(data.Time.ToString());
+                    SetWatt(data.Power.ToString());
+                    Application.DoEvents();
+
+                    AddToGraphHistory(data);
+                }
             }
         }
 

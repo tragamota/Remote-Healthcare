@@ -22,7 +22,7 @@ namespace Doctor
             this.client = client;
             this.hashcode = hashcode;
             client.SendMessage(new{
-                id = "getpatients"
+                id = "getconPatients"
             });
 
             string data = client.ReadMessage();
