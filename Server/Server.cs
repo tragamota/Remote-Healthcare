@@ -23,7 +23,7 @@ namespace Server {
 
         private object usersLock, connectedDoctorsLock, connectedClientsLock;
 
-        public Server(string IPaddress, int portNumber) {
+        public Server(int portNumber) {
             serverRunning       = true;
             loadUsers           = null;
             users               = new List<User>();
@@ -33,13 +33,7 @@ namespace Server {
             connectedClientsLock    = new object();
             connectedDoctorsLock    = new object();
 
-            IPAddress Ip;
             string usersPath = Directory.GetCurrentDirectory() + @"\Users.json";
-
-            if (!IPAddress.TryParse(IPaddress, out Ip)) {
-                Console.WriteLine("The given IpAddress was not valid....\nClosing the server");
-                Environment.Exit(1);
-            }
 
             try {
                 socket = new TcpListener(IPAddress.Any, portNumber);
@@ -132,11 +126,6 @@ namespace Server {
                         }
                     }
                 }
-                //User patient = new User("zwen", "zwen", "Zwen van Erkelens", DoctorType.Client);
-                //User doctor = new User("bram", "bram", "Bram Stoof", DoctorType.Doctor);
-
-                //users.Add(patient);
-                //users.Add(doctor);
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
@@ -144,7 +133,7 @@ namespace Server {
         }
 
         static void Main(string[] args) {
-            new Server("127.0.0.1", 1337);
+            new Server(1337);
         }
     }
 }

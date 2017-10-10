@@ -11,18 +11,18 @@ namespace Server {
     public class BikeSession {
         private DateTime sessionDateTime;
         private string userHash;
-        public List<BikeData> data { get; set; }
-        public List<BikeData> notSendData { get; set; }
+        public List<BikeData> Data { get; set; }
+        public List<BikeData> LatestData { get; set; }
 
         public BikeSession(string userHash) {
             this.userHash = userHash;
             sessionDateTime = DateTime.UtcNow;
-            data = new List<BikeData>();
-            notSendData = new List<BikeData>();
+            Data = new List<BikeData>();
+            LatestData = new List<BikeData>();
         }
 
         public void SaveSessionToFile() {
-            string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + userHash;
+            string pathToUserDir = Directory.GetCurrentDirectory() + @"\Data\" + userHash;
             string pathToSessionFile = pathToUserDir + @"\" + sessionDateTime + ".json";
             if(!Directory.Exists(pathToUserDir)) {
                 Directory.CreateDirectory(pathToUserDir);
@@ -32,7 +32,7 @@ namespace Server {
             }
 
             try {
-                File.WriteAllText(pathToSessionFile ,JsonConvert.SerializeObject(data, Formatting.Indented));
+                File.WriteAllText(pathToSessionFile ,JsonConvert.SerializeObject(Data));
             }
             catch(IOException e) {
                 Console.WriteLine(e.StackTrace);
