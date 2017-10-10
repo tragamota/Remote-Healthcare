@@ -75,14 +75,16 @@ namespace VR {
             Console.WriteLine(connector.GetScene().ToString());
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Save_Btn_Click(object sender, EventArgs e)
         {
             connector.Save("3A_Test");
+            connector.SaveRoutes();
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void Load_Btn_Click(object sender, EventArgs e)
         {
             connector.Load("3A_Test");
+            connector.LoadRoutes();
         }
     }
 }

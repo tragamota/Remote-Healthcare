@@ -12,16 +12,13 @@ namespace VR
         public string routeID;
         public Connector connector;
         public string routeName;
+        private dynamic[] data;
 
         public Route(Connector connector, dynamic[] data, string routeName)
         {
             this.connector = connector;
             this.routeName = routeName;
-
-            //dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }), dir = (new int[3] { 5, 0, -5 }) };
-            //dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }), dir = (new int[3] { 5, 0, 5 }) };
-            //dynamic pos3 = new { pos = (new int[3] { 50, 0, 50 }), dir = (new int[3] { -5, 0, 5 }) };
-            //dynamic pos4 = new { pos = (new int[3] { 0, 0, 50 }), dir = (new int[3] { -5, 0, -5 }) };
+            this.data = data;
 
             dynamic message = new
             {
@@ -99,6 +96,31 @@ namespace VR
 
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
+            //Console.WriteLine(jObject);
+        }
+
+        public void Reload()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = connector.tunnelID,
+                    data = new
+                    {
+                        id = "route/add",
+                        data = new
+                        {
+                            nodes = data
+                        }
+                    }
+                }
+            };
+
+            connector.SendMessage(message);
+            JObject jObject = connector.ReadMessage();
+            routeID = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
             //Console.WriteLine(jObject);
         }
     }

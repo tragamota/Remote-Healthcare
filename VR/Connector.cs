@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace VR {
     class Connector {
@@ -593,6 +594,44 @@ namespace VR {
             JObject jObject = ReadMessage();
         //uuid = (string) jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
         Console.WriteLine(jObject);
+        }
+
+        public void SaveRoutes()
+        {
+            string path = "";
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            saveFileDialog.Filter = "JSON (.json)|*.json;";
+            saveFileDialog.FileName = "sessie.json";
+            
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                path = Path.GetFullPath(saveFileDialog.FileName);
+            }
+            
+            File.WriteAllText(path, JsonConvert.SerializeObject(Routes));
+        }
+
+        public void LoadRoutes()
+        {
+            string path = "";
+
+            OpenFileDialog browseFileDialog = new OpenFileDialog();
+            browseFileDialog.Filter = "JSON (.json)|*.json;";
+            browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+
+            if (browseFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                path = Path.GetFullPath(browseFileDialog.FileName);
+                string json = File.ReadAllText(path);
+                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json)).ToObject(typeof(List<Route>));
+            }
+
+            foreach (Route route in Routes)
+            {
+                route.Reload();
+            }
+        }
     }
-}
 }
