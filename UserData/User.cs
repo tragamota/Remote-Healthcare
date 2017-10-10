@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace UserData {
     public enum UserType { Client, Doctor, None }
     public class User {
-        private string username { get; set; }
-        private string password { get; set; }
+        private string username;
+        private string password;
+        private string hashcode;
         public string FullName { get; set; }
-        public string Hashcode { get; }
         public UserType Type { get; set; }
 
         [Newtonsoft.Json.JsonConstructor]
@@ -17,7 +18,7 @@ namespace UserData {
             this.username = username;
             this.password = password;
             this.FullName = fullName;
-            this.Hashcode = hashcode;
+            this.hashcode = hashcode;
             this.Type = type;
         }
 
@@ -26,7 +27,7 @@ namespace UserData {
             this.password = password;
             this.FullName = fullName;
             this.Type = UserType.Client;
-            Hashcode = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(DateTime.UtcNow.Ticks.ToString() + username)));
+            makeHashcodeValid(Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(DateTime.UtcNow.Ticks.ToString() + username))));
         }
 
         public User(string username, string password, string fullName, UserType type) {
@@ -34,7 +35,8 @@ namespace UserData {
             this.password = password;
             this.FullName = fullName;
             this.Type = type;
-            Hashcode = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(DateTime.UtcNow.Ticks.ToString() + username)));
+            string test = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(DateTime.UtcNow.Ticks.ToString() + username)));
+            makeHashcodeValid(test);
         }
 
         public string Password {
@@ -43,6 +45,10 @@ namespace UserData {
 
         public string Username {
             get { return username; }
+        }
+
+        public string Hashcode {
+            get { return hashcode; }
         }
 
         public void SetUsername(string newUsername) {
@@ -56,12 +62,26 @@ namespace UserData {
         public void CheckLogin(string username, string password, out bool valid, out string hashcode) {
             if (this.username == username && this.password == password) {
                 valid = true;
-                hashcode = this.Hashcode;
+                hashcode = this.hashcode;
             }
             else {
                 valid = false;
                 hashcode = null;
             }
+        }
+
+        private void makeHashcodeValid(string hash) {
+            List<char> forbiddenChars = new List<char>(Path.GetInvalidPathChars());
+            string validHashcode = string.Empty;
+            foreach(char c in hash) {
+                if(forbiddenChars.Contains(c)) {
+                    validHashcode += "{";
+                }
+                else {
+                    validHashcode += c;
+                }
+            }
+            hashcode = validHashcode;
         }
     }
 }
