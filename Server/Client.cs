@@ -104,14 +104,18 @@ namespace Server {
                 case "update":
                     update((JObject)obj["data"]);
                     break;
-                case "latestdata":
-                    new Thread(() => sendLatestData((JObject)obj["data"])).Start();
+                case "committingChanges":
+                    JObject data = (JObject)obj["data"];
+                    //patient.writeMessage(data);
                     break;
-                case "sessiondata":
-                    new Thread(() => sendSessionData((JObject)obj["data"])).Start();
+                case "reqSession":
+                    new Thread(() => sendSessionData((JObject)obj["data"]));
                     break;
                 case "oldsession":
-                    new Thread(() => sendOldSession((JObject)obj["data"])).Start();
+                    new Thread(() => sendOldSession((JObject)obj["data"]));
+                    break;
+                case "oldsessionlist":
+                    new Thread(() => getOldSessionsName((JObject)obj["data"])).Start();
                     break;
                 case "getpatients":
                     new Thread(() => getAllClients()).Start();
@@ -120,10 +124,10 @@ namespace Server {
                     new Thread(() => getConClients()).Start();
                     break;
                 case "startrecording":
-                    new Thread(() => StartRecording((JObject)obj["data"])).Start();
+                    new Thread(() => StartRecording((JObject)obj["data"]));
                     break;
                 case "stoprecording":
-                    new Thread(() => StopRecording((JObject)obj["data"])).Start();
+                    new Thread(() => StopRecording((JObject)obj["data"]));
                     break;
                 case "sendmessagetoperson":
                     new Thread(() => sendPM((JObject)obj["data"])).Start();
@@ -146,31 +150,21 @@ namespace Server {
                 case "power":
                     new Thread(() => setPower((JObject)obj["data"])).Start();
                     break;
+                case "manual":
+                    new Thread(() => setManual((JObject)obj["data"])).Start();
+                    break;
                 case "disconnect":
                     closeStream();
                     break;
             }
         }
 
-        private void sendLatestData(JObject data) {
-            foreach (Client client in connectedClients) {
-                if (client.User.Hashcode == (string)data["hashcode"]) {
-                    lock (client.sessionLock) {
-                        if (session != null) {
-                            writeMessage(session.LatestData);
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-
         private void sendSessionData(JObject data) {
             foreach(Client client in connectedClients) {
                 if(client.User.Hashcode == (string) data["hashcode"]) {
-                    lock (client.sessionLock) {
+                    lock (sessionLock) {
                         if (session != null) {
-                            writeMessage(session.Data);
+                            writeMessage(session.notSendData);
                         }
                     }
                     break;
@@ -257,9 +251,13 @@ namespace Server {
         }
 
         private void getConClients() {
-            lock(connectedClientsLock) {
-                writeMessage(connectedClients);
+            lock(connectedClients) {
+                new Thread(() => writeMessage(connectedClients));
             }
+        }
+
+        private void setManual(JObject jObject) {
+            //send set manual power
         }
 
         private void setPower(JObject obj) {
@@ -340,11 +338,7 @@ namespace Server {
                 lock (sessionLock) {
                     if (session != null) {
                         BikeData dataConverted = data.ToObject<BikeData>();
-                        session.Data.Add(dataConverted);
-                        if (session.LatestData.Count > 5) {
-                            session.LatestData.RemoveAt(0);
-                        }
-                        session.LatestData.Add(dataConverted);
+                        session.data.Add(dataConverted);
                     }
                 }
             }
