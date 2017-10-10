@@ -25,12 +25,12 @@ namespace VR {
             {
                 if (Name_Txt.Text.Equals("Bike"))
                 {
-                    connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text), double.Parse(Scale_Txt.Text), int.Parse(Rotation_Z_Txt.Text));
+                    connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, double.Parse(X_Txt.Text), double.Parse(Y_Txt.Text), double.Parse(Z_Txt.Text), double.Parse(Scale_Txt.Text), int.Parse(Rotation_Z_Txt.Text));
                     HUD hud = new HUD(connector);
                 }
                 else
                 {
-                    connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, int.Parse(X_Txt.Text), int.Parse(Y_Txt.Text), int.Parse(Z_Txt.Text), double.Parse(Scale_Txt.Text), int.Parse(Rotation_Z_Txt.Text));
+                    connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, double.Parse(X_Txt.Text), double.Parse(Y_Txt.Text), double.Parse(Z_Txt.Text), double.Parse(Scale_Txt.Text), int.Parse(Rotation_Z_Txt.Text));
                 }
                 this.Hide();
             }

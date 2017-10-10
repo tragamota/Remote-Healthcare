@@ -534,16 +534,17 @@ namespace VR {
             this.tunnelID = id;
         }
 
-        public void AddModel(string modelName, string filePath, int x, int y, int z, double s, int zRotation) {
-            Models.Add(new Model(this, modelName, filePath, x, y, z, s, zRotation));
+        public void AddModel(string modelName, string filePath, double x, double y, double z, double s, int zRotation) {
+            double positionHeight = GetTerrainHeight(x, z);
+            Models.Add(new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation));
         }
 
         public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, int[] heightValues) {
             terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z, heightValues);
         }
 
-        public void AddTerrainByPicture(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, string imagepath) {
-            terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z, imagepath);
+        public void AddTerrainByPicture(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int x, int y, int z, string imagepath) {
+            terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, x, y, z, imagepath);
         }
 
         public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z) {
@@ -552,6 +553,40 @@ namespace VR {
 
         public void AddRoute(dynamic[] data, string routeName) {
             Routes.Add(new Route(this, data, routeName));
+        }
+
+
+        public double GetTerrainHeight(double x, double z)
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/terrain/getheight",
+                        data = new
+                        {
+                            position = (new double[2] { x, z })
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+
+            JToken jToken = jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("height");
+            string height = jToken.ToString();
+            //height = height.Replace(',', '.');
+
+            double heightValue = double.Parse(height);
+            heightValue = Math.Round(heightValue, 1);
+
+            Console.WriteLine(jObject);
+            return heightValue;
         }
 
         public List<Model> GetModels() {

@@ -104,7 +104,7 @@ namespace VR {
             AddLayer();
         }
 
-        public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z, string imagepath) {
+        public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int x, int y, int z, string imagepath) {
             this.connector = connector;
             this.terrainName = terrainName;
             this.diffuseFile = diffuseFile;
@@ -195,25 +195,6 @@ namespace VR {
                                     smoothnormals = true
                                 }
                             }
-                        }
-                    }
-                }
-            };
-
-            connector.SendMessage(message);
-            JObject jObject = connector.ReadMessage();
-            //Console.WriteLine(jObject);
-        }
-
-        public void GetHeight() {
-            dynamic message = new {
-                id = "tunnel/send",
-                data = new {
-                    dest = connector.tunnelID,
-                    data = new {
-                        id = "scene/terrain/getheight",
-                        data = new {
-                            position = (new double[2] { 10.2, 4.4 })
                         }
                     }
                 }

@@ -11,7 +11,7 @@ namespace VR {
         public string modelName;
         public string uuid;
 
-        public Model(Connector connector, string modelname, string filePath, int x, int y, int z, double s, int zRotation) {
+        public Model(Connector connector, string modelname, string filePath, double x, double y, double z, double s, int zRotation) {
             this.connector = connector;
             this.modelName = modelname;
             dynamic message = new {
@@ -24,7 +24,7 @@ namespace VR {
                             name = modelname,
                             components = new {
                                 transform = new {
-                                    position = (new int[3] { x, y, z }),
+                                    position = (new double[3] { x, y, z }),
                                     scale = s,
                                     rotation = (new int[3] { 0, zRotation, 0})
                                 },
