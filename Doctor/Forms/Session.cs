@@ -3,9 +3,6 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 using UserData;
-using Server;
-using System.Threading;
-using System.Diagnostics;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -35,6 +32,8 @@ namespace Doctor
             InitializeComponent();
             this.patient = patient;
             this.client = client;
+
+            Stop_Session_Btn.Enabled = false;
 
             client.SendMessage(new
             {
@@ -75,25 +74,31 @@ namespace Doctor
                 });
 
                 JObject obj = (JObject)JsonConvert.DeserializeObject(client.ReadMessage());
-                if ((string)obj["id"] == "clientDisconnected")
+                switch ((string)obj["id"])
                 {
-                    MessageBox.Show($"{patient.FullName} disconnected");
-                    this.Hide();
-                }
-                else
-                {
-                    BikeData data = (BikeData)(obj).ToObject(typeof(BikeData));
-                    SetPulse(data.Pulse.ToString());
-                    SetRoundMin(data.Rpm.ToString());
-                    SetSpeed(data.Speed.ToString());
-                    SetDistance(data.Distance.ToString());
-                    SetResistance(data.Resistance.ToString());
-                    SetEnergy(data.Energy.ToString());
-                    SetTime(data.Time.ToString());
-                    SetWatt(data.Power.ToString());
-                    Application.DoEvents();
+                    case "clientDisconnected":
+                        MessageBox.Show($"{patient.FullName} disconnected");
+                        this.Hide();
+                        break;
+                    case "bikeDisconnected":
+                        MessageBox.Show($"Fiets van {patient.FullName} disconnected");
+                        Start_Session_Btn.Enabled = false;
+                        Stop_Session_Btn.Enabled = false;
+                        break;
+                    case "bikeData":
+                        BikeData data = (BikeData)(obj["data"]).ToObject(typeof(BikeData));
+                        SetPulse(data.Pulse.ToString());
+                        SetRoundMin(data.Rpm.ToString());
+                        SetSpeed(data.Speed.ToString());
+                        SetDistance(data.Distance.ToString());
+                        SetResistance(data.Resistance.ToString());
+                        SetEnergy(data.Energy.ToString());
+                        SetTime(data.Time.ToString());
+                        SetWatt(data.Power.ToString());
+                        Application.DoEvents();
 
-                    AddToGraphHistory(data);
+                        AddToGraphHistory(data);
+                        break;
                 }
             }
         }
@@ -265,6 +270,9 @@ namespace Doctor
 
         private void Start_Session_Btn_Click(object sender, EventArgs e)
         {
+            Start_Session_Btn.Enabled = false;
+            Stop_Session_Btn.Enabled = true;
+
             client.SendMessage(new
             {
                 id = "startrecording",
@@ -279,6 +287,9 @@ namespace Doctor
 
         private void Stop_Session_Btn_Click(object sender, EventArgs e)
         {
+            Start_Session_Btn.Enabled = true;
+            Stop_Session_Btn.Enabled = false;
+
             client.SendMessage(new
             {
                 id = "stoprecording"
