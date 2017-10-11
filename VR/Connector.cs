@@ -583,14 +583,9 @@ namespace VR {
                 m.Load();
                 Models.Add(m);
             }
-            
-            positionHeight = GetTerrainHeight(x, z);
-            Model model = new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation);
-            model.Load();
-            Models.Add(model);
         }
 
-        public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, int[] heightValues) {
+        public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, double[] heightValues) {
             this.terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z, heightValues);
             terrain.Load();
         }
@@ -634,7 +629,7 @@ namespace VR {
             SendMessage(message);
             JObject jObject = ReadMessage();
 
-            JToken jToken = jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("height");
+            JToken jToken = jObject["data"]["data"]["data"]["height"];
             string height = jToken.ToString();
             //height = height.Replace(',', '.');
 
@@ -711,7 +706,6 @@ namespace VR {
                 });
                 File.WriteAllText(saveFileDialog.FileName, obj);
             }
-            
         }
 
         public void LoadScene()
@@ -727,15 +721,30 @@ namespace VR {
                 path = Path.GetFullPath(browseFileDialog.FileName);
                 string json = File.ReadAllText(path);
                 terrain = (Terrain)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"].ToObject(typeof(Terrain));
-                Models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"]["connector"]["Models"].ToObject(typeof(List<Model>));
-                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"]["connector"]["Routes"].ToObject(typeof(List<Route>));
+                Models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["models"].ToObject(typeof(List<Model>));
+                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["routes"].ToObject(typeof(List<Route>));
             }
 
             terrain.Reload(this);
 
+            List<Model> lakes = new List<Model>();
+
             foreach (Model model in Models)
             {
-                model.Reload(this);
+                if(model.modelname.Equals("water"))
+                {
+                    Water water = new Water(this, "water", model.x, model.y, model.z);
+                    water.Load();
+                    lakes.Add(water);
+                }
+                else
+                    model.Reload(this);
+            }
+
+            Models.RemoveAll(x => x.modelname.Equals("water"));
+            foreach (Model model in lakes)
+            {
+                Models.Add(model);
             }
 
             foreach (Route route in Routes)
@@ -746,40 +755,9 @@ namespace VR {
 
         public void AddWater()
         {
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/node/add",
-                        data = new
-                        {
-                            name = "water",
-                            components = new
-                            {
-                                transform = new
-                                {
-                                    position = (new int[3] { 1, 5, 1 }),
-                                    scale = 1,
-                                    rotation = (new int[3] { 0, 0, 0 })
-                                },
-                                water = new
-                                {
-                                    size = (new int[2] { 256, 256 }),
-                                    resolution = 0.9
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-
+            Water water = new Water(this, "water", 1, 5, 1);
+            water.Load();
+            Models.Add(water);
         }
     }
 }

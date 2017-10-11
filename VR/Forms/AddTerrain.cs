@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace VR {
     partial class AddTerrain : Form {
-        public int[] heightValues = null;
+        public double[] heightValues = null;
         private Connector connector;
 
         public AddTerrain(Connector connector) {

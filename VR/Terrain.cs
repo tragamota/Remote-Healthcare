@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace VR {
     [Serializable]
     public class Terrain {
-        public Connector connector;
+        private Connector connector;
         public string terrainName;
         public string diffuseFile;
         public string normalFile;
@@ -23,10 +23,10 @@ namespace VR {
         public int y;
         public int z;
         public string imagepath;
-        public int[] heightValues;
-        public int[] measure;
+        public double[] heightValues;
+        public double[] measure;
 
-        public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z, int[] heightValues) {
+        public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z, double[] heightValues) {
             this.connector = connector;
             this.terrainName = terrainName;
             this.diffuseFile = diffuseFile;
@@ -40,10 +40,9 @@ namespace VR {
             this.y = y;
             this.z = z;
             this.heightValues = heightValues;
-            this.measure = new int[2] { width, length };
+            this.measure = new double[2] { width, length };
         }
 
-        [JsonConstructor]
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z) {
             this.connector = connector;
             this.terrainName = terrainName;
@@ -58,12 +57,13 @@ namespace VR {
             this.y = y;
             this.z = z;
 
-            int[] heightValues = new int[width * length];
+            heightValues = new double[width * length];
             for (int i = 0; i < heightValues.Length; i++) {
                 heightValues[i] = 0;
             }
         }
 
+        [JsonConstructor]
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int x, int y, int z, string imagepath) {
             this.connector = connector;
             this.terrainName = terrainName;
@@ -78,7 +78,7 @@ namespace VR {
             this.imagepath = imagepath;
             
             Bitmap heightImage = (Bitmap)Image.FromFile(imagepath);
-            double[] heightValues = new double[heightImage.Width * heightImage.Height];
+            heightValues = new double[heightImage.Width * heightImage.Height];
 
             for (int i = 0; i < heightImage.Height; i++)
             {
@@ -89,7 +89,7 @@ namespace VR {
                 }
             }
 
-            int[] measure = new int[2] { heightImage.Width, heightImage.Height };
+            measure = new double[2] { heightImage.Width, heightImage.Height };
         }
 
         public void AddLayer() {
@@ -229,8 +229,6 @@ namespace VR {
             this.connector = connector;
             if(this.heightValues != null)
             {
-                int[] measure = new int[2] { width, length };
-
                 dynamic message = new
                 {
                     id = "tunnel/send",
@@ -257,20 +255,6 @@ namespace VR {
                 AddLayer();
             }else if(imagepath != null)
             {
-                Bitmap heightImage = (Bitmap)Image.FromFile(imagepath);
-                double[] heightValues = new double[heightImage.Width * heightImage.Height];
-
-                for (int i = 0; i < heightImage.Height; i++)
-                {
-                    for (int j = 0; j < heightImage.Width; j++)
-                    {
-                        int alpha = int.Parse(heightImage.GetPixel(j, i).A.ToString());
-                        heightValues[(i * (heightImage.Width - 1)) + j] = alpha / 8.75;
-                    }
-                }
-
-                int[] measure = new int[2] { heightImage.Width, heightImage.Height };
-
                 dynamic message = new
                 {
                     id = "tunnel/send",
@@ -298,13 +282,6 @@ namespace VR {
             }
             else
             {
-                int[] heightValues = new int[width * length];
-                for (int i = 0; i < heightValues.Length; i++)
-                {
-                    heightValues[i] = 0;
-                }
-                int[] measure = new int[2] { width, length };
-
                 dynamic message = new
                 {
                     id = "tunnel/send",

@@ -137,6 +137,7 @@
     <Compile Include="Forms\TerrainGrid.Designer.cs">
       <DependentUpon>TerrainGrid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Water.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

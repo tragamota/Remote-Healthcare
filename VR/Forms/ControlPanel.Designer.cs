@@ -225,7 +225,6 @@
             this.cameraCheck.TabIndex = 14;
             this.cameraCheck.Text = "Follow Bike";
             this.cameraCheck.UseVisualStyleBackColor = true;
-            this.cameraCheck.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // ControlPanel
             // 

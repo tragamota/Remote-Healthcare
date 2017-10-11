@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace VR {
     [Serializable]
     public class Model {
-        public Connector connector;
+        private Connector connector;
         public string modelname, filePath;
         public string uuid;
         public double x, y, z, s;
@@ -31,6 +31,10 @@ namespace VR {
             this.connector = connector;
             this.modelname = modelname;
             this.uuid = uuid;
+        }
+
+        public Model()
+        {
         }
 
         public void ChangeSpeed(double speed) {
@@ -55,7 +59,7 @@ namespace VR {
             }
         }
 
-        public void Load()
+        public virtual void Load()
         {
             dynamic message = new
             {
@@ -96,7 +100,7 @@ namespace VR {
             //Console.WriteLine(jObject);
         }
 
-        public void Reload(Connector connector)
+        public virtual void Reload(Connector connector)
         {
             this.connector = connector;
             if(filePath != null)

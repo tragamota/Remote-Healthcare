@@ -10,7 +10,7 @@ namespace VR
     public class Route
     {
         public string routeID;
-        public Connector connector;
+        private Connector connector;
         public string routeName;
         private dynamic[] data;
 
