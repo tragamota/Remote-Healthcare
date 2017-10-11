@@ -578,23 +578,30 @@ namespace VR {
 
 
             positionHeight = GetTerrainHeight(x, z);
-            Models.Add(new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation));
+            Model model = new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation);
+            model.Load();
+            Models.Add(model);
         }
 
         public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, int[] heightValues) {
-            terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z, heightValues);
+            this.terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z, heightValues);
+            terrain.Load();
         }
 
         public void AddTerrainByPicture(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int x, int y, int z, string imagepath) {
-            terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, x, y, z, imagepath);
+            this.terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, x, y, z, imagepath);
+            terrain.Load();
         }
 
         public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z) {
-            terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z);
+            this.terrain = new Terrain(this, terrainName, diffuseFilePath, normalFilePath, minHeight, maxHeight, fadeDistance, width, length, x, y, z);
+            terrain.Load();
         }
 
         public void AddRoute(dynamic[] data, string routeName) {
-            Routes.Add(new Route(this, data, routeName));
+            Route route = new Route(this, data, routeName);
+            route.Load();
+            Routes.Add(route);
         }
 
 
@@ -683,7 +690,7 @@ namespace VR {
             
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                File.WriteAllText(saveFileDialog.FileName, JsonConvert.SerializeObject(new
+                string obj = JsonConvert.SerializeObject(new
                 {
                     id = "scene",
                     data = new
@@ -692,7 +699,10 @@ namespace VR {
                         models = Models,
                         routes = Routes
                     }
-                }));
+                }, Formatting.Indented, new JsonSerializerSettings {
+                    PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                });
+                File.WriteAllText(saveFileDialog.FileName, obj);
             }
             
         }
@@ -710,20 +720,20 @@ namespace VR {
                 path = Path.GetFullPath(browseFileDialog.FileName);
                 string json = File.ReadAllText(path);
                 terrain = (Terrain)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"].ToObject(typeof(Terrain));
-                Models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["models"].ToObject(typeof(List<Model>));
-                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["routes"].ToObject(typeof(List<Route>));
+                Models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"]["connector"]["Models"].ToObject(typeof(List<Model>));
+                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"]["connector"]["Routes"].ToObject(typeof(List<Route>));
             }
 
-            terrain.Reload();
+            terrain.Reload(this);
 
-            foreach(Model model in Models)
+            foreach (Model model in Models)
             {
-                model.Reload();
+                model.Reload(this);
             }
 
             foreach (Route route in Routes)
             {
-                route.Reload();
+                route.Reload(this);
             }
         }
 

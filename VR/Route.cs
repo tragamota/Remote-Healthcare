@@ -19,28 +19,6 @@ namespace VR
             this.connector = connector;
             this.routeName = routeName;
             this.data = data;
-
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = connector.tunnelID,
-                    data = new
-                    {
-                        id = "route/add",
-                        data = new
-                        {
-                            nodes = data
-                        }
-                    }
-                }
-            };
-
-            connector.SendMessage(message);
-            JObject jObject = connector.ReadMessage();
-            routeID = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
-            //Console.WriteLine(jObject);
         }
 
         public void MakeModelFollowRoute(Model model)
@@ -99,7 +77,33 @@ namespace VR
             //Console.WriteLine(jObject);
         }
 
-        public void Reload()
+        public void Reload(Connector connector)
+        {
+            this.connector = connector;
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = connector.tunnelID,
+                    data = new
+                    {
+                        id = "route/add",
+                        data = new
+                        {
+                            nodes = data
+                        }
+                    }
+                }
+            };
+
+            connector.SendMessage(message);
+            JObject jObject = connector.ReadMessage();
+            routeID = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
+            //Console.WriteLine(jObject);
+        }
+
+        internal void Load()
         {
             dynamic message = new
             {

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,21 +8,23 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace VR {
+    [Serializable]
     public class Terrain {
-        private Connector connector;
-        private string terrainName;
-        private string diffuseFile;
-        private string normalFile;
-        private int minHeight;
-        private int maxHeight;
-        private int fadeDist;
-        private int width;
-        private int length;
-        private int x;
-        private int y;
-        private int z;
-        private string imagepath;
-        private int[] heightValues;
+        public Connector connector;
+        public string terrainName;
+        public string diffuseFile;
+        public string normalFile;
+        public int minHeight;
+        public int maxHeight;
+        public int fadeDist;
+        public int width;
+        public int length;
+        public int x;
+        public int y;
+        public int z;
+        public string imagepath;
+        public int[] heightValues;
+        public int[] measure;
 
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z, int[] heightValues) {
             this.connector = connector;
@@ -37,32 +40,10 @@ namespace VR {
             this.y = y;
             this.z = z;
             this.heightValues = heightValues;
-
-
-            int[] measure = new int[2] { width, length };
-
-            dynamic message = new {
-                id = "tunnel/send",
-                data = new {
-                    dest = connector.tunnelID,
-                    data = new {
-                        id = "scene/terrain/add",
-                        data = new {
-                            size = measure,
-                            heights = heightValues
-                        }
-                    }
-                }
-            };
-
-            connector.SendMessage(message);
-            JObject jObject = connector.ReadMessage();
-            //Console.WriteLine(jObject);
-
-            AddNode();
-            AddLayer();
+            this.measure = new int[2] { width, length };
         }
 
+        [JsonConstructor]
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z) {
             this.connector = connector;
             this.terrainName = terrainName;
@@ -81,28 +62,6 @@ namespace VR {
             for (int i = 0; i < heightValues.Length; i++) {
                 heightValues[i] = 0;
             }
-            int[] measure = new int[2] { width, length };
-
-            dynamic message = new {
-                id = "tunnel/send",
-                data = new {
-                    dest = connector.tunnelID,
-                    data = new {
-                        id = "scene/terrain/add",
-                        data = new {
-                            size = measure,
-                            heights = heightValues
-                        }
-                    }
-                }
-            };
-
-            connector.SendMessage(message);
-            JObject jObject = connector.ReadMessage();
-            //Console.WriteLine(jObject);
-
-            AddNode();
-            AddLayer();
         }
 
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int x, int y, int z, string imagepath) {
@@ -131,27 +90,6 @@ namespace VR {
             }
 
             int[] measure = new int[2] { heightImage.Width, heightImage.Height };
-
-            dynamic message = new {
-                id = "tunnel/send",
-                data = new {
-                    dest = connector.tunnelID,
-                    data = new {
-                        id = "scene/terrain/add",
-                        data = new {
-                            size = measure,
-                            heights = heightValues
-                        }
-                    }
-                }
-            };
-
-            connector.SendMessage(message);
-            JObject jObject = connector.ReadMessage();
-            //Console.WriteLine(jObject);
-
-            AddNode();
-            AddLayer();
         }
 
         public void AddLayer() {
@@ -258,8 +196,37 @@ namespace VR {
             //Console.WriteLine(jObject);
         }
 
-        public void Reload()
+        public void Load()
         {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = connector.tunnelID,
+                    data = new
+                    {
+                        id = "scene/terrain/add",
+                        data = new
+                        {
+                            size = measure,
+                            heights = heightValues
+                        }
+                    }
+                }
+            };
+
+            connector.SendMessage(message);
+            JObject jObject = connector.ReadMessage();
+            //Console.WriteLine(jObject);
+
+            AddNode();
+            AddLayer();
+        }
+
+        public void Reload(Connector connector)
+        {
+            this.connector = connector;
             if(this.heightValues != null)
             {
                 int[] measure = new int[2] { width, length };
