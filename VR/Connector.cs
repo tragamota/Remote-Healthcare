@@ -573,12 +573,6 @@ namespace VR {
                 positionHeight = GetTerrainHeight(x, z);
                 Models.Add(new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation));
             }
-
-
-
-
-            positionHeight = GetTerrainHeight(x, z);
-            Models.Add(new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation));
         }
 
         public void AddTerrain(string terrainName, string diffuseFilePath, string normalFilePath, int minHeight, int maxHeight, int fadeDistance, int width, int length, int x, int y, int z, int[] heightValues) {
