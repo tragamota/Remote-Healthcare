@@ -210,7 +210,7 @@
             // cameraCheck
             // 
             this.cameraCheck.AutoSize = true;
-            this.cameraCheck.Location = new System.Drawing.Point(10, 102);
+            this.cameraCheck.Location = new System.Drawing.Point(23, 3);
             this.cameraCheck.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cameraCheck.Name = "cameraCheck";
             this.cameraCheck.Size = new System.Drawing.Size(80, 17);
@@ -223,7 +223,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(235, 318);
+            this.ClientSize = new System.Drawing.Size(309, 408);
             this.Controls.Add(this.cameraCheck);
             this.Controls.Add(this.buttonWater);
             this.Controls.Add(this.button8);

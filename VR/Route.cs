@@ -9,10 +9,10 @@ namespace VR
 {
     public class Route
     {
-        public string routeID;
+        private string routeID;
         private Connector connector;
         public string routeName;
-        private dynamic[] data;
+        public dynamic[] data;
 
         public Route(Connector connector, dynamic[] data, string routeName)
         {
@@ -66,7 +66,7 @@ namespace VR
                         data = new
                         {
                             route = routeID,
-                            heightoffset = 0.01
+                            heightoffset = 0.1
                         }
                     }
                 }

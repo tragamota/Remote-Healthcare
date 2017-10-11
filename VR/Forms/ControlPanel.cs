@@ -95,7 +95,7 @@ namespace VR {
         private void cameraCheck_CheckedChanged(object sender, EventArgs e)
         {
             if (cameraCheck.Checked)
-                connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("Bike"));
+                connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("bike"));
             else
                 connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("GroundPlane"));
         }

@@ -87,7 +87,7 @@ namespace VR {
         public void SetBikeSpeed(int speed)
         {
             Model bike = Models.Find(x => x.modelname.Equals("bike"));
-            bike.ChangeSpeed(speed / 15);
+            bike.ChangeSpeed(speed / 50);
         }
 
         public string GetUUID(string name)
@@ -111,7 +111,7 @@ namespace VR {
 
             SendMessage(message);
             JObject jObject = ReadMessage();
-            string uuid = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").First.SelectToken("uuid");
+            string uuid = (string)jObject["data"]["data"]["data"].First["uuid"];
             return uuid;
         }
 
@@ -205,12 +205,11 @@ namespace VR {
         }
 
         public string GetTerrainUUID(string terrainName) {
-            JObject jObject = GetScene();
-            JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
-            List<JToken> list = array.ToList();
-            foreach (JToken token in list) {
-                if (((string)token.SelectToken("name")).Equals(terrainName))
-                    return (string)token.SelectToken("uuid");
+            LoadSceneModels();
+
+            foreach (Model model in Models) {
+                if (model.modelname.Equals(terrainName))
+                    return model.uuid;
             }
 
             return null;
