@@ -59,35 +59,5 @@ namespace Doctor.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Tree_06 {
-            get {
-                object obj = ResourceManager.GetObject("Tree_06", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] tree6 {
-            get {
-                object obj = ResourceManager.GetObject("tree6", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] tree61 {
-            get {
-                object obj = ResourceManager.GetObject("tree61", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }
