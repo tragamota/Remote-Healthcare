@@ -84,6 +84,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Forms\Session.resx">
       <DependentUpon>Session.cs</DependentUpon>
@@ -98,6 +99,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\tree6.mtl" />
+    <None Include="Resources\tree6.obj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -111,6 +114,9 @@
       <Project>{5E73D397-1A19-450F-944C-7C87261CFE3C}</Project>
       <Name>GUI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tree_06.png" />
   </ItemGroup>
   <Import Project="..\UserData\UserData.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
