@@ -38,6 +38,7 @@
             this.HUDButton = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.buttonWater = new System.Windows.Forms.Button();
             this.cameraCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -232,6 +233,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(313, 391);
             this.Controls.Add(this.cameraCheck);
+            this.Controls.Add(this.buttonWater);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.Delete_Ground_Btn);
@@ -272,6 +274,7 @@
         private System.Windows.Forms.Button HUDButton;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button buttonWater;
         private System.Windows.Forms.CheckBox cameraCheck;
     }
 }
