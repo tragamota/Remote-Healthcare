@@ -91,5 +91,13 @@ namespace VR {
         {
             connector.AddWater();
         }
+
+        private void cameraCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cameraCheck.Checked)
+                connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("Bike"));
+            else
+                connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("GroundPlane"));
+        }
     }
 }
