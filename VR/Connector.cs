@@ -536,6 +536,42 @@ namespace VR {
         }
 
         public void AddModel(string modelName, string filePath, double x, double y, double z, double s, int zRotation) {
+            double positionHeight = 0;
+            if (zRotation == 99)
+            {
+                List<int> xValues = new List<int>();
+                List<int> yValues = new List<int>();
+
+                Random random = new Random();
+
+                for (int ix = 0; ix < 21; ix++)
+                {
+                    xValues.Add(random.Next(-129, 129));
+                }
+
+                for (int iy = 0; iy < 21; iy++)
+                {
+                    yValues.Add(random.Next(-129, 129));
+                }
+                for (int i = 0; i < 20; i++)
+                {
+                    positionHeight = GetTerrainHeight(xValues[i], yValues[i]);
+                    modelName = modelName + i.ToString();
+
+                    Models.Add(new Model(this, modelName, filePath, xValues[i], positionHeight, yValues[i], s, zRotation));
+
+                }
+
+            }
+            else
+            {
+                positionHeight = GetTerrainHeight(x, z);
+                Models.Add(new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation));
+            }
+
+
+
+
             double positionHeight = GetTerrainHeight(x, z);
             Models.Add(new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation));
         }
