@@ -43,7 +43,7 @@ namespace Remote_Healtcare_Console
                     break;
                 case ("chat"):
                     string message = (string)obj["data"]["message"];
-                    console.AddMessage(message);
+                    new Thread(() => console.AddMessage(message)).Start();
                     break;
                 case "setdoctor":
                     client.SendMessage(obj);

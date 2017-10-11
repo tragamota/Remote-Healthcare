@@ -38,13 +38,15 @@
             this.HUDButton = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.buttonWater = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // AddTree
             // 
-            this.AddTree.Location = new System.Drawing.Point(12, 25);
+            this.AddTree.Location = new System.Drawing.Point(16, 31);
+            this.AddTree.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.AddTree.Name = "AddTree";
-            this.AddTree.Size = new System.Drawing.Size(100, 25);
+            this.AddTree.Size = new System.Drawing.Size(133, 31);
             this.AddTree.TabIndex = 0;
             this.AddTree.Text = "Add model";
             this.AddTree.UseVisualStyleBackColor = true;
@@ -52,9 +54,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 56);
+            this.button1.Location = new System.Drawing.Point(16, 69);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 25);
+            this.button1.Size = new System.Drawing.Size(133, 31);
             this.button1.TabIndex = 1;
             this.button1.Text = "Add terrain";
             this.button1.UseVisualStyleBackColor = true;
@@ -62,10 +65,10 @@
             // 
             // Delete_Model_Btn
             // 
-            this.Delete_Model_Btn.Location = new System.Drawing.Point(181, 89);
-            this.Delete_Model_Btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Delete_Model_Btn.Location = new System.Drawing.Point(241, 110);
+            this.Delete_Model_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Delete_Model_Btn.Name = "Delete_Model_Btn";
-            this.Delete_Model_Btn.Size = new System.Drawing.Size(115, 25);
+            this.Delete_Model_Btn.Size = new System.Drawing.Size(153, 31);
             this.Delete_Model_Btn.TabIndex = 2;
             this.Delete_Model_Btn.Text = "Delete model";
             this.Delete_Model_Btn.UseVisualStyleBackColor = true;
@@ -73,9 +76,10 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(181, 56);
+            this.button3.Location = new System.Drawing.Point(241, 69);
+            this.button3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(115, 25);
+            this.button3.Size = new System.Drawing.Size(153, 31);
             this.button3.TabIndex = 3;
             this.button3.Text = "Delete terrain";
             this.button3.UseVisualStyleBackColor = true;
@@ -83,9 +87,10 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(12, 89);
+            this.button4.Location = new System.Drawing.Point(16, 110);
+            this.button4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(100, 25);
+            this.button4.Size = new System.Drawing.Size(133, 31);
             this.button4.TabIndex = 4;
             this.button4.Text = "Add route";
             this.button4.UseVisualStyleBackColor = true;
@@ -93,9 +98,10 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(181, 119);
+            this.button5.Location = new System.Drawing.Point(241, 146);
+            this.button5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(115, 25);
+            this.button5.Size = new System.Drawing.Size(153, 31);
             this.button5.TabIndex = 5;
             this.button5.Text = "Delete route";
             this.button5.UseVisualStyleBackColor = true;
@@ -103,9 +109,10 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(64, 305);
+            this.button6.Location = new System.Drawing.Point(85, 375);
+            this.button6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(170, 25);
+            this.button6.Size = new System.Drawing.Size(227, 31);
             this.button6.TabIndex = 6;
             this.button6.Text = "Make model follow route";
             this.button6.UseVisualStyleBackColor = true;
@@ -113,9 +120,10 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(64, 274);
+            this.button7.Location = new System.Drawing.Point(85, 337);
+            this.button7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(170, 25);
+            this.button7.Size = new System.Drawing.Size(227, 31);
             this.button7.TabIndex = 7;
             this.button7.Text = "Add road to route";
             this.button7.UseVisualStyleBackColor = true;
@@ -123,10 +131,10 @@
             // 
             // Speed_Model_Btn
             // 
-            this.Speed_Model_Btn.Location = new System.Drawing.Point(64, 366);
-            this.Speed_Model_Btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Speed_Model_Btn.Location = new System.Drawing.Point(85, 450);
+            this.Speed_Model_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Speed_Model_Btn.Name = "Speed_Model_Btn";
-            this.Speed_Model_Btn.Size = new System.Drawing.Size(170, 25);
+            this.Speed_Model_Btn.Size = new System.Drawing.Size(227, 31);
             this.Speed_Model_Btn.TabIndex = 8;
             this.Speed_Model_Btn.Text = "Change speed of model";
             this.Speed_Model_Btn.UseVisualStyleBackColor = true;
@@ -134,10 +142,10 @@
             // 
             // Add_Terrain_By_Picture_Btn
             // 
-            this.Add_Terrain_By_Picture_Btn.Location = new System.Drawing.Point(64, 244);
-            this.Add_Terrain_By_Picture_Btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Add_Terrain_By_Picture_Btn.Location = new System.Drawing.Point(85, 300);
+            this.Add_Terrain_By_Picture_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Add_Terrain_By_Picture_Btn.Name = "Add_Terrain_By_Picture_Btn";
-            this.Add_Terrain_By_Picture_Btn.Size = new System.Drawing.Size(170, 25);
+            this.Add_Terrain_By_Picture_Btn.Size = new System.Drawing.Size(227, 31);
             this.Add_Terrain_By_Picture_Btn.TabIndex = 9;
             this.Add_Terrain_By_Picture_Btn.Text = "Add terrain by picture";
             this.Add_Terrain_By_Picture_Btn.UseVisualStyleBackColor = true;
@@ -145,10 +153,10 @@
             // 
             // Add_Standard_Model_Btn
             // 
-            this.Add_Standard_Model_Btn.Location = new System.Drawing.Point(64, 215);
-            this.Add_Standard_Model_Btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Add_Standard_Model_Btn.Location = new System.Drawing.Point(85, 265);
+            this.Add_Standard_Model_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Add_Standard_Model_Btn.Name = "Add_Standard_Model_Btn";
-            this.Add_Standard_Model_Btn.Size = new System.Drawing.Size(170, 25);
+            this.Add_Standard_Model_Btn.Size = new System.Drawing.Size(227, 31);
             this.Add_Standard_Model_Btn.TabIndex = 10;
             this.Add_Standard_Model_Btn.Text = "Add standard model";
             this.Add_Standard_Model_Btn.UseVisualStyleBackColor = true;
@@ -156,10 +164,10 @@
             // 
             // Delete_Ground_Btn
             // 
-            this.Delete_Ground_Btn.Location = new System.Drawing.Point(181, 25);
-            this.Delete_Ground_Btn.Margin = new System.Windows.Forms.Padding(2);
+            this.Delete_Ground_Btn.Location = new System.Drawing.Point(241, 31);
+            this.Delete_Ground_Btn.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Delete_Ground_Btn.Name = "Delete_Ground_Btn";
-            this.Delete_Ground_Btn.Size = new System.Drawing.Size(115, 25);
+            this.Delete_Ground_Btn.Size = new System.Drawing.Size(153, 31);
             this.Delete_Ground_Btn.TabIndex = 11;
             this.Delete_Ground_Btn.Text = "Delete groundplane";
             this.Delete_Ground_Btn.UseVisualStyleBackColor = true;
@@ -167,18 +175,20 @@
             // 
             // HUDButton
             // 
-            this.HUDButton.Location = new System.Drawing.Point(64, 336);
+            this.HUDButton.Location = new System.Drawing.Point(85, 414);
+            this.HUDButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.HUDButton.Name = "HUDButton";
-            this.HUDButton.Size = new System.Drawing.Size(170, 25);
+            this.HUDButton.Size = new System.Drawing.Size(227, 31);
             this.HUDButton.TabIndex = 8;
             this.HUDButton.Text = "Add HUD";
             this.HUDButton.UseVisualStyleBackColor = true;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(37, 169);
+            this.button2.Location = new System.Drawing.Point(49, 208);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(100, 28);
             this.button2.TabIndex = 12;
             this.button2.Text = "Save";
             this.button2.UseVisualStyleBackColor = true;
@@ -186,19 +196,31 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(181, 169);
+            this.button8.Location = new System.Drawing.Point(241, 208);
+            this.button8.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.Size = new System.Drawing.Size(100, 28);
             this.button8.TabIndex = 13;
             this.button8.Text = "Load";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.Load_Btn_Click);
             // 
+            // buttonWater
+            // 
+            this.buttonWater.Location = new System.Drawing.Point(16, 154);
+            this.buttonWater.Name = "buttonWater";
+            this.buttonWater.Size = new System.Drawing.Size(133, 34);
+            this.buttonWater.TabIndex = 14;
+            this.buttonWater.Text = "Add Water";
+            this.buttonWater.UseVisualStyleBackColor = true;
+            this.buttonWater.Click += new System.EventHandler(this.buttonWater_Click);
+            // 
             // ControlPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(313, 391);
+            this.ClientSize = new System.Drawing.Size(417, 481);
+            this.Controls.Add(this.buttonWater);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.Delete_Ground_Btn);
@@ -214,6 +236,7 @@
             this.Controls.Add(this.Delete_Model_Btn);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.AddTree);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ControlPanel";
             this.Text = "ControlPanel";
             this.ResumeLayout(false);
@@ -237,5 +260,6 @@
         private System.Windows.Forms.Button HUDButton;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button buttonWater;
     }
 }

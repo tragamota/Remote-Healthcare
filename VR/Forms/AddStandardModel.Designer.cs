@@ -180,8 +180,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox model_Box;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox Position_X_Txt;
         private System.Windows.Forms.TextBox Position_Y_Txt;
@@ -193,5 +191,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox Scale_Txt;
         private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.ListBox model_Box;
     }
 }
