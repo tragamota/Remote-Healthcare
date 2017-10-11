@@ -84,6 +84,14 @@ namespace Doctor
                         MessageBox.Show($"Fiets van {patient.FullName} disconnected");
                         Start_Session_Btn.Enabled = false;
                         Stop_Session_Btn.Enabled = false;
+                        client.SendMessage(new
+                        {
+                            id = "stoprecording",
+                            data = new
+                            {
+                                
+                            }
+                        });
                         break;
                     case "bikeData":
                         BikeData data = (BikeData)(obj["data"]).ToObject(typeof(BikeData));
