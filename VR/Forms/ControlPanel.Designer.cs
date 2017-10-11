@@ -38,7 +38,7 @@
             this.HUDButton = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
-            this.buttonWater = new System.Windows.Forms.Button();
+            this.cameraCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // AddTree
@@ -215,12 +215,23 @@
             this.buttonWater.UseVisualStyleBackColor = true;
             this.buttonWater.Click += new System.EventHandler(this.buttonWater_Click);
             // 
+            // cameraCheck
+            // 
+            this.cameraCheck.AutoSize = true;
+            this.cameraCheck.Location = new System.Drawing.Point(13, 126);
+            this.cameraCheck.Name = "cameraCheck";
+            this.cameraCheck.Size = new System.Drawing.Size(80, 17);
+            this.cameraCheck.TabIndex = 14;
+            this.cameraCheck.Text = "Follow Bike";
+            this.cameraCheck.UseVisualStyleBackColor = true;
+            this.cameraCheck.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(417, 481);
-            this.Controls.Add(this.buttonWater);
+            this.ClientSize = new System.Drawing.Size(313, 391);
+            this.Controls.Add(this.cameraCheck);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.Delete_Ground_Btn);
@@ -240,6 +251,7 @@
             this.Name = "ControlPanel";
             this.Text = "ControlPanel";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -260,6 +272,6 @@
         private System.Windows.Forms.Button HUDButton;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button buttonWater;
+        private System.Windows.Forms.CheckBox cameraCheck;
     }
 }

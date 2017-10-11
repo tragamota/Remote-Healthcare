@@ -19,9 +19,6 @@ namespace VR {
         public Terrain terrain;
         public List<Model> Models { get; set; }
         public List<Route> Routes { get; set; }
-        private int x = 1 ;
-        private int y = 1;
-        private int z = 1;
 
         public Connector() {
             try {
@@ -188,38 +185,6 @@ namespace VR {
                     break;
                 }
             }
-        }
-
-        public void Moveto(string nodeID)
-        {
-
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = tunnelID,
-                    data = new
-                    {
-                        id = "scene/node/moveto",
-                        data = new
-                        {
-                            id = nodeID,
-                            position = new[] { x, y, z },
-                            speed = 1,
-                           
-                           
-                        }
-                    }
-                }
-            };
-            x++;
-            y++;
-            z++;
-
-            SendMessage(message);
-            JObject jObject = ReadMessage();
-            Console.WriteLine(jObject.ToString());
         }
 
         public JObject GetScene() {
@@ -464,8 +429,8 @@ namespace VR {
                                 {
                                     size = (new int[2] { 1, 1 }),
                                     resolution = (new int[2] { 1028, 1028 }),
-                                    background = (new int[4] { 1 ,1 ,1 , 0}),
-                                    color = new[] {1,1,1,1 },
+                                    background = (new int[4] { 1, 1, 1, 0 }),
+                                    color = new[] { 1, 1, 1, 1 },
                                     font = "Cooper Zwart",
                                 }
                             }
@@ -473,6 +438,48 @@ namespace VR {
                     }
                 }
             };
+            SendMessage(message);
+            JObject jObject = ReadMessage();
+            Console.WriteLine(jObject);
+        }
+
+            public void AddMassageScreen(string uuid)
+            {
+
+                dynamic message = new
+                {
+                    id = "tunnel/send",
+                    data = new
+                    {
+                        dest = tunnelID,
+                        data = new
+                        {
+                            id = "scene/node/add",
+                            data = new
+                            {
+                                name = "HUDMessage",
+                                parent = uuid,
+                                components = new
+                                {
+                                    transform = new
+                                    {
+                                        position = (new double[3] { -1, 1.5, 0 }),
+                                        scale = 1,
+                                        rotation = (new int[3] { 0, 90, 0 })
+                                    },
+                                    panel = new
+                                    {
+                                        size = (new int[2] { 1, 1 }),
+                                        resolution = (new int[2] { 1028, 1028 }),
+                                        background = (new int[4] { 1, 1, 1, 0 }),
+                                        color = new[] { 1, 1, 1, 1 },
+                                        font = "Cooper Zwart",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
 
             SendMessage(message);
             JObject jObject = ReadMessage();

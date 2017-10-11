@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace VR
 {
-    
+
     class HUD
     {
         Connector connector;
         public string uuid;
+        public string uuidMessage;
         public string cameraID;
 
         public HUD(Connector connector)
@@ -21,8 +23,10 @@ namespace VR
            // Console.WriteLine("Camera ID: {0}", cameraID);
 
             connector.AddHUD(cameraID);
+            connector.AddMassageScreen(cameraID);
 
             this.uuid = connector.GetUUID("HUDPanel");
+            this.uuidMessage = connector.GetUUID("HUDMessage");
 
             //connector.DrawLines(uuid);
 
@@ -37,7 +41,8 @@ namespace VR
                 x++;
                 y++;
                 z++;
-                Update2(x, y, z,x + 23,y + 23,z + 23, DateTime.Now.ToString("mm:ss tt"), x + y + 34);
+            SetText("lul lul lul lul lul lul lul lul lul");
+            Update2(x, y, z,x + 23,y + 23,z + 23, DateTime.Now.ToString("mm:ss tt"), x + y + 34);
 
              //}
             
@@ -47,6 +52,12 @@ namespace VR
             Console.WriteLine("Camera ID: {0}", cameraID);
 
         }
+
+        public void DrawMessage(string message)
+        {
+            connector.DrawText(uuidMessage, message, 100, 600);
+        }
+
 
         public void DrawHeartRate(double rate)
         { 
@@ -174,5 +185,28 @@ namespace VR
             connector.SetClearColor(uuid);
             connector.SwapText(uuid);
         }
+
+        public void SetText(String text) {
+            connector.ClearPanel(uuidMessage);
+
+            DrawMessage(text);
+            StartTimer();
+            connector.SetClearColor(uuidMessage);
+            connector.SwapText(uuidMessage);
+        }
+
+        public void StartTimer() {
+
+            Timer timer1 = new Timer(5000);
+            timer1.Elapsed += new ElapsedEventHandler(ClearMassage);
+            timer1.Start();
+        }
+
+        public void ClearMassage(Object sender, ElapsedEventArgs e)
+        {
+            connector.ClearPanel(uuidMessage);
+            connector.SetClearColor(uuidMessage);
+            connector.SwapText(uuidMessage);
+        }  
     }
 }
