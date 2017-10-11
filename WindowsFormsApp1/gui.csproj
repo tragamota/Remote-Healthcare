@@ -129,6 +129,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VR\VR.csproj">
+      <Project>{0E89495E-98D7-45DE-998C-995C28AF520F}</Project>
+      <Name>VR</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\UserData\UserData.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
