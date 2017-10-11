@@ -19,6 +19,7 @@ namespace VR {
         public Terrain terrain;
         public List<Model> Models { get; set; }
         public List<Route> Routes { get; set; }
+        private double previousHeight;
 
         public Connector() {
             try {
@@ -87,7 +88,7 @@ namespace VR {
         public void SetBikeSpeed(int speed)
         {
             Model bike = Models.Find(x => x.modelname.Equals("bike"));
-            bike.ChangeSpeed(speed / 50);
+            bike.ChangeSpeed(speed / 75);
         }
 
         public string GetUUID(string name)
@@ -442,7 +443,44 @@ namespace VR {
             Console.WriteLine(jObject);
         }
 
-            public void AddMassageScreen(string uuid)
+        public double CalculateIncline(string objectName)
+        {
+            List<double> list = getPosition(objectName);
+ 
+            double incline = 0;
+            double difference = 0;
+ 
+            double currentHeight = list[1];
+ 
+            difference = (currentHeight - previousHeight)/5;
+ 
+            incline = 400 * difference;
+ 
+            previousHeight = currentHeight;
+ 
+             
+            return incline;
+        }
+
+        public List<double> getPosition(string objectName)
+        {
+            List<double> list = new List<double>();
+            JObject jObject = ReadMessage();
+            JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
+ 
+            //List<JToken> list = array.ToList();
+            foreach (JObject ob in array)
+            {
+                if (((string) ob.SelectToken("name")).Equals(objectName))
+                {
+                    JArray positionArray = (JArray)ob.SelectToken("components").First.SelectToken("position");
+                    list = positionArray.ToObject<List<double>>();                
+                }
+            }
+            return list;
+        }
+
+        public void AddMassageScreen(string uuid)
             {
 
                 dynamic message = new

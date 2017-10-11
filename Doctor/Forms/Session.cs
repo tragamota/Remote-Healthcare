@@ -292,7 +292,11 @@ namespace Doctor
 
             client.SendMessage(new
             {
-                id = "stoprecording"
+                id = "stoprecording",
+                data = new
+                {
+                    hashcode = patient.Hashcode
+                }
             });
 
             UpdateThread.Abort();

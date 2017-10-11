@@ -54,7 +54,7 @@ namespace VR {
                 };
 
                 connector.SendMessage(message);
-                //JObject jObject = connector.ReadMessage();
+                JObject jObject = connector.ReadMessage();
                 //Console.WriteLine(jObject);
             }
         }
