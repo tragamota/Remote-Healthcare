@@ -116,13 +116,13 @@ namespace Server {
                 case "reqSession":
                     new Thread(() => sendSessionData((JObject)obj["data"])).Start();
                     break;
-                case "oldsessions":
-                    new Thread(() => getOldSessionsName(new JObject())).Start();
-                    break;
                 case "oldsession":
                     new Thread(() => sendOldSession((JObject)obj["data"])).Start();
                     break;
-                case "getPatients":
+                case "oldsessionlist":
+                    new Thread(() => getOldSessionsName((JObject)obj["data"])).Start();
+                    break;
+                case "getpatients":
                     new Thread(() => getAllClients()).Start();
                     break;
                 case "getconPatients":
