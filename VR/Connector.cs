@@ -684,6 +684,44 @@ namespace VR {
             File.WriteAllText(path, JsonConvert.SerializeObject(Routes));
         }
 
+        public void AddWater()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = tunnelID,
+                    data = new
+                    {
+                        id = "scene/node/add",
+                        data = new
+                        {
+                            name = "water",
+                            components = new
+                            {
+                                transform = new
+                                {
+                                    position = (new int[3] { 1, 5, 1 }),
+                                    scale = 1,
+                                    rotation = (new int[3] { 0, 0, 0 })
+                                },
+                                water = new
+                                {
+                                    size = (new int[2] {256,256}),
+                                    resolution =  0.9
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            SendMessage(message);
+            JObject jObject = ReadMessage();    
+            
+}
+
         public void LoadRoutes()
         {
             string path = "";
