@@ -569,8 +569,9 @@ namespace VR {
                 {
                     positionHeight = GetTerrainHeight(xValues[i], yValues[i]);
                     modelName = modelName + i.ToString();
-
-                    Models.Add(new Model(this, modelName, filePath, xValues[i], positionHeight, yValues[i], s, zRotation));
+                    Model m = new Model(this, modelName, filePath, xValues[i], positionHeight, yValues[i], s, zRotation);
+                    m.Load();
+                    Models.Add(m);
 
                 }
 
@@ -578,12 +579,11 @@ namespace VR {
             else
             {
                 positionHeight = GetTerrainHeight(x, z);
-                Models.Add(new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation));
+                Model m = new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation);
+                m.Load();
+                Models.Add(m);
             }
-
-
-
-
+            
             positionHeight = GetTerrainHeight(x, z);
             Model model = new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation);
             model.Load();
