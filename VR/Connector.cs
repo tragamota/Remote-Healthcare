@@ -572,7 +572,7 @@ namespace VR {
 
 
 
-            double positionHeight = GetTerrainHeight(x, z);
+            positionHeight = GetTerrainHeight(x, z);
             Models.Add(new Model(this, modelName, filePath, x, positionHeight, z, s, zRotation));
         }
 
