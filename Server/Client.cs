@@ -122,7 +122,7 @@ namespace Server {
                 case "oldsessionlist":
                     new Thread(() => getOldSessionsName((JObject)obj["data"])).Start();
                     break;
-                case "getpatients":
+                case "getPatients":
                     new Thread(() => getAllClients()).Start();
                     break;
                 case "getconPatients":
@@ -207,10 +207,10 @@ namespace Server {
                     break;
                 }
             }
-            doctor.writeMessage(new
-            {
-                id = "clientDisconnected"
-            });
+            //doctor.writeMessage(new
+            //{
+            //    id = "clientDisconnected"
+            //});
         }
 
         private void getOldSessionsName(JObject data) {

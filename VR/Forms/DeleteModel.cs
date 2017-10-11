@@ -16,7 +16,7 @@ namespace VR {
             routes = connector.GetRoutes();
 
             foreach (Model model in models)
-                model_Box.Items.Add(model.modelName);
+                model_Box.Items.Add(model.modelname);
         }
 
         private void Delete_Model_Btn_Click(object sender, EventArgs e) {
@@ -27,7 +27,7 @@ namespace VR {
             model_Box.Items.Clear();
 
             foreach (Model model in models)
-                model_Box.Items.Add(model.modelName);
+                model_Box.Items.Add(model.modelname);
         }
     }
 }

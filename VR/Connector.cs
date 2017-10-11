@@ -5,23 +5,23 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace VR {
-    class Connector {
+    public class Connector {
         private TcpClient tcp;
         private NetworkStream stream;
-        private Terrain terrain;
         public string tunnelID;
+        public Terrain terrain;
         public List<Model> Models { get; set; }
         public List<Route> Routes { get; set; }
         private int x = 1 ;
         private int y = 1;
         private int z = 1;
-
 
         public Connector() {
             try {
@@ -85,6 +85,12 @@ namespace VR {
 
             string response = message.ToString();
             return JObject.Parse(response);
+        }
+
+        public void SetBikeSpeed(int speed)
+        {
+            Model bike = Models.Find(x => x.modelname.Equals("bike"));
+            bike.ChangeSpeed(speed / 15);
         }
 
         public string GetUUID(string name)
@@ -519,7 +525,6 @@ namespace VR {
             SendMessage(message);
             JObject jObject = ReadMessage();
             Console.WriteLine(jObject);
-
         }
 
         public void LoadSceneModels() {
@@ -631,7 +636,7 @@ namespace VR {
         Console.WriteLine(jObject);
         }
 
-        public void SaveRoutes()
+        public void SaveScene()
         {
             string path = "";
 
@@ -642,13 +647,21 @@ namespace VR {
             
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                path = Path.GetFullPath(saveFileDialog.FileName);
+                File.WriteAllText(saveFileDialog.FileName, JsonConvert.SerializeObject(new
+                {
+                    id = "scene",
+                    data = new
+                    {
+                        terrain = terrain,
+                        models = Models,
+                        routes = Routes
+                    }
+                }));
             }
             
-            File.WriteAllText(path, JsonConvert.SerializeObject(Routes));
         }
 
-        public void LoadRoutes()
+        public void LoadScene()
         {
             string path = "";
 
@@ -660,7 +673,16 @@ namespace VR {
             {
                 path = Path.GetFullPath(browseFileDialog.FileName);
                 string json = File.ReadAllText(path);
-                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json)).ToObject(typeof(List<Route>));
+                terrain = (Terrain)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"].ToObject(typeof(Terrain));
+                Models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["models"].ToObject(typeof(List<Model>));
+                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["routes"].ToObject(typeof(List<Route>));
+            }
+
+            terrain.Reload();
+
+            foreach(Model model in Models)
+            {
+                model.Reload();
             }
 
             foreach (Route route in Routes)

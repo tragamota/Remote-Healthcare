@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VR
 {
-    class Route
+    public class Route
     {
         public string routeID;
         public Connector connector;

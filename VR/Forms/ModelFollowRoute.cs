@@ -22,7 +22,7 @@ namespace VR {
             routes = connector.GetRoutes();
 
             foreach (Model model in models) {
-                model_Box.Items.Add(model.modelName);
+                model_Box.Items.Add(model.modelname);
             }
 
             foreach (Route route in routes) {

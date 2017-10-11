@@ -35,7 +35,7 @@ namespace Doctor
                     Awaiting_Patients_Box.Items.Add(user);
             }
 
-            this.Activated += (s, a) => Update();
+            //this.Activated += (s, a) => Update();
         }
 
         private void Update()
@@ -110,19 +110,19 @@ namespace Doctor
 
         private void Patient_Selected(object sender, EventArgs e)
         {
-            Old_Sessions_Box.Items.Clear();
+            //Old_Sessions_Box.Items.Clear();
 
-            client.SendMessage(new
-            {
-                id = "oldsessions"
-            });
+            //client.SendMessage(new
+            //{
+            //    id = "oldsessions"
+            //});
 
-            string data = client.ReadMessage();
-            string[] files = (string[])((JObject)JsonConvert.DeserializeObject(data))["data"].ToObject(typeof(string[]));
-            foreach (string file in files)
-            {
-                Old_Sessions_Box.Items.Add(Path.GetFileName(file));
-            }
+            //string data = client.ReadMessage();
+            //string[] files = (string[])((JObject)JsonConvert.DeserializeObject(data))["data"].ToObject(typeof(string[]));
+            //foreach (string file in files)
+            //{
+            //    Old_Sessions_Box.Items.Add(Path.GetFileName(file));
+            //}
         }
     }
 }

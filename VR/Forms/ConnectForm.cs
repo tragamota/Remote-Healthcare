@@ -11,7 +11,8 @@ using System.Windows.Forms;
 
 namespace VR {
     public partial class ConnectForm : Form {
-        private Connector connector;
+        public Connector connector;
+        private string id;
 
         public ConnectForm() {
             InitializeComponent();
@@ -19,6 +20,11 @@ namespace VR {
             foreach (string id in connector.GetClients().Keys) {
                 listBox_id.Items.Add(id);
             }
+        }
+
+        public bool Connected()
+        {
+            return id != null;
         }
 
         private void Connect_Btn_Click(object sender, EventArgs e) {
@@ -34,7 +40,7 @@ namespace VR {
 
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
-            string id = (string)jObject.SelectToken("data").SelectToken("id");
+            id = (string)jObject.SelectToken("data").SelectToken("id");
             connector.SetId(id);
 
             this.Hide();

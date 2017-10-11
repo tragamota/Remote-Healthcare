@@ -3,7 +3,7 @@ using System;
 using System.Windows.Forms;
 
 namespace VR {
-    partial class ControlPanel : Form {
+    public partial class ControlPanel : Form {
         private Connector connector;
 
         public ControlPanel(Connector connector) {
@@ -77,14 +77,14 @@ namespace VR {
 
         private void Save_Btn_Click(object sender, EventArgs e)
         {
-            connector.Save("3A_Test");
-            connector.SaveRoutes();
+            //connector.Save("3A_Test");
+            connector.SaveScene();
         }
 
         private void Load_Btn_Click(object sender, EventArgs e)
         {
-            connector.Load("3A_Test");
-            connector.LoadRoutes();
+            //connector.Load("3A_Test");
+            connector.LoadScene();
         }
     }
 }

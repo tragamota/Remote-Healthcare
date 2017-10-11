@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace VR {
-    class Terrain {
+    public class Terrain {
         private Connector connector;
         private string terrainName;
         private string diffuseFile;
@@ -20,6 +20,7 @@ namespace VR {
         private int x;
         private int y;
         private int z;
+        private string imagepath;
         private int[] heightValues;
 
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z, int[] heightValues) {
@@ -115,6 +116,7 @@ namespace VR {
             this.x = x;
             this.y = y;
             this.z = z;
+            this.imagepath = imagepath;
             
             Bitmap heightImage = (Bitmap)Image.FromFile(imagepath);
             double[] heightValues = new double[heightImage.Width * heightImage.Height];
@@ -254,6 +256,113 @@ namespace VR {
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
             //Console.WriteLine(jObject);
+        }
+
+        public void Reload()
+        {
+            if(this.heightValues != null)
+            {
+                int[] measure = new int[2] { width, length };
+
+                dynamic message = new
+                {
+                    id = "tunnel/send",
+                    data = new
+                    {
+                        dest = connector.tunnelID,
+                        data = new
+                        {
+                            id = "scene/terrain/add",
+                            data = new
+                            {
+                                size = measure,
+                                heights = heightValues
+                            }
+                        }
+                    }
+                };
+
+                connector.SendMessage(message);
+                JObject jObject = connector.ReadMessage();
+                //Console.WriteLine(jObject);
+
+                AddNode();
+                AddLayer();
+            }else if(imagepath != null)
+            {
+                Bitmap heightImage = (Bitmap)Image.FromFile(imagepath);
+                double[] heightValues = new double[heightImage.Width * heightImage.Height];
+
+                for (int i = 0; i < heightImage.Height; i++)
+                {
+                    for (int j = 0; j < heightImage.Width; j++)
+                    {
+                        int alpha = int.Parse(heightImage.GetPixel(j, i).A.ToString());
+                        heightValues[(i * (heightImage.Width - 1)) + j] = alpha / 8.75;
+                    }
+                }
+
+                int[] measure = new int[2] { heightImage.Width, heightImage.Height };
+
+                dynamic message = new
+                {
+                    id = "tunnel/send",
+                    data = new
+                    {
+                        dest = connector.tunnelID,
+                        data = new
+                        {
+                            id = "scene/terrain/add",
+                            data = new
+                            {
+                                size = measure,
+                                heights = heightValues
+                            }
+                        }
+                    }
+                };
+
+                connector.SendMessage(message);
+                JObject jObject = connector.ReadMessage();
+                //Console.WriteLine(jObject);
+
+                AddNode();
+                AddLayer();
+            }
+            else
+            {
+                int[] heightValues = new int[width * length];
+                for (int i = 0; i < heightValues.Length; i++)
+                {
+                    heightValues[i] = 0;
+                }
+                int[] measure = new int[2] { width, length };
+
+                dynamic message = new
+                {
+                    id = "tunnel/send",
+                    data = new
+                    {
+                        dest = connector.tunnelID,
+                        data = new
+                        {
+                            id = "scene/terrain/add",
+                            data = new
+                            {
+                                size = measure,
+                                heights = heightValues
+                            }
+                        }
+                    }
+                };
+
+                connector.SendMessage(message);
+                JObject jObject = connector.ReadMessage();
+                //Console.WriteLine(jObject);
+
+                AddNode();
+                AddLayer();
+            }
         }
     }
 }

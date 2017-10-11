@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UserData;
+using VR;
+using System.Threading;
 
 namespace Remote_Healtcare_Console
 {
@@ -16,6 +18,7 @@ namespace Remote_Healtcare_Console
         public string path;
         public ISet<BikeData> data;
         private Client client;
+        public ConnectForm connectForm;
 
         public Console(Client client)
         {
@@ -50,9 +53,20 @@ namespace Remote_Healtcare_Console
             }
             else
             {
+                connectForm = new ConnectForm();
+                connectForm.Show();
+
+                //new Thread(() => test()).Start();
+
                 bike = new Bike(combo.SelectedItem.ToString(), this, client);
                 bike.Start();
             }
+        }
+
+        private void test()
+        {
+            while (!connectForm.Connected()) { }
+
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e) {
@@ -64,7 +78,12 @@ namespace Remote_Healtcare_Console
 
         public void SetRoundMin(String s) { lblRoundMin.Text = s; }
 
-        public void SetSpeed(String s) { lblSpeed.Text = s; }
+        public void SetSpeed(String s)
+        {
+            lblSpeed.Text = s;
+            string speed = s.Replace(",", ".");
+            connectForm.connector.SetBikeSpeed((int)Math.Round(double.Parse(speed), 0));
+        }
 
         public void SetDistance(String s) { lblDistance.Text = s; }
 

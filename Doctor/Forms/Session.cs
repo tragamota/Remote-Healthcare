@@ -86,7 +86,7 @@ namespace Doctor
                         Stop_Session_Btn.Enabled = false;
                         break;
                     case "bikeData":
-                        BikeData data = (BikeData)(obj["data"]).ToObject(typeof(BikeData));
+                        BikeData data = (BikeData)(obj["bikeData"]).ToObject(typeof(BikeData));
                         SetPulse(data.Pulse.ToString());
                         SetRoundMin(data.Rpm.ToString());
                         SetSpeed(data.Speed.ToString());
