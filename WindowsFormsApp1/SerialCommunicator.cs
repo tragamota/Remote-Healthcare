@@ -46,10 +46,17 @@ namespace Remote_Healtcare_Console
         }
 
         public string ReadInput() {
-            try {
+            try
+            {
                 return serialPort.ReadLine();
             }
-            catch(TimeoutException e) {
+            catch (InvalidOperationException e)
+            {
+               return "USB REMOVED";
+
+            }
+            catch (TimeoutException e)
+            {
                 System.Console.WriteLine(e.StackTrace);
                 return "";
             }

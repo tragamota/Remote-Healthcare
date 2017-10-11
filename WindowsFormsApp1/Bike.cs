@@ -1,8 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Threading;
+using System.Windows.Forms;
 using UserData;
+using Timer = System.Timers.Timer;
 
 namespace Remote_Healtcare_Console
 {
@@ -13,6 +16,7 @@ namespace Remote_Healtcare_Console
         private Thread BikeThread;
         private Thread ChangesThread;
         private string hashcode;
+        
 
         public Bike(string port, Console console, Client client) : base(console) {
             this.client = client;
@@ -20,6 +24,7 @@ namespace Remote_Healtcare_Console
             serialCommunicator = new SerialCommunicator(port);
             BikeThread = new Thread(InitBike);
             ChangesThread = new Thread(changes);
+            
         }
 
         private void changes()
@@ -79,11 +84,16 @@ namespace Remote_Healtcare_Console
         }
 
         private void Run() {
-            while (serialCommunicator.IsConnected() && start) {
+            
+            while (serialCommunicator.IsConnected() && start)
+            {
                 Update();
                 Thread.Sleep(500);
             }
         }
+
+
+      
 
         public override void Reset() {
             serialCommunicator.SendMessage("RS");
@@ -136,33 +146,45 @@ namespace Remote_Healtcare_Console
         public override void Update() {
             serialCommunicator.SendMessage("ST");
             string data = serialCommunicator.ReadInput();
-            data = data.Replace("\r", "");
-            string[] dataSplitted = data.Split('\t');
 
-            BikeData bikeData = new BikeData(
-                int.Parse(dataSplitted[0]), int.Parse(dataSplitted[1]),
-                dataSplitted[2],
-                int.Parse(dataSplitted[3]), int.Parse(dataSplitted[4]), int.Parse(dataSplitted[5]),
-                dataSplitted[6],
-                int.Parse(dataSplitted[7]));
-
-            if (RecordedData.Count == 0) {
-                RecordedData.Add(bikeData);
+            if (data.Equals("USB REMOVED"))
+            {
+               client.SendMessage(data);
+                BikeThread.Abort();
             }
-            else if (RecordedData.Last().Time != bikeData.Time) {
-                RecordedData.Add(bikeData);
+            else
+            {
+                data = data.Replace("\r", "");
+                string[] dataSplitted = data.Split('\t');
+
+                BikeData bikeData = new BikeData(
+                    int.Parse(dataSplitted[0]), int.Parse(dataSplitted[1]),
+                    dataSplitted[2],
+                    int.Parse(dataSplitted[3]), int.Parse(dataSplitted[4]), int.Parse(dataSplitted[5]),
+                    dataSplitted[6],
+                    int.Parse(dataSplitted[7]));
+
+                if (RecordedData.Count == 0)
+                {
+                    RecordedData.Add(bikeData);
+                }
+                else if (RecordedData.Last().Time != bikeData.Time)
+                {
+                    RecordedData.Add(bikeData);
+                }
+
+                client.SendMessage(new
+                {
+                    id = "sendData",
+                    data = new
+                    {
+                        bikeData = bikeData
+                    }
+                });
+
+                SetDataToGUI();
             }
             
-            client.SendMessage(new
-            {
-                id = "sendData",
-                data = new
-                {
-                    bikeData = bikeData
-                }
-            });
-
-            SetDataToGUI();
         }
     }
 }

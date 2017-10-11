@@ -110,6 +110,9 @@ namespace Server {
                 case "update":
                     update((JObject)obj["data"]);
                     break;
+                case "USB REMOVED":
+                    new Thread(() => usbRemoved((JObject)obj["data"])).Start();
+                    break;
                 case "committingChanges":
                     new Thread(() => sendChanges((JObject)obj["data"])).Start();
                     break;
@@ -210,6 +213,14 @@ namespace Server {
             doctor.writeMessage(new
             {
                 id = "clientDisconnected"
+            });
+        }
+
+        private void usbRemoved(JObject data)
+        { 
+            doctor.writeMessage(new
+            {
+                id = "bikeDisconnected"
             });
         }
 

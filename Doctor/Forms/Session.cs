@@ -410,6 +410,17 @@ namespace Doctor
                 id = "stoprecording"
             });
 
+            client.SendMessage(new
+            {
+                id = "sendmessagetoperson",
+                data = new
+                {
+                    hashcode = patient.Hashcode,
+                    message = "Blijf rustig ik stuur hulp. Zet je headset af"
+                    
+                }
+            });
+
             UpdateThread.Abort();
 
 

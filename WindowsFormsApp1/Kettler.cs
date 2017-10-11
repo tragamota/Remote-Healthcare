@@ -27,7 +27,7 @@ namespace Remote_Healtcare_Console
 
         public void SetDataToGUI() {
             BikeData bikeData = RecordedData.Last();
-
+           
             try {
                 console.Invoke((MethodInvoker)delegate {
                     // Running on the UI thread
