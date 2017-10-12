@@ -19,13 +19,26 @@ namespace VR {
         public Model(Connector connector, string modelname, string filePath, double x, double y, double z, double s, int zRotation) {
             this.connector = connector;
             this.modelname = modelname;
-            string[] allFiles = Directory.GetFiles(connector.GetFilePath() + "\\data\\NetworkEngine", filePath, SearchOption.AllDirectories);
-            this.filePath = allFiles[0];
+            SetFilePath(filePath);
             this.x = x;
             this.y = y;
             this.z = z;
             this.s = s;
             this.zRotation = zRotation;
+        }
+
+        private void SetFilePath(string filePath)
+        {
+            string file = connector.GetFilePath();
+            string tempFile = filePath.Substring(filePath.LastIndexOf("data"));
+            this.filePath = file + "\\" + tempFile;
+        }
+
+        private void SetFilePath()
+        {
+            string file = connector.GetFilePath();
+            string tempFile = filePath.Substring(filePath.LastIndexOf("data"));
+            this.filePath = file + "\\" + tempFile;
         }
 
         [JsonConstructor]
@@ -105,6 +118,8 @@ namespace VR {
         public virtual void Reload(Connector connector)
         {
             this.connector = connector;
+            SetFilePath();
+
             if(filePath != null)
             {
                 dynamic message = new

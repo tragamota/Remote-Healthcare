@@ -120,6 +120,17 @@ namespace VR {
             this.normalFile = filePath + "\\" + tempFile;
         }
 
+        private void SetFiles()
+        {
+            string filePath = connector.GetFilePath();
+
+            string tempFile = diffuseFile.Substring(diffuseFile.LastIndexOf("data"));
+            diffuseFile = filePath + "\\" + tempFile;
+
+            tempFile = normalFile.Substring(normalFile.LastIndexOf("data"));
+            normalFile = filePath + "\\" + tempFile;
+        }
+
         public void AddLayer() {
             dynamic message = new {
                 id = "tunnel/send",
@@ -255,6 +266,7 @@ namespace VR {
         public void Reload(Connector connector)
         {
             this.connector = connector;
+            SetFiles();
             if(this.heightValues != null)
             {
                 dynamic message = new
