@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,8 +30,9 @@ namespace VR {
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z, double[] heightValues) {
             this.connector = connector;
             this.terrainName = terrainName;
-            this.diffuseFile = diffuseFile;
-            this.normalFile = normalFile;
+
+            SetFiles(diffuseFile, normalFile);
+
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
             this.fadeDist = fadeDist;
@@ -46,8 +48,9 @@ namespace VR {
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z) {
             this.connector = connector;
             this.terrainName = terrainName;
-            this.diffuseFile = diffuseFile;
-            this.normalFile = normalFile;
+
+            SetFiles(diffuseFile, normalFile);
+
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
             this.fadeDist = fadeDist;
@@ -67,17 +70,17 @@ namespace VR {
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int x, int y, int z, string imagepath) {
             this.connector = connector;
             this.terrainName = terrainName;
-            this.diffuseFile = diffuseFile;
-            this.normalFile = normalFile;
+
+            SetFiles(diffuseFile, normalFile, imagepath);
+
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
             this.fadeDist = fadeDist;
             this.x = x;
             this.y = y;
             this.z = z;
-            this.imagepath = imagepath;
             
-            Bitmap heightImage = (Bitmap)Image.FromFile(imagepath);
+            Bitmap heightImage = (Bitmap)Image.FromFile(this.imagepath);
             heightValues = new double[heightImage.Width * heightImage.Height];
 
             for (int i = 0; i < heightImage.Height; i++)
@@ -90,6 +93,33 @@ namespace VR {
             }
 
             measure = new double[2] { heightImage.Width, heightImage.Height };
+        }
+
+        private void SetFiles(string diffuseFile, string normalFile, string imagepath)
+        {
+            string[] allFiles = Directory.GetFiles(connector.GetFilePath() + "\\data\\NetworkEngine", diffuseFile, SearchOption.AllDirectories);
+            this.diffuseFile = allFiles[0];
+
+            allFiles = Directory.GetFiles(connector.GetFilePath() + "\\data\\NetworkEngine", normalFile, SearchOption.AllDirectories);
+            this.normalFile = allFiles[0];
+
+            allFiles = Directory.GetFiles(connector.GetFilePath() + "\\data\\NetworkEngine", imagepath, SearchOption.AllDirectories);
+            this.imagepath = allFiles[0];
+        }
+
+        private void SetFiles(string diffuseFile, string normalFile)
+        {
+            string[] allFiles = Directory.GetFiles(connector.GetFilePath());
+            foreach (string file in allFiles)
+            {
+                string tempFile = file.Remove(file.Length - diffuseFile.Length);
+                if (tempFile.Equals(diffuseFile))
+                    this.diffuseFile = file;
+
+                tempFile = file.Remove(file.Length - normalFile.Length);
+                if (tempFile.Equals(normalFile))
+                    this.normalFile = file;
+            }
         }
 
         public void AddLayer() {

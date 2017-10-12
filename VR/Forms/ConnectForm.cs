@@ -13,12 +13,24 @@ namespace VR {
     public partial class ConnectForm : Form {
         public Connector connector;
         private string id;
+        private List<string> filePath;
+        private Dictionary<string, string> keys;
 
         public ConnectForm() {
             InitializeComponent();
             connector = new Connector();
-            foreach (string id in connector.GetClients().Keys) {
-                listBox_id.Items.Add(id);
+            filePath = new List<string>();
+            keys = new Dictionary<string, string>();
+
+            JArray array = connector.GetClients();
+
+            foreach (JObject obj in array) {
+                string hostInfo = obj["clientinfo"]["user"] + " - " + (string)obj["id"];
+                listBox_id.Items.Add(hostInfo);
+                keys.Add(hostInfo, (string)obj["id"]);
+                string file = (string)obj["clientinfo"]["file"];
+                string endOfFile = "\\NetworkEngine.exe";
+                filePath.Add(file.Remove(file.Length - endOfFile.Length));
             }
         }
 
@@ -28,7 +40,7 @@ namespace VR {
         }
 
         private void Connect_Btn_Click(object sender, EventArgs e) {
-            string key = connector.GetClients()[listBox_id.SelectedItem.ToString()];
+            string key = keys[(string)listBox_id.SelectedItem];
 
             dynamic message = new {
                 id = "tunnel/create",
@@ -42,6 +54,7 @@ namespace VR {
             JObject jObject = connector.ReadMessage();
             id = (string)jObject.SelectToken("data").SelectToken("id");
             connector.SetId(id);
+            connector.SetFilePath(filePath[listBox_id.SelectedIndex]);
 
             this.Hide();
             ControlPanel panel = new ControlPanel(connector);

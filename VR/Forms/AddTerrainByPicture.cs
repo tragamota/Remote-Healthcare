@@ -24,7 +24,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = Path.GetFullPath(browseFileDialog.FileName);
+                string path = browseFileDialog.SafeFileName;
                 Browse_Path_Lbl.Text = path;
             }
         }
@@ -47,7 +47,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = Path.GetFullPath(browseFileDialog.FileName);
+                string path = browseFileDialog.SafeFileName;
                 Diffuse_Texture_Lbl.Text = path;
             }
         }
@@ -58,7 +58,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = Path.GetFullPath(browseFileDialog.FileName);
+                string path = browseFileDialog.SafeFileName;
                 Normal_Texture_Lbl.Text = path;
             }
         }
@@ -69,7 +69,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = Path.GetFullPath(browseFileDialog.FileName);
+                string path = browseFileDialog.SafeFileName;
                 Browse_Path_Lbl.Text = path;
             }
         }

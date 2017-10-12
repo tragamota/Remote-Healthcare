@@ -19,6 +19,7 @@ namespace VR {
         public Terrain terrain;
         public List<Model> Models { get; set; }
         public List<Route> Routes { get; set; }
+        private string filePath;
         private double previousHeight;
 
         public Connector() {
@@ -33,7 +34,7 @@ namespace VR {
             Routes = new List<Route>();
         }
 
-        public Dictionary<string, string> GetClients() {
+        public JArray GetClients() {
             dynamic message = new {
                 id = "session/list"
             };
@@ -43,15 +44,13 @@ namespace VR {
 
             JObject jObject = ReadMessage();
 
-            JArray array = (JArray)jObject.SelectToken("data");
+            JArray array = (JArray)jObject["data"];
+            return array;
+        }
 
-            foreach (JObject client in array) {
-                string host = (string)client.SelectToken("clientinfo").SelectToken("user");
-                string id = (string)client.SelectToken("id");
-                hosts.Add(host + " - " + id, id);
-            }
-
-            return hosts;
+        internal string GetFilePath()
+        {
+            return filePath;
         }
 
         public void SendMessage(dynamic message) {
@@ -83,6 +82,11 @@ namespace VR {
 
             string response = message.ToString();
             return JObject.Parse(response);
+        }
+
+        internal void SetFilePath(string filePath)
+        {
+            this.filePath = filePath;
         }
 
         public void SetBikeSpeed(int speed)

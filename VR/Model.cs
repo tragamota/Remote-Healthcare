@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,8 @@ namespace VR {
         public Model(Connector connector, string modelname, string filePath, double x, double y, double z, double s, int zRotation) {
             this.connector = connector;
             this.modelname = modelname;
-            this.filePath = filePath;
+            string[] allFiles = Directory.GetFiles(connector.GetFilePath() + "\\data\\NetworkEngine", filePath, SearchOption.AllDirectories);
+            this.filePath = allFiles[0];
             this.x = x;
             this.y = y;
             this.z = z;
