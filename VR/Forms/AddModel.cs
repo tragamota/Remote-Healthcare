@@ -45,7 +45,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = browseFileDialog.SafeFileName;
+                string path = browseFileDialog.FileName;
                 Object_Name_Txt.Text = path;
             }
         }

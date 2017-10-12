@@ -97,29 +97,27 @@ namespace VR {
 
         private void SetFiles(string diffuseFile, string normalFile, string imagepath)
         {
-            string[] allFiles = Directory.GetFiles(connector.GetFilePath() + "\\data\\NetworkEngine", diffuseFile, SearchOption.AllDirectories);
-            this.diffuseFile = allFiles[0];
+            string filePath = connector.GetFilePath();
 
-            allFiles = Directory.GetFiles(connector.GetFilePath() + "\\data\\NetworkEngine", normalFile, SearchOption.AllDirectories);
-            this.normalFile = allFiles[0];
+            string tempFile = diffuseFile.Substring(diffuseFile.LastIndexOf("data"));
+            this.diffuseFile = filePath + "\\" + tempFile;
 
-            allFiles = Directory.GetFiles(connector.GetFilePath() + "\\data\\NetworkEngine", imagepath, SearchOption.AllDirectories);
-            this.imagepath = allFiles[0];
+            tempFile = normalFile.Substring(normalFile.LastIndexOf("data"));
+            this.normalFile = filePath + "\\" + tempFile;
+
+            tempFile = imagepath.Substring(imagepath.LastIndexOf("data"));
+            this.imagepath = filePath + "\\" + tempFile;
         }
 
         private void SetFiles(string diffuseFile, string normalFile)
         {
-            string[] allFiles = Directory.GetFiles(connector.GetFilePath());
-            foreach (string file in allFiles)
-            {
-                string tempFile = file.Remove(file.Length - diffuseFile.Length);
-                if (tempFile.Equals(diffuseFile))
-                    this.diffuseFile = file;
+            string filePath = connector.GetFilePath();
 
-                tempFile = file.Remove(file.Length - normalFile.Length);
-                if (tempFile.Equals(normalFile))
-                    this.normalFile = file;
-            }
+            string tempFile = diffuseFile.Substring(diffuseFile.LastIndexOf("data"));
+            this.diffuseFile = filePath + "\\" + tempFile;
+
+            tempFile = normalFile.Substring(normalFile.LastIndexOf("data"));
+            this.normalFile = filePath + "\\" + tempFile;
         }
 
         public void AddLayer() {

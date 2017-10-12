@@ -25,7 +25,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = browseFileDialog.SafeFileName;
+                string path = browseFileDialog.FileName;
                 Diffuse_Texture_Lbl.Text = path;
             }
         }
@@ -36,7 +36,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = browseFileDialog.SafeFileName;
+                string path = browseFileDialog.FileName;
                 Normal_Texture_Lbl.Text = path;
             }
         }
