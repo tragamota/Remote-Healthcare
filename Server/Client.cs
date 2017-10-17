@@ -25,7 +25,7 @@ namespace Server {
         public User User { get; set; }
         public Client patient;
         public Client doctor;
-  
+
         public Client(TcpClient client, ref List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors, ref object usersLock, ref object connectedClientsLock, ref object connectedDoctorsLock) {
             this.client = client;
             this.connectedClients = connectedClients;
@@ -97,8 +97,7 @@ namespace Server {
                 }
             }
 
-            if(session != null)
-            {
+            if (session != null) {
                 session = null;
             }
             closeStream();
@@ -110,11 +109,11 @@ namespace Server {
                 case "update":
                     update((JObject)obj["data"]);
                     break;
-                case "committingChanges":
-                    new Thread(() => sendChanges((JObject)obj["data"])).Start();
-                    break;
                 case "reqSession":
                     new Thread(() => sendSessionData((JObject)obj["data"])).Start();
+                    break;
+                case "latestData":
+                    new Thread(() => sendLatestData((JObject)obj["data"])).Start();
                     break;
                 case "oldsession":
                     new Thread(() => sendOldSession((JObject)obj["data"])).Start();
@@ -128,11 +127,6 @@ namespace Server {
                 case "getconPatients":
                     new Thread(() => getConClients()).Start();
                     break;
-                case "setpatient":
-                    User patientUser = (User)obj["data"]["patient"].ToObject(typeof(User));
-                    SetPatient(patientUser);
-                    SetDoctor((string)obj["data"]["doctor"]["doctor"]);
-                    break;
                 case "startrecording":
                     new Thread(() => StartRecording((JObject)obj["data"])).Start();
                     break;
@@ -144,9 +138,6 @@ namespace Server {
                     break;
                 case "sendbroadcast":
                     new Thread(() => sendBroadcastMessage((JObject)obj["data"])).Start();
-                    break;
-                case "sendData":
-                    session.AddBikeData((BikeData)obj["data"]["bikeData"].ToObject(typeof(BikeData)));
                     break;
                 case "add":
                     new Thread(() => addUser((JObject)obj["data"])).Start();
@@ -172,45 +163,50 @@ namespace Server {
             }
         }
 
-        private void sendChanges(JObject data)
-        {
-            foreach (Client client in connectedClients){
-                if (client.User.Hashcode == (string)data["hashcode"]){
-                    lock (sessionLock){
-                        client.writeMessage(data["data"]);
+        //private void sendChanges(JObject data) {
+        //    foreach (Client client in connectedClients) {
+        //        if (client.User.Hashcode == (string)data["hashcode"]) {
+        //            lock (sessionLock) {
+        //                client.writeMessage(data["data"]);
+        //            }
+        //            break;
+        //        }
+        //    }
+        //}
+
+        private void sendLatestData(JObject data) {
+            lock (connectedClientsLock) {
+                foreach (Client client in connectedClients) {
+                    if (client.User.Hashcode == (string)data["hashcode"]) {
+                        lock (client.sessionLock) {
+                            if (client.session != null) {
+                                writeMessage(
+                                    JsonConvert.SerializeObject(session.LatestData)
+                                );
+                            }
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
 
         private void sendSessionData(JObject data) {
-            foreach(Client client in connectedClients) {
-                if(client.User.Hashcode == (string) data["hashcode"]) {
-                    lock (sessionLock) {
-                        if (client.session != null)
-                        {
-                            if (client.session.data.Count != 0)
-                                writeMessage(new
-                                {
-                                    id = "bikeData",
-                                    bikeData = client.session.data.Last()
+            lock (connectedClientsLock) {
+                foreach (Client client in connectedClients) {
+                    if (client.User.Hashcode == (string)data["hashcode"]) {
+                        lock (client.sessionLock) {
+                            if (client.session != null) {
+                                writeMessage(new {
+                                    id = "latestdata",
+                                    data = JsonConvert.SerializeObject(session.Data)
                                 });
-                            else
-                                writeMessage(new
-                                {
-                                    id = "bikeData",
-                                    bikeData = new BikeData()
-                                });
+                            }
+                            break;
                         }
                     }
-                    break;
                 }
             }
-            //doctor.writeMessage(new
-            //{
-            //    id = "clientDisconnected"
-            //});
         }
 
         private void getOldSessionsName(JObject data) {
@@ -244,7 +240,7 @@ namespace Server {
                     };
                     writeMessage(response);
                 }
-                catch(Exception e) {
+                catch (Exception e) {
                     Console.WriteLine(e.Source);
                 }
             }
@@ -292,7 +288,7 @@ namespace Server {
         }
 
         private void getConClients() {
-            lock(connectedClientsLock) {
+            lock (connectedClientsLock) {
                 new Thread(() => writeMessage(connectedClients)).Start();
             }
         }
@@ -347,13 +343,12 @@ namespace Server {
         public void StartRecording(JObject data) {
             if (User.Type == UserType.Doctor) {
                 foreach (Client client in connectedClients) {
-                    if(client.User.Hashcode == (string)data["hashcode"]) {
+                    if (client.User.Hashcode == (string)data["hashcode"]) {
                         lock (sessionLock) {
                             if (client.session == null) {
                                 client.session = new BikeSession(client.User.Hashcode);
                             }
-                            client.writeMessage(new
-                            {
+                            client.writeMessage(new {
                                 id = "start"
                             });
                         }
@@ -365,11 +360,10 @@ namespace Server {
 
         public void StopRecording(JObject data) {
             if (User.Type == UserType.Doctor) {
-                foreach(Client client in connectedClients) {
-                    if(client.User.Hashcode == (string)data["hashcode"]) {
+                foreach (Client client in connectedClients) {
+                    if (client.User.Hashcode == (string)data["hashcode"]) {
                         lock (sessionLock) {
-                            client.writeMessage(new
-                            {
+                            client.writeMessage(new {
                                 id = "stop"
                             });
                             client.session.SaveSessionToFile();
@@ -386,7 +380,14 @@ namespace Server {
                 lock (sessionLock) {
                     if (session != null) {
                         BikeData dataConverted = data.ToObject<BikeData>();
-                        session.data.Add(dataConverted);
+                        session.Data.Add(dataConverted);
+                        if (session.LatestData.Count < 5) {
+                            session.LatestData.Add(dataConverted);
+                        }
+                        else {
+                            session.LatestData.RemoveAt(0);
+                            session.LatestData.Add(dataConverted);
+                        }
                     }
                 }
             }
@@ -506,7 +507,6 @@ namespace Server {
             string newUsername = (string)data["username"];
             string hashcode = (string)data["hashcode"];
 
-
             Boolean inUse = false;
             lock (usersLock) {
                 foreach (User u in users) {
@@ -586,7 +586,7 @@ namespace Server {
             try {
                 return JObject.Parse(Encoding.Default.GetString(receiveBuffer));
             }
-            catch (Exception e) {
+            catch (Exception) {
                 return null;
             }
         }
@@ -622,28 +622,24 @@ namespace Server {
             client.Dispose();
         }
 
-        public void SetPatient(User user)
-        {
-            foreach (Client patientClient in connectedClients)
-            {
-                string patientString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(patientClient.User.Hashcode)));
-                string userString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(user.Hashcode)));
+        //public void SetPatient(User user) {
+        //    foreach (Client patientClient in connectedClients) {
+        //        string patientString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(patientClient.User.Hashcode)));
+        //        string userString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(user.Hashcode)));
 
-                if (patientString.Equals(userString))
-                    patient = patientClient;
-            }
-        }
+        //        if (patientString.Equals(userString))
+        //            patient = patientClient;
+        //    }
+        //}
 
-        private void SetDoctor(string hashcode)
-        {
-            foreach (Client doctorClient in connectedDoctors)
-            {
-                string doctorString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(doctorClient.User.Hashcode)));
-                string userString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(hashcode)));
+        //private void SetDoctor(string hashcode) {
+        //    foreach (Client doctorClient in connectedDoctors) {
+        //        string doctorString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(doctorClient.User.Hashcode)));
+        //        string userString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(hashcode)));
 
-                if (doctorString.Equals(userString))
-                    doctor = doctorClient;
-            }
-        }
+        //        if (doctorString.Equals(userString))
+        //            doctor = doctorClient;
+        //    }
+        //}
     }
 }

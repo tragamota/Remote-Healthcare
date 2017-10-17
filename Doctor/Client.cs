@@ -12,6 +12,7 @@ namespace Doctor
     public class Client {
         public TcpClient client { get; set; }
         private NetworkStream stream;
+        public object ReadAndWriteLock { get; }
 
         public Client() {
             try {
@@ -21,6 +22,7 @@ namespace Doctor
             catch (SocketException e) {
                 Console.WriteLine(e.StackTrace);
             }
+            ReadAndWriteLock = new object();
         }
 
         public string ReadMessage() {
@@ -43,7 +45,7 @@ namespace Doctor
                 while (message.Length < receiveBuffer.Length);
             }
             catch (Exception e) {
-                System.Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.StackTrace);
                 return null;
             }
 
@@ -71,7 +73,7 @@ namespace Doctor
                 stream.Write(buffer, 0, buffer.Length);
             }
             catch (Exception e) {
-                System.Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.StackTrace);
             }
         }
     }
