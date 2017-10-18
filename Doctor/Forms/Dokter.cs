@@ -32,7 +32,7 @@ namespace Doctor {
                     Awaiting_Patients_Box.Items.Add(user);
             }
 
-            Form searchForm = new Search(users);
+            Form searchForm = new Search(users, panel1);
             searchForm.TopLevel = false;
             this.panel1.Controls.Add(searchForm);
             searchForm.Show();
@@ -126,6 +126,19 @@ namespace Doctor {
 
         private void label1_Click(object sender, EventArgs e) {
 
+        }
+
+        private void Double_Clicked(object sender, EventArgs e)
+        {
+            if (Awaiting_Patients_Box.SelectedItem != null)
+            {
+                Form session = new Session((User)Awaiting_Patients_Box.SelectedItem, ref client, hashcode);
+                session.Show();
+            }
+            else
+            {
+                MessageBox.Show("Selecteer een patiënt");
+            }
         }
     }
 }

@@ -158,7 +158,7 @@ namespace Remote_Healtcare_Console
             
             client.SendMessage(new
             {
-                id = "sendData",
+                id = "update",
                 data = new
                 {
                     bikeData = bikeData

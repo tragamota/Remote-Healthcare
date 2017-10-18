@@ -180,9 +180,25 @@ namespace Server {
                     if (client.User.Hashcode == (string)data["hashcode"]) {
                         lock (client.sessionLock) {
                             if (client.session != null) {
-                                writeMessage(
-                                    JsonConvert.SerializeObject(session.LatestData)
-                                );
+                                if (client.session.Data.Count > 0)
+                                {
+                                    List<BikeData> temp = client.session.LatestData;
+                                    writeMessage(new
+                                    {
+                                        id = "latestdata",
+                                        data = JsonConvert.SerializeObject(temp)
+                                    });
+                                }
+                                else
+                                {
+                                    List<BikeData> temp = new List<BikeData>();
+                                    temp.Add(new BikeData());
+                                    writeMessage(new
+                                    {
+                                        id = "latestdata",
+                                        data = JsonConvert.SerializeObject(temp)
+                                    });
+                                }
                             }
                         }
                         break;
@@ -379,7 +395,7 @@ namespace Server {
             if (User.Type == UserType.Client) {
                 lock (sessionLock) {
                     if (session != null) {
-                        BikeData dataConverted = data.ToObject<BikeData>();
+                        BikeData dataConverted = data["bikeData"].ToObject<BikeData>();
                         session.Data.Add(dataConverted);
                         if (session.LatestData.Count < 5) {
                             session.LatestData.Add(dataConverted);

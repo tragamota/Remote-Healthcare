@@ -576,6 +576,7 @@ namespace VR {
         }
 
         public void LoadSceneModels() {
+            Models = new List<Model>();
             JObject jObject = GetScene();
             JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
             List<JToken> list = array.ToList();
@@ -757,18 +758,23 @@ namespace VR {
             browseFileDialog.Filter = "JSON (.json)|*.json;";
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
+            List<Model> models = new List<Model>();
+            List<Route> routes = new List<Route>();
+
             if (browseFileDialog.ShowDialog() == DialogResult.OK)
             {
                 path = Path.GetFullPath(browseFileDialog.FileName);
                 string json = File.ReadAllText(path);
                 terrain = (Terrain)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"].ToObject(typeof(Terrain));
-                Models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["models"].ToObject(typeof(List<Model>));
-                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["routes"].ToObject(typeof(List<Route>));
+                models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["models"].ToObject(typeof(List<Model>));
+                routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["routes"].ToObject(typeof(List<Route>));
             }
 
             terrain.Reload(this);
 
             List<Model> lakes = new List<Model>();
+            this.Models = models;
+            this.Routes = routes;
 
             foreach (Model model in Models)
             {

@@ -40,6 +40,7 @@
             this.Awaiting_Patients_Box.Size = new System.Drawing.Size(173, 355);
             this.Awaiting_Patients_Box.TabIndex = 0;
             this.Awaiting_Patients_Box.SelectedIndexChanged += new System.EventHandler(this.Patient_Selected);
+            this.Awaiting_Patients_Box.DoubleClick += new System.EventHandler(this.Double_Clicked);
             // 
             // Message_Txt_Box
             // 

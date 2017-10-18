@@ -30,9 +30,8 @@ namespace VR {
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z, double[] heightValues) {
             this.connector = connector;
             this.terrainName = terrainName;
-
-            SetFiles(diffuseFile, normalFile);
-
+            this.diffuseFile = diffuseFile;
+            this.normalFile = normalFile;
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
             this.fadeDist = fadeDist;
@@ -48,9 +47,8 @@ namespace VR {
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int width, int length, int x, int y, int z) {
             this.connector = connector;
             this.terrainName = terrainName;
-
-            SetFiles(diffuseFile, normalFile);
-
+            this.diffuseFile = diffuseFile;
+            this.normalFile = normalFile;
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
             this.fadeDist = fadeDist;
@@ -70,54 +68,15 @@ namespace VR {
         public Terrain(Connector connector, string terrainName, string diffuseFile, string normalFile, int minHeight, int maxHeight, int fadeDist, int x, int y, int z, string imagepath) {
             this.connector = connector;
             this.terrainName = terrainName;
-
-            SetFiles(diffuseFile, normalFile, imagepath);
-
+            this.diffuseFile = diffuseFile;
+            this.normalFile = normalFile;
+            this.imagepath = imagepath;
             this.minHeight = minHeight;
             this.maxHeight = maxHeight;
             this.fadeDist = fadeDist;
             this.x = x;
             this.y = y;
             this.z = z;
-            
-            Bitmap heightImage = (Bitmap)Image.FromFile(this.imagepath);
-            heightValues = new double[heightImage.Width * heightImage.Height];
-
-            for (int i = 0; i < heightImage.Height; i++)
-            {
-                for (int j = 0; j < heightImage.Width; j++)
-                {
-                    int alpha = int.Parse(heightImage.GetPixel(j, i).A.ToString());
-                    heightValues[(i * (heightImage.Width - 1)) + j] = alpha / 8.75;
-                }
-            }
-
-            measure = new double[2] { heightImage.Width, heightImage.Height };
-        }
-
-        private void SetFiles(string diffuseFile, string normalFile, string imagepath)
-        {
-            string filePath = connector.GetFilePath();
-
-            string tempFile = diffuseFile.Substring(diffuseFile.LastIndexOf("data"));
-            this.diffuseFile = filePath + "\\" + tempFile;
-
-            tempFile = normalFile.Substring(normalFile.LastIndexOf("data"));
-            this.normalFile = filePath + "\\" + tempFile;
-
-            tempFile = imagepath.Substring(imagepath.LastIndexOf("data"));
-            this.imagepath = filePath + "\\" + tempFile;
-        }
-
-        private void SetFiles(string diffuseFile, string normalFile)
-        {
-            string filePath = connector.GetFilePath();
-
-            string tempFile = diffuseFile.Substring(diffuseFile.LastIndexOf("data"));
-            this.diffuseFile = filePath + "\\" + tempFile;
-
-            tempFile = normalFile.Substring(normalFile.LastIndexOf("data"));
-            this.normalFile = filePath + "\\" + tempFile;
         }
 
         private void SetFiles()
@@ -129,6 +88,24 @@ namespace VR {
 
             tempFile = normalFile.Substring(normalFile.LastIndexOf("data"));
             normalFile = filePath + "\\" + tempFile;
+
+
+            if (imagepath != null || imagepath == "")
+            {
+                Bitmap heightImage = (Bitmap)Image.FromFile(this.imagepath);
+                heightValues = new double[heightImage.Width * heightImage.Height];
+
+                for (int i = 0; i < heightImage.Height; i++)
+                {
+                    for (int j = 0; j < heightImage.Width; j++)
+                    {
+                        int alpha = int.Parse(heightImage.GetPixel(j, i).A.ToString());
+                        heightValues[(i * (heightImage.Width - 1)) + j] = alpha / 8.75;
+                    }
+                }
+
+                measure = new double[2] { heightImage.Width, heightImage.Height };
+            }
         }
 
         public void AddLayer() {
@@ -237,6 +214,8 @@ namespace VR {
 
         public void Load()
         {
+            SetFiles();
+            
             dynamic message = new
             {
                 id = "tunnel/send",
@@ -267,86 +246,31 @@ namespace VR {
         {
             this.connector = connector;
             SetFiles();
-            if(this.heightValues != null)
+
+            dynamic message = new
             {
-                dynamic message = new
+                id = "tunnel/send",
+                data = new
                 {
-                    id = "tunnel/send",
+                    dest = connector.tunnelID,
                     data = new
                     {
-                        dest = connector.tunnelID,
+                        id = "scene/terrain/add",
                         data = new
                         {
-                            id = "scene/terrain/add",
-                            data = new
-                            {
-                                size = measure,
-                                heights = heightValues
-                            }
+                            size = measure,
+                            heights = heightValues
                         }
                     }
-                };
+                }
+            };
 
-                connector.SendMessage(message);
-                JObject jObject = connector.ReadMessage();
-                //Console.WriteLine(jObject);
+            connector.SendMessage(message);
+            JObject jObject = connector.ReadMessage();
+            //Console.WriteLine(jObject);
 
-                AddNode();
-                AddLayer();
-            }else if(imagepath != null)
-            {
-                dynamic message = new
-                {
-                    id = "tunnel/send",
-                    data = new
-                    {
-                        dest = connector.tunnelID,
-                        data = new
-                        {
-                            id = "scene/terrain/add",
-                            data = new
-                            {
-                                size = measure,
-                                heights = heightValues
-                            }
-                        }
-                    }
-                };
-
-                connector.SendMessage(message);
-                JObject jObject = connector.ReadMessage();
-                //Console.WriteLine(jObject);
-
-                AddNode();
-                AddLayer();
-            }
-            else
-            {
-                dynamic message = new
-                {
-                    id = "tunnel/send",
-                    data = new
-                    {
-                        dest = connector.tunnelID,
-                        data = new
-                        {
-                            id = "scene/terrain/add",
-                            data = new
-                            {
-                                size = measure,
-                                heights = heightValues
-                            }
-                        }
-                    }
-                };
-
-                connector.SendMessage(message);
-                JObject jObject = connector.ReadMessage();
-                //Console.WriteLine(jObject);
-
-                AddNode();
-                AddLayer();
-            }
+            AddNode();
+            AddLayer();
         }
     }
 }

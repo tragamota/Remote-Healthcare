@@ -16,10 +16,11 @@ namespace VR {
         public double x, y, z, s;
         public int zRotation;
 
+        [JsonConstructor]
         public Model(Connector connector, string modelname, string filePath, double x, double y, double z, double s, int zRotation) {
             this.connector = connector;
             this.modelname = modelname;
-            SetFilePath(filePath);
+            this.filePath = filePath;
             this.x = x;
             this.y = y;
             this.z = z;
@@ -27,21 +28,16 @@ namespace VR {
             this.zRotation = zRotation;
         }
 
-        private void SetFilePath(string filePath)
-        {
-            string file = connector.GetFilePath();
-            string tempFile = filePath.Substring(filePath.LastIndexOf("data"));
-            this.filePath = file + "\\" + tempFile;
-        }
-
         private void SetFilePath()
         {
-            string file = connector.GetFilePath();
-            string tempFile = filePath.Substring(filePath.LastIndexOf("data"));
-            this.filePath = file + "\\" + tempFile;
+            if (filePath != null)
+            {
+                string file = connector.GetFilePath();
+                string tempFile = filePath.Substring(filePath.LastIndexOf("data"));
+                this.filePath = file + "\\" + tempFile;
+            }
         }
 
-        [JsonConstructor]
         public Model(Connector connector, string modelname, string uuid) {
             this.connector = connector;
             this.modelname = modelname;
@@ -76,6 +72,8 @@ namespace VR {
 
         public virtual void Load()
         {
+            SetFilePath();
+
             dynamic message = new
             {
                 id = "tunnel/send",

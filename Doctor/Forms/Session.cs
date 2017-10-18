@@ -31,26 +31,30 @@ namespace Doctor {
             this.patient = patient;
             this.client = client;
 
-            if (sessionDate == null) {
+            if (sessionDate != null) {
                 DateTime daytime = DateTime.Now;
                 sessionDate.Text = daytime.Day + "-" + daytime.Month + "-" + daytime.Year +"\t" + daytime.Hour + ":" + daytime.Minute;
+                Start_Session_Btn.Enabled = true;
                 Stop_Session_Btn.Enabled = false;
 
-                dynamic request = new {
-                    id = "reqSession"
-                };
+                //dynamic request = new {
+                //    id = "reqSession"
+                //};
 
-                lock (client.ReadAndWriteLock) {
-                    client.SendMessage(request);
-                    JObject obj = JObject.Parse(client.ReadMessage());
-                    if ((string) obj["id"] == "sessiondata") {
-                        List<BikeData> datas = JsonConvert.DeserializeObject<List<BikeData>>((string)obj["data"]);
-                        sessionAllData.AddRange(datas);
-                        foreach (BikeData data in datas) {
-                            AddToGraphHistory(data);
-                        }
-                    }
-                }
+                //lock (client.ReadAndWriteLock) {
+                //    client.SendMessage(request);
+                //    JObject obj = JObject.Parse(client.ReadMessage());
+                //    if ((string) obj["id"] == "sessiondata") {
+                //        List<BikeData> datas = JsonConvert.DeserializeObject<List<BikeData>>((string)obj["data"]);
+                //        sessionAllData.AddRange(datas);
+                //        foreach (BikeData data in datas) {
+                //            AddToGraphHistory(data);
+                //        }
+                //    }
+                //}
+
+                sessionAllData = new List<BikeData>();
+
                 UpdateThread = new Thread(run);
             }
             else {
@@ -98,7 +102,8 @@ namespace Doctor {
                             hashcode = patient.Hashcode
                         }
                     });
-                    obj = JObject.Parse(client.ReadMessage());
+                    string message = client.ReadMessage();
+                    obj = JObject.Parse(message);
                 }
 
                 switch ((string)obj["id"]) {
