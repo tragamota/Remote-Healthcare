@@ -58,7 +58,7 @@ namespace VR {
                             id = "route/follow/speed",
                             data = new {
                                 node = uuid,
-                                speed = speed
+                                speed = Math.Floor(speed)
                             }
                         }
                     }

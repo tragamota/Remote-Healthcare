@@ -82,7 +82,7 @@ namespace Remote_Healtcare_Console
         {
             lblSpeed.Text = s;
             string speed = s.Replace(",", ".");
-            connectForm.connector.SetBikeSpeed((int)Math.Round(double.Parse(speed), 0));
+            connectForm.connector.SetBikeSpeed(Math.Round(double.Parse(speed)));
         }
 
         public void SetDistance(String s) { lblDistance.Text = s; }

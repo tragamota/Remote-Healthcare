@@ -9,7 +9,7 @@ using System.Timers;
 namespace VR
 {
 
-    class HUD
+    class HUD : Model
     {
         Connector connector;
         public string uuid;
@@ -18,8 +18,9 @@ namespace VR
 
         public HUD(Connector connector)
         {
+			this.modelname = "hud";
             this.connector = connector;
-            this.cameraID = connector.GetUUID("Bike");
+            this.cameraID = connector.GetUUID("bike");
            // Console.WriteLine("Camera ID: {0}", cameraID);
 
             connector.AddHUD(cameraID);
@@ -50,7 +51,7 @@ namespace VR
             Console.WriteLine(jObject);
 
             Console.WriteLine("Camera ID: {0}", cameraID);
-
+			connector.Models.Add(this);
         }
 
         public void DrawMessage(string message)

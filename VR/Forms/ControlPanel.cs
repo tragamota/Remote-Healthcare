@@ -5,6 +5,7 @@ using System.Windows.Forms;
 namespace VR {
     public partial class ControlPanel : Form {
         private Connector connector;
+		private HUD hud;
 
         public ControlPanel(Connector connector) {
             this.connector = connector;
@@ -72,7 +73,8 @@ namespace VR {
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(connector.GetScene().ToString());
+			//Console.WriteLine(connector.GetScene().ToString());
+			hud.SetText("Heil Brandon!");
         }
 
         private void Save_Btn_Click(object sender, EventArgs e)
@@ -99,5 +101,10 @@ namespace VR {
             else
                 connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("GroundPlane"));
         }
-    }
+
+		private void Add_HUD_Click(object sender, EventArgs e)
+		{
+			hud = new HUD(connector);
+		}
+	}
 }

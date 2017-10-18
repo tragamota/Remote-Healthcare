@@ -89,10 +89,10 @@ namespace VR {
             this.filePath = filePath;
         }
 
-        public void SetBikeSpeed(int speed)
+        public void SetBikeSpeed(double speed)
         {
             Model bike = Models.Find(x => x.modelname.Equals("bike"));
-            bike.ChangeSpeed(speed / 75);
+            bike.ChangeSpeed((speed / 5.0));
         }
 
         public string GetUUID(string name)
@@ -334,7 +334,7 @@ namespace VR {
                             text = text,
                             position = new[] { x, y },
                             size = 50.0,
-                            font = "COOPBL"
+                            font = "Arial"
                         }
                     }
                 }
@@ -783,7 +783,10 @@ namespace VR {
                     Water water = new Water(this, "water", model.x, model.y, model.z);
                     water.Load();
                     lakes.Add(water);
-                }
+                }else if(model.modelname == "hud")
+				{
+					Models.Add(new HUD(this));
+				}
                 else
                     model.Reload(this);
             }
