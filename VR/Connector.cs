@@ -447,7 +447,7 @@ namespace VR {
             Console.WriteLine(jObject);
         }
 
-        public double CalculateIncline(string objectName)
+        public int CalculateIncline(string objectName)
         {
             List<double> list = getPosition(objectName);
  
@@ -456,14 +456,14 @@ namespace VR {
  
             double currentHeight = list[1];
  
-            difference = (currentHeight - previousHeight)/5;
+            difference = (currentHeight - previousHeight)/28.9;
  
             incline = 400 * difference;
- 
+            int output = (int)(incline - (incline % 5));
             previousHeight = currentHeight;
  
              
-            return incline;
+            return output;
         }
 
         public List<double> getPosition(string objectName)

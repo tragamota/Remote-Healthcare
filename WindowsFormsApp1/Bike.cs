@@ -83,7 +83,7 @@ namespace Remote_Healtcare_Console
         private void Run() {
             while (serialCommunicator.IsConnected() && start) {
                 Update();
-                //SetResistance((int)console.connectForm.connector.CalculateIncline("bike"));
+                SetResistance(console.connectForm.connector.CalculateIncline("bike"));
                 Thread.Sleep(500);
             }
         }
