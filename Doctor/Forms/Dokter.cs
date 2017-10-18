@@ -13,7 +13,7 @@ using UserData;
 namespace Doctor {
     public partial class Dokter : Form {
         private Client client;
-        private List<User> users;
+        private List<User> users, connectedUsers;
         private string hashcode;
 
         public Dokter(Client client, string hashcode) {
@@ -32,7 +32,8 @@ namespace Doctor {
                     Awaiting_Patients_Box.Items.Add(user);
             }
 
-            Form searchForm = new Search(users);
+
+            Form searchForm = new Search(ref users, panel1, ref client);
             searchForm.TopLevel = false;
             this.panel1.Controls.Add(searchForm);
             searchForm.Show();

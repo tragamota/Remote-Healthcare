@@ -146,7 +146,7 @@ namespace Server {
                     new Thread(() => deleteUser((JObject)obj["data"])).Start();
                     break;
                 case "changepass":
-                    new Thread(() => changePassword((JObject)obj["data"]));
+                    new Thread(() => changePassword((JObject)obj["data"])).Start();
                     break;
                 case "changeuser":
                     new Thread(() => changeUsername((JObject)obj["data"])).Start();
@@ -163,26 +163,26 @@ namespace Server {
             }
         }
 
-        //private void sendChanges(JObject data) {
-        //    foreach (Client client in connectedClients) {
-        //        if (client.User.Hashcode == (string)data["hashcode"]) {
-        //            lock (sessionLock) {
-        //                client.writeMessage(data["data"]);
-        //            }
-        //            break;
-        //        }
-        //    }
-        //}
-
         private void sendLatestData(JObject data) {
             lock (connectedClientsLock) {
                 foreach (Client client in connectedClients) {
                     if (client.User.Hashcode == (string)data["hashcode"]) {
                         lock (client.sessionLock) {
                             if (client.session != null) {
-                                writeMessage(
-                                    JsonConvert.SerializeObject(session.LatestData)
-                                );
+                                if (client.session.LatestData.Count > 0) {
+                                    writeMessage(new {
+                                        id = "latestdata",
+                                        data = JsonConvert.SerializeObject(client.session.LatestData)
+                                    });
+                                }
+                                else {
+                                    List<BikeData> dataa = new List<BikeData>();
+                                    dataa.Add(new BikeData());
+                                    writeMessage(new {
+                                        id = "latestdata",
+                                        data = JsonConvert.SerializeObject(dataa)
+                                    });
+                                }
                             }
                         }
                         break;
@@ -621,25 +621,5 @@ namespace Server {
             stream.Dispose();
             client.Dispose();
         }
-
-        //public void SetPatient(User user) {
-        //    foreach (Client patientClient in connectedClients) {
-        //        string patientString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(patientClient.User.Hashcode)));
-        //        string userString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(user.Hashcode)));
-
-        //        if (patientString.Equals(userString))
-        //            patient = patientClient;
-        //    }
-        //}
-
-        //private void SetDoctor(string hashcode) {
-        //    foreach (Client doctorClient in connectedDoctors) {
-        //        string doctorString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(doctorClient.User.Hashcode)));
-        //        string userString = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(hashcode)));
-
-        //        if (doctorString.Equals(userString))
-        //            doctor = doctorClient;
-        //    }
-        //}
     }
 }

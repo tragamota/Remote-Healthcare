@@ -1,7 +1,6 @@
 ﻿using System;
 
-namespace UserData
-{
+namespace UserData {
     [Serializable]
     public struct BikeData {
         public string id { get; set; }

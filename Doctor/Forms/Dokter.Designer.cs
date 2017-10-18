@@ -109,7 +109,7 @@
             this.Controls.Add(this.Message_Txt_Box);
             this.Controls.Add(this.Awaiting_Patients_Box);
             this.Name = "Dokter";
-            this.Text = "Dokter";
+            this.Text = "6";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing);
             this.ResumeLayout(false);
             this.PerformLayout();
