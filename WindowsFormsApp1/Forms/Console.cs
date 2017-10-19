@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Remote_Healtcare_Console
 {
-    partial class Console : Form
+    public partial class Console : Form
     {
         private Kettler bike;
         private ComboBox combo;
@@ -108,6 +108,11 @@ namespace Remote_Healtcare_Console
         private void Closing(object sender, FormClosingEventArgs e)
         {
             client.SendMessage("bye");
+        }
+
+        public void SetDisplay(double rate, double sp, double dist, double round, double res, double en, string ti, double wat)
+        {
+            connectForm.connector.hud.Update2(rate, dist, round, res, en, ti, wat);
         }
     }
 }

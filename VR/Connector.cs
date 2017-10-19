@@ -21,6 +21,7 @@ namespace VR {
         public List<Route> Routes { get; set; }
         private string filePath;
         private double previousHeight;
+        public HUD hud;
 
         public Connector() {
             try {
@@ -776,7 +777,9 @@ namespace VR {
             this.Models = models;
             this.Routes = routes;
 
-            foreach (Model model in Models)
+            //Model fakeHUD = null;
+
+            foreach (Model model in models)
             {
                 if(model.modelname.Equals("water"))
                 {
@@ -785,10 +788,14 @@ namespace VR {
                     lakes.Add(water);
                 }else if(model.modelname == "hud")
 				{
-					Models.Add(new HUD(this));
+                    //fakeHUD = model;
+					//Models.Add(new HUD(this));
 				}
                 else
                     model.Reload(this);
+
+                //if (fakeHUD != null)
+                    //Models.Remove(fakeHUD);
             }
 
             Models.RemoveAll(x => x.modelname.Equals("water"));
