@@ -90,8 +90,11 @@ namespace VR {
             normalFile = filePath + "\\" + tempFile;
 
 
-            if (imagepath != null || imagepath == "")
+            if (imagepath != null)
             {
+                tempFile = imagepath.Substring(imagepath.LastIndexOf("data"));
+                imagepath = filePath + "\\" + tempFile;
+                
                 Bitmap heightImage = (Bitmap)Image.FromFile(this.imagepath);
                 heightValues = new double[heightImage.Width * heightImage.Height];
 
