@@ -72,6 +72,11 @@ namespace UserData {
 
         private void makeHashcodeValid(string hash) {
             List<char> forbiddenChars = new List<char>(Path.GetInvalidPathChars());
+            forbiddenChars.Add((char)92);
+            forbiddenChars.Add((char)47);
+            forbiddenChars.Add((char)63);
+            forbiddenChars.Add((char)42);
+            forbiddenChars.Add((char)58);
             string validHashcode = string.Empty;
             foreach(char c in hash) {
                 if(forbiddenChars.Contains(c)) {
