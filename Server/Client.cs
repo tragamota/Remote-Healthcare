@@ -23,8 +23,6 @@ namespace Server {
         private List<User> users;
         public BikeSession session { get; set; }
         public User User { get; set; }
-        public Client patient;
-        public Client doctor;
 
         public Client(TcpClient client, ref List<User> users, ref List<Client> connectedClients, ref List<Client> connectedDoctors, ref object usersLock, ref object connectedClientsLock, ref object connectedDoctorsLock) {
             this.client = client;
@@ -98,7 +96,9 @@ namespace Server {
             }
 
             if (session != null) {
-                session = null;
+                lock (sessionLock) {
+                    session = null;
+                }
             }
             closeStream();
             Console.WriteLine(connectedClients.Count + "\t" + connectedDoctors.Count);
@@ -169,20 +169,16 @@ namespace Server {
                     if (client.User.Hashcode == (string)data["hashcode"]) {
                         lock (client.sessionLock) {
                             if (client.session != null) {
-                                if (client.session.LatestData.Count > 0) {
-                                    writeMessage(new {
-                                        id = "latestdata",
-                                        data = JsonConvert.SerializeObject(client.session.LatestData)
-                                    });
-                                }
-                                else {
-                                    List<BikeData> dataa = new List<BikeData>();
-                                    dataa.Add(new BikeData());
-                                    writeMessage(new {
-                                        id = "latestdata",
-                                        data = JsonConvert.SerializeObject(dataa)
-                                    });
-                                }
+                                writeMessage(new {
+                                    id = "latestdata",
+                                    data = client.session.LatestData
+                                });
+                            }
+                            else {
+                                writeMessage(new {
+                                    id = "latestdata",
+                                    data = new List<BikeData>()
+                                });
                             }
                         }
                         break;
@@ -197,10 +193,12 @@ namespace Server {
                     if (client.User.Hashcode == (string)data["hashcode"]) {
                         lock (client.sessionLock) {
                             if (client.session != null) {
-                                writeMessage(new {
-                                    id = "latestdata",
-                                    data = JsonConvert.SerializeObject(session.Data)
-                                });
+                                writeMessage(
+                                    client.session.Data
+                                );
+                            }
+                            else {
+                                writeMessage(new List<BikeData>());
                             }
                             break;
                         }
@@ -211,11 +209,17 @@ namespace Server {
 
         private void getOldSessionsName(JObject data) {
             string path = Directory.GetCurrentDirectory() + $@"\data\{data["hashcode"]}";
-
+            List<String> fileName = new List<string>();
+            if (Directory.Exists(path)) {
+                foreach (string s in Directory.GetFiles(path)) {
+                    fileName.Add(Path.GetFileName(s));
+                }
+            }
+        
             if (Directory.Exists(path)) {
                 dynamic response = new {
                     status = "alloldfiles",
-                    data = Directory.GetFiles(path)
+                    data = fileName
                 };
                 writeMessage(response);
             }
@@ -230,14 +234,11 @@ namespace Server {
         private void sendOldSession(JObject data) {
             string hashcode = (string)data["hashcode"];
             string file = (string)data["file"];
-
+            List<BikeData> bikeData;
             string path = Directory.GetCurrentDirectory() + $@"\data\{hashcode}\{file}";
             if (File.Exists(path)) {
                 try {
-                    dynamic response = new {
-                        status = "oldsession",
-                        data = File.ReadAllText(path)
-                    };
+                    dynamic response = JsonConvert.DeserializeObject(File.ReadAllText(path));
                     writeMessage(response);
                 }
                 catch (Exception e) {
@@ -261,7 +262,7 @@ namespace Server {
                 }
             };
 
-            lock (connectedDoctorsLock) {
+            lock (connectedClientsLock) {
                 foreach (Client user in connectedClients) {
                     new Thread(() => user.writeMessage(message)).Start();
                 }
@@ -283,13 +284,17 @@ namespace Server {
 
         private void getAllClients() {
             lock (usersLock) {
-                new Thread(() => writeMessage(users)).Start();
+                writeMessage(users);
             }
         }
 
         private void getConClients() {
+            List<User> connectedPatients = new List<User>();
             lock (connectedClientsLock) {
-                new Thread(() => writeMessage(connectedClients)).Start();
+                foreach (Client c in connectedClients) {
+                    connectedPatients.Add(c.User);
+                }
+                writeMessage(connectedPatients);
             }
         }
 
@@ -362,7 +367,7 @@ namespace Server {
             if (User.Type == UserType.Doctor) {
                 foreach (Client client in connectedClients) {
                     if (client.User.Hashcode == (string)data["hashcode"]) {
-                        lock (sessionLock) {
+                        lock (client.sessionLock) {
                             client.writeMessage(new {
                                 id = "stop"
                             });
@@ -559,7 +564,6 @@ namespace Server {
                 }
                 catch (IOException e) {
                     Console.WriteLine(e.StackTrace);
-                    Console.WriteLine($"Verbinding verloren met patiënt {patient}");
                     return null;
                 }
             }

@@ -18,6 +18,7 @@ namespace Doctor.Forms {
         private User user;
         private Client client;
         private Panel panel;
+
         public UserInfo(User user, Form searchForm, ref Client client, Panel panel) {
             InitializeComponent();
             this.user = user;
@@ -28,9 +29,9 @@ namespace Doctor.Forms {
             patientName.Text = user.FullName;
 
             dynamic request = new {
-                id = "oldsession",
+                id = "oldsessionlist",
                 data = new {
-                    hashcode = user.Hashcode
+                    hashcode = user.Hashcode,
                 }
             };
 
@@ -43,17 +44,31 @@ namespace Doctor.Forms {
             if ((string)sessionList["status"] == "alloldfiles") {
                 string[] files = new string[sessionList["data"].Count()];
                 int i = 0;
-                foreach(JObject o in (JArray)sessionList["data"]) {
+                foreach(JToken o in (JArray) sessionList["data"]) {
                     files[i] = (string) o;
                     i++;
                 }
+                foreach (string s in files) {
+                    listView1.Items.Add(s);
+                }
             }
             else {
-                listView1.Items.Add("No oldsession");
+                listView1.Items.Add("No older sessions");
             }
 
             textBox1.KeyDown += TextBox1_KeyDown;
             textBox2.KeyDown += TextBox2_KeyDown;
+            listView1.MultiSelect = false;
+            listView1.MouseDoubleClick += ListView1_MouseDoubleClick;
+        }
+
+        private void ListView1_MouseDoubleClick(object sender, MouseEventArgs e) {
+            if (listView1.SelectedIndices.Count > 0) {
+                string selectedFile = listView1.SelectedItems[0].Text;
+                if (selectedFile != "No older sessions") {
+                    new Session(user, ref client, selectedFile).Show();
+                }
+            }
         }
 
         private void TextBox2_KeyDown(object sender, KeyEventArgs e) {
@@ -119,10 +134,10 @@ namespace Doctor.Forms {
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            panel.Controls.RemoveAt(1);
+            panel.Controls.Remove(this);
             searchForm.Show();
-            this.Close();
-            this.Dispose();
+            Close();
+            Dispose();
         }
     }
 }

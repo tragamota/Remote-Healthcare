@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading;
 using UserData;
 
-namespace Remote_Healtcare_Console
-{
+namespace Remote_Healtcare_Console {
     class Bike : Kettler {
         private bool start;
         private SerialCommunicator serialCommunicator;
@@ -24,21 +23,16 @@ namespace Remote_Healtcare_Console
             ChangesThread = new Thread(changes);
         }
 
-        private void changes()
-        {
-            while (serialCommunicator.IsConnected() && start)
-            {
+        private void changes() {
+            while (serialCommunicator.IsConnected() && start) {
                 SetChanges();
                 Thread.Sleep(500);
             }
         }
 
-        private void SetChanges()
-        {
+        private void SetChanges() {
             JObject obj = client.ReadMessage();
-
-            switch ((string)obj["id"])
-            {
+            switch ((string)obj["id"]) {
                 case ("setResistance"):
                     int resistance = (int)obj["data"]["resistance"];
                     SetResistance(resistance);
@@ -57,7 +51,6 @@ namespace Remote_Healtcare_Console
                     BikeThread.Abort();
                     break;
             }
-
         }
 
         public override void Start() {
@@ -155,12 +148,10 @@ namespace Remote_Healtcare_Console
             else if (RecordedData.Last().Time != bikeData.Time) {
                 RecordedData.Add(bikeData);
             }
-            
-            client.SendMessage(new
-            {
+
+            client.SendMessage(new {
                 id = "sendData",
-                data = new
-                {
+                data = new {
                     bikeData = bikeData
                 }
             });

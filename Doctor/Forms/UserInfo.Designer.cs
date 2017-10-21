@@ -63,14 +63,14 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 60);
+            this.textBox1.Location = new System.Drawing.Point(2, 55);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(225, 20);
             this.textBox1.TabIndex = 3;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(12, 103);
+            this.textBox2.Location = new System.Drawing.Point(2, 98);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(225, 20);
             this.textBox2.TabIndex = 4;
@@ -78,7 +78,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 87);
+            this.label2.Location = new System.Drawing.Point(2, 82);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(92, 13);
             this.label2.TabIndex = 5;
@@ -87,7 +87,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 41);
+            this.label3.Location = new System.Drawing.Point(2, 36);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(93, 13);
             this.label3.TabIndex = 6;
@@ -96,7 +96,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(9, 6);
+            this.label4.Location = new System.Drawing.Point(-1, 1);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(46, 13);
             this.label4.TabIndex = 7;
@@ -105,7 +105,7 @@
             // patientName
             // 
             this.patientName.AutoSize = true;
-            this.patientName.Location = new System.Drawing.Point(62, 6);
+            this.patientName.Location = new System.Drawing.Point(52, 1);
             this.patientName.Name = "patientName";
             this.patientName.Size = new System.Drawing.Size(35, 13);
             this.patientName.TabIndex = 8;

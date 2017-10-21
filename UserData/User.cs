@@ -88,5 +88,20 @@ namespace UserData {
             }
             hashcode = validHashcode;
         }
+
+        public override bool Equals(object obj) {
+            if(obj is User) {
+                User TempUser = obj as User;
+                if(this.hashcode == TempUser.hashcode) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
     }
 }

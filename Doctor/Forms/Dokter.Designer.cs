@@ -30,6 +30,7 @@
             this.AddUser = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Awaiting_Patients_Box
@@ -39,7 +40,6 @@
             this.Awaiting_Patients_Box.Name = "Awaiting_Patients_Box";
             this.Awaiting_Patients_Box.Size = new System.Drawing.Size(173, 355);
             this.Awaiting_Patients_Box.TabIndex = 0;
-            this.Awaiting_Patients_Box.SelectedIndexChanged += new System.EventHandler(this.Patient_Selected);
             // 
             // Message_Txt_Box
             // 
@@ -58,7 +58,6 @@
             this.Send_Message_Btn.TabIndex = 3;
             this.Send_Message_Btn.Text = "Send";
             this.Send_Message_Btn.UseVisualStyleBackColor = true;
-            this.Send_Message_Btn.Click += new System.EventHandler(this.Send_Message_Btn_Click);
             // 
             // Log_Out_Btn
             // 
@@ -77,7 +76,6 @@
             this.AddUser.Size = new System.Drawing.Size(75, 23);
             this.AddUser.TabIndex = 7;
             this.AddUser.UseVisualStyleBackColor = true;
-            this.AddUser.Click += new System.EventHandler(this.button1_Click);
             // 
             // panel1
             // 
@@ -94,13 +92,23 @@
             this.label1.Size = new System.Drawing.Size(99, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "Connected patients";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(215, 19);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Add User";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Dokter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(638, 409);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.AddUser);
@@ -125,6 +133,7 @@
         private System.Windows.Forms.Button AddUser;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button1;
     }
 }
 

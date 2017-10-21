@@ -515,7 +515,6 @@
             this.Controls.Add(this.Start_Session_Btn);
             this.Name = "Session";
             this.Text = "Session";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Closing);
             ((System.ComponentModel.ISupportInitialize)(this.Resistance_Track_Bar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.grafiek)).EndInit();
             this.ResumeLayout(false);

@@ -16,14 +16,14 @@ namespace Server {
 
         public BikeSession(string userHash) {
             this.userHash = userHash;
-            sessionDateTime = DateTime.UtcNow;
+            sessionDateTime = DateTime.Now;
             Data = new List<BikeData>();
             LatestData = new List<BikeData>();
         }
 
         public void SaveSessionToFile() {
-            string pathToUserDir = Directory.GetCurrentDirectory() + @"\ClientData\" + userHash + @"\";
-            string pathToSessionFile = Path.Combine(pathToUserDir, sessionDateTime.ToString().Replace(":", "-") + ".json");
+            string pathToUserDir = Directory.GetCurrentDirectory() + @"\Data\" + userHash + @"\";
+            string pathToSessionFile = pathToUserDir + sessionDateTime.Day + "-" + sessionDateTime.Month + "-" + sessionDateTime.Year + "  " +  sessionDateTime.Hour + "." + sessionDateTime.Minute + "." + sessionDateTime.Second + ".json";
             if (!Directory.Exists(pathToUserDir)) {
                 Directory.CreateDirectory(pathToUserDir);
             }
@@ -35,7 +35,7 @@ namespace Server {
                 File.WriteAllText(pathToSessionFile, JsonConvert.SerializeObject(Data));
             }
             catch (IOException e) {
-                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
             }
         }
     }

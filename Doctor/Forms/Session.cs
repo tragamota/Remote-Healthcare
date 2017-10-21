@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using UserData;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Doctor {
     public partial class Session : Form {
@@ -24,31 +25,41 @@ namespace Doctor {
         private object sessionLock = new object();
 
         private Thread UpdateThread;
-        private Thread GraphThread;
 
         public Session(User patient, ref Client client, string SessionDate) {
             InitializeComponent();
             this.patient = patient;
             this.client = client;
+            this.sessionAllData = new List<BikeData>();
 
-            if (sessionDate == null) {
+            pulsehistory = new List<int>();
+            speedhistory = new List<double>();
+            roundhistory = new List<int>();
+            distancehistory = new List<int>();
+            resistancehistory = new List<int>();
+            energyhistory = new List<int>();
+            generatedhistory = new List<int>();
+
+            if (SessionDate == null) {
                 DateTime daytime = DateTime.Now;
-                sessionDate.Text = daytime.Day + "-" + daytime.Month + "-" + daytime.Year +"\t" + daytime.Hour + ":" + daytime.Minute;
+                sessionDate.Text = (daytime.Day + "-" + daytime.Month + "-" + daytime.Year + "\t" + daytime.Hour + ":" + daytime.Minute);
                 Stop_Session_Btn.Enabled = false;
+                Start_Session_Btn.Enabled = true;
 
                 dynamic request = new {
-                    id = "reqSession"
+                    id = "reqSession",
+                    data = new {
+                        hashcode = patient.Hashcode
+                    }
                 };
 
                 lock (client.ReadAndWriteLock) {
                     client.SendMessage(request);
-                    JObject obj = JObject.Parse(client.ReadMessage());
-                    if ((string) obj["id"] == "sessiondata") {
-                        List<BikeData> datas = JsonConvert.DeserializeObject<List<BikeData>>((string)obj["data"]);
-                        sessionAllData.AddRange(datas);
-                        foreach (BikeData data in datas) {
-                            AddToGraphHistory(data);
-                        }
+                    string obj = client.ReadMessage();
+                    List<BikeData> datas = (List<BikeData>)((JArray)JsonConvert.DeserializeObject(obj)).ToObject(typeof(List<BikeData>));
+                    sessionAllData.AddRange(datas);
+                    foreach (BikeData data in datas) {
+                        AddToGraphHistory(data);
                     }
                 }
                 UpdateThread = new Thread(run);
@@ -66,31 +77,28 @@ namespace Doctor {
                     }
                 };
 
+
+                List<BikeData> datas;
                 lock (client.ReadAndWriteLock) {
                     client.SendMessage(request);
-                    JObject obj = JObject.Parse(client.ReadMessage());
-                    if ((string)obj["id"] == "sessiondata") {
-                        List<BikeData> datas = JsonConvert.DeserializeObject<List<BikeData>>((string)obj["data"]);
-                        sessionAllData.AddRange(datas);
-                        foreach (BikeData data in datas) {
-                            AddToGraphHistory(data);
-                        }
-                    }
+                    string obj = client.ReadMessage();
+                    datas = (List<BikeData>)((JArray)JsonConvert.DeserializeObject(obj)).ToObject(typeof(List<BikeData>));
                 }
+                sessionAllData.AddRange(datas);
+                new Thread(() => updateGraphFromOtherThread(datas)).Start();
+            }
+        }
+
+        private void updateGraphFromOtherThread(List<BikeData> datas) {
+            foreach (BikeData data in datas) {
+                updateAll(data);
+                AddToGraphHistory(data);
             }
         }
 
         private void run() {
-            pulsehistory = new List<int>();
-            speedhistory = new List<double>();
-            roundhistory = new List<int>();
-            distancehistory = new List<int>();
-            resistancehistory = new List<int>();
-            energyhistory = new List<int>();
-            generatedhistory = new List<int>();
-
             while (true) {
-                JObject obj;
+                string receivedString;
                 lock (client.ReadAndWriteLock) {
                     client.SendMessage(new {
                         id = "latestData",
@@ -98,8 +106,9 @@ namespace Doctor {
                             hashcode = patient.Hashcode
                         }
                     });
-                    obj = JObject.Parse(client.ReadMessage());
+                    receivedString = client.ReadMessage();
                 }
+                JObject obj = JObject.Parse(receivedString);
 
                 switch ((string)obj["id"]) {
                     case "clientDisconnected":
@@ -113,8 +122,10 @@ namespace Doctor {
                         Stop_Session_Btn.Enabled = false;
                         break;
                     case "latestdata":
-                        List<BikeData> latest = JsonConvert.DeserializeObject<List<BikeData>>((string)obj["data"]);
-                        updateAll(latest[latest.Count - 1]);
+                        List<BikeData> latest = (List<BikeData>) ((JArray)obj["data"]).ToObject(typeof(List<BikeData>));
+                        if (latest.Count > 0) {
+                            updateAll(latest[latest.Count - 1]);
+                        }
 
                         foreach (BikeData data in latest) {
                             if (!sessionAllData.Contains(data)) {
@@ -233,11 +244,6 @@ namespace Doctor {
             lblWatt.Refresh();
         }
 
-        private void Closing(object sender, FormClosingEventArgs e) {
-            Stop_Session_Btn_Click(null, null);
-            client.SendMessage("bye");
-        }
-
         private void Scrolling(object sender, EventArgs e) {
             Temp_Resistance_Lbl.Text = Resistance_Track_Bar.Value + " %";
             Temp_Resistance_Lbl.Invalidate();
@@ -293,8 +299,9 @@ namespace Doctor {
                     hashcode = patient.Hashcode
                 }
             });
-
-            UpdateThread.Abort();
+            if (UpdateThread != null) {
+                UpdateThread.Abort();
+            }
         }
 
 
@@ -370,7 +377,9 @@ namespace Doctor {
                 id = "stoprecording"
             });
 
-            UpdateThread.Abort();
+            if (UpdateThread != null) {
+                UpdateThread.Abort();
+            }
         }
     }
 }

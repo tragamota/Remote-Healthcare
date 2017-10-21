@@ -3,10 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using UserData;
 
@@ -16,54 +12,122 @@ namespace Doctor {
         private List<User> users, connectedUsers;
         private string hashcode;
 
+        private object connectedUsersLock;
+
         public Dokter(Client client, string hashcode) {
             InitializeComponent();
             this.client = client;
             this.hashcode = hashcode;
+            connectedUsersLock = new object();
             client.SendMessage(new {
                 id = "getPatients"
             });
 
             string data = client.ReadMessage();
             users = (List<User>)((JArray)JsonConvert.DeserializeObject(data)).ToObject(typeof(List<User>));
-
-            foreach (User user in users) {
-                if (user.Type == UserType.Client)
-                    Awaiting_Patients_Box.Items.Add(user);
-            }
-
 
             Form searchForm = new Search(ref users, panel1, ref client);
             searchForm.TopLevel = false;
             this.panel1.Controls.Add(searchForm);
             searchForm.Show();
 
-            //this.Activated += (s, a) => Update();
+            Update();
         }
 
         private void Update() {
             Awaiting_Patients_Box.Items.Clear();
-
+            
             client.SendMessage(new {
-                id = "getPatients"
+                id = "getconPatients"
             });
 
             string data = client.ReadMessage();
-            users = (List<User>)((JArray)JsonConvert.DeserializeObject(data)).ToObject(typeof(List<User>));
+            List<User> users = JsonConvert.DeserializeObject<List<User>>(data);
 
-            foreach (User user in users) {
-                if (user.Type == UserType.Client)
-                    Awaiting_Patients_Box.Items.Add(user);
+            connectedUsers = users;
+            updateListView();
+
+            Awaiting_Patients_Box.MouseDoubleClick += openSessions;
+
+            System.Timers.Timer timer = new System.Timers.Timer(2500);
+            timer.AutoReset = true;
+            timer.Elapsed += ((sender, e) => Timer_Elapsed(sender, e, timer));
+            timer.Start();
+        }
+
+        private void openSessions(object sender, MouseEventArgs e) {
+            lock (connectedUsersLock) {
+                if (Awaiting_Patients_Box.SelectedIndices.Count > 0 && connectedUsers.Count > 0) {
+                    foreach (int i in Awaiting_Patients_Box.SelectedIndices) {
+                        new Session(connectedUsers[i], ref client, null).Show();
+                    }
+                }
             }
         }
 
-        private void Connect_Btn_Click(object sender, EventArgs e) {
-            if (Awaiting_Patients_Box.SelectedItem != null) {
-                Form session = new Session((User)Awaiting_Patients_Box.SelectedItem, ref client, hashcode);
-                session.Show();
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e, System.Timers.Timer timer) {
+            dynamic request = new {
+                id = "getconPatients"
+            };
+            string data;
+            lock (client.ReadAndWriteLock) {
+                client.SendMessage(request);
+                data = client.ReadMessage();
+            }
+
+            List<User> Users2 = (List<User>)((JArray)JsonConvert.DeserializeObject(data)).ToObject(typeof(List<User>));
+
+            bool needUpdate = false;
+            foreach (User u in Users2) {
+                lock (connectedUsers) {
+                    if (!connectedUsers.Contains(u)) {
+                        connectedUsers.Add(u);
+                        needUpdate = true;
+                    }
+                }
+            }
+            if (needUpdate) {
+                updateListView();
+            }
+        }
+
+        private void updateListView() {
+            lock (connectedUsersLock) {
+                if (Awaiting_Patients_Box.InvokeRequired) {
+                    Awaiting_Patients_Box.Invoke((MethodInvoker)delegate {
+                        Awaiting_Patients_Box.Items.Clear();
+                    });
+                }
+                else {
+                    Awaiting_Patients_Box.Items.Clear();
+                }
+            }
+            if (connectedUsers.Count > 0) {
+                lock (connectedUsersLock) {
+                    foreach (User user in connectedUsers) {
+                        if (Awaiting_Patients_Box.InvokeRequired) {
+                            Awaiting_Patients_Box.Invoke((MethodInvoker)delegate {
+                                Awaiting_Patients_Box.Items.Add(user.FullName);
+                            });
+                        }
+                        else {
+                            Awaiting_Patients_Box.Items.Add(user.FullName);
+                        }
+                    }
+                }
             }
             else {
-                MessageBox.Show("Selecteer een patiënt");
+                lock (connectedUsersLock) {
+                    if (Awaiting_Patients_Box.InvokeRequired) {
+
+                        Awaiting_Patients_Box.Invoke((MethodInvoker)delegate {
+                            Awaiting_Patients_Box.Items.Add("No pantients connected");
+                        });
+                    }
+                    else {
+                        Awaiting_Patients_Box.Items.Add("No pantients connected");
+                    }
+                }
             }
         }
 
@@ -77,56 +141,16 @@ namespace Doctor {
             Environment.Exit(0);
         }
 
-        private void Closing(object sender, FormClosingEventArgs e) {
+        private void button1_Click(object sender, EventArgs e) {
+            new AddUser(ref client).Show();
+        }
+
+        private new void Closing(object sender, FormClosingEventArgs e) {
             dynamic message = new {
                 id = "disconnect"
             };
             client.SendMessage(message);
             Close();
-        }
-
-        private void Send_Message_Btn_Click(object sender, EventArgs e) {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e) {
-            //string username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(textBox1.Text)));
-            //string password = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(textBox2.Text)));
-            //dynamic newUser = new {
-            //    id = "add",
-            //    data = new {
-            //        username = username,
-            //        password = password,
-            //        fullname = "Ian van de Poll",
-            //        type = UserType.Client
-            //    }
-            //};
-            //client.SendMessage(newUser);
-            //Console.WriteLine(client.ReadMessage());
-        }
-
-        private void Patient_Selected(object sender, EventArgs e) {
-            //Old_Sessions_Box.Items.Clear();
-
-            //client.SendMessage(new
-            //{
-            //    id = "oldsessions"
-            //});
-
-            //string data = client.ReadMessage();
-            //string[] files = (string[])((JObject)JsonConvert.DeserializeObject(data))["data"].ToObject(typeof(string[]));
-            //foreach (string file in files)
-            //{
-            //    Old_Sessions_Box.Items.Add(Path.GetFileName(file));
-            //}
-        }
-
-        private void Old_Sessions_Box_SelectedIndexChanged(object sender, EventArgs e) {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e) {
-
         }
     }
 }
