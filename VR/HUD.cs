@@ -9,7 +9,7 @@ using System.Timers;
 namespace VR
 {
 
-    class HUD
+    public class HUD : Model
     {
         Connector connector;
         public string uuid;
@@ -18,8 +18,10 @@ namespace VR
 
         public HUD(Connector connector)
         {
+			this.modelname = "hud";
             this.connector = connector;
-            this.cameraID = connector.GetUUID("Bike");
+            connector.hud = this;
+            this.cameraID = connector.GetUUID("bike");
            // Console.WriteLine("Camera ID: {0}", cameraID);
 
             connector.AddHUD(cameraID);
@@ -50,7 +52,7 @@ namespace VR
             Console.WriteLine(jObject);
 
             Console.WriteLine("Camera ID: {0}", cameraID);
-
+			connector.Models.Add(this);
         }
 
         public void DrawMessage(string message)
@@ -121,6 +123,11 @@ namespace VR
             string resistance = $"{res}";
             connector.DrawText(uuid, "Power", 300, 260);
             connector.DrawText(uuid, resistance, 300, 300);
+        }
+
+        public void Update2(double rate, double dist, double round, double res, double en, string ti, double wat)
+        {
+            throw new NotImplementedException();
         }
 
         public void DrawEnergy(double en)

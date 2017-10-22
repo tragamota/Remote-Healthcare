@@ -21,6 +21,7 @@ namespace VR {
         public List<Route> Routes { get; set; }
         private string filePath;
         private double previousHeight;
+        public HUD hud;
 
         public Connector() {
             try {
@@ -89,10 +90,10 @@ namespace VR {
             this.filePath = filePath;
         }
 
-        public void SetBikeSpeed(int speed)
+        public void SetBikeSpeed(double speed)
         {
             Model bike = Models.Find(x => x.modelname.Equals("bike"));
-            bike.ChangeSpeed(speed / 75);
+            bike.ChangeSpeed((speed / 5.0));
         }
 
         public string GetUUID(string name)
@@ -334,7 +335,7 @@ namespace VR {
                             text = text,
                             position = new[] { x, y },
                             size = 50.0,
-                            font = "COOPBL"
+                            font = "Arial"
                         }
                     }
                 }
@@ -576,6 +577,7 @@ namespace VR {
         }
 
         public void LoadSceneModels() {
+            Models = new List<Model>();
             JObject jObject = GetScene();
             JArray array = (JArray)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("children");
             List<JToken> list = array.ToList();
@@ -757,29 +759,43 @@ namespace VR {
             browseFileDialog.Filter = "JSON (.json)|*.json;";
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
+            List<Model> models = new List<Model>();
+            List<Route> routes = new List<Route>();
+
             if (browseFileDialog.ShowDialog() == DialogResult.OK)
             {
                 path = Path.GetFullPath(browseFileDialog.FileName);
                 string json = File.ReadAllText(path);
                 terrain = (Terrain)((JObject)JsonConvert.DeserializeObject(json))["data"]["terrain"].ToObject(typeof(Terrain));
-                Models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["models"].ToObject(typeof(List<Model>));
-                Routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["routes"].ToObject(typeof(List<Route>));
+                models = (List<Model>)((JObject)JsonConvert.DeserializeObject(json))["data"]["models"].ToObject(typeof(List<Model>));
+                routes = (List<Route>)((JObject)JsonConvert.DeserializeObject(json))["data"]["routes"].ToObject(typeof(List<Route>));
             }
 
             terrain.Reload(this);
 
             List<Model> lakes = new List<Model>();
+            this.Models = models;
+            this.Routes = routes;
 
-            foreach (Model model in Models)
+            //Model fakeHUD = null;
+
+            foreach (Model model in models)
             {
                 if(model.modelname.Equals("water"))
                 {
                     Water water = new Water(this, "water", model.x, model.y, model.z);
                     water.Load();
                     lakes.Add(water);
-                }
+                }else if(model.modelname == "hud")
+				{
+                    //fakeHUD = model;
+					//Models.Add(new HUD(this));
+				}
                 else
                     model.Reload(this);
+
+                //if (fakeHUD != null)
+                    //Models.Remove(fakeHUD);
             }
 
             Models.RemoveAll(x => x.modelname.Equals("water"));

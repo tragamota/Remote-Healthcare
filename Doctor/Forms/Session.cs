@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using UserData;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace Doctor {
     public partial class Session : Form {
@@ -62,6 +61,7 @@ namespace Doctor {
                         AddToGraphHistory(data);
                     }
                 }
+
                 UpdateThread = new Thread(run);
             }
             else {
@@ -122,7 +122,7 @@ namespace Doctor {
                         Stop_Session_Btn.Enabled = false;
                         break;
                     case "latestdata":
-                        List<BikeData> latest = (List<BikeData>) ((JArray)obj["data"]).ToObject(typeof(List<BikeData>));
+                        List<BikeData> latest = (List<BikeData>)((JArray)obj["data"]).ToObject(typeof(List<BikeData>));
                         if (latest.Count > 0) {
                             updateAll(latest[latest.Count - 1]);
                         }
@@ -303,7 +303,6 @@ namespace Doctor {
                 UpdateThread.Abort();
             }
         }
-
 
         private void AddToGraphHistory(BikeData bike) {
             lock (sessionLock) {

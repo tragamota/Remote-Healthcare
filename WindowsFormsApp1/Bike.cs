@@ -21,6 +21,7 @@ namespace Remote_Healtcare_Console {
             serialCommunicator = new SerialCommunicator(port);
             BikeThread = new Thread(InitBike);
             ChangesThread = new Thread(changes);
+            ChangesThread.Start();
         }
 
         private void changes() {
@@ -37,17 +38,17 @@ namespace Remote_Healtcare_Console {
                     int resistance = (int)obj["data"]["resistance"];
                     SetResistance(resistance);
                     break;
-                case ("chat"):
+                case "chat":
                     string message = (string)obj["data"]["message"];
                     new Thread(() => console.AddMessage(message)).Start();
                     break;
                 case "setdoctor":
                     client.SendMessage(obj);
                     break;
-                case ("start"):
+                case "start":
                     BikeThread.Start();
                     break;
-                case ("stop"):
+                case "stop":
                     BikeThread.Abort();
                     break;
             }
@@ -56,7 +57,6 @@ namespace Remote_Healtcare_Console {
         public override void Start() {
             start = true;
             serialCommunicator.OpenConnection();
-            ChangesThread.Start();
         }
 
         public override void Stop() {
@@ -150,7 +150,7 @@ namespace Remote_Healtcare_Console {
             }
 
             client.SendMessage(new {
-                id = "sendData",
+                id = "update",
                 data = new {
                     bikeData = bikeData
                 }

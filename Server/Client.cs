@@ -180,8 +180,8 @@ namespace Server {
                                     data = new List<BikeData>()
                                 });
                             }
+                            break;
                         }
-                        break;
                     }
                 }
             }
@@ -215,7 +215,7 @@ namespace Server {
                     fileName.Add(Path.GetFileName(s));
                 }
             }
-        
+
             if (Directory.Exists(path)) {
                 dynamic response = new {
                     status = "alloldfiles",
@@ -384,7 +384,7 @@ namespace Server {
             if (User.Type == UserType.Client) {
                 lock (sessionLock) {
                     if (session != null) {
-                        BikeData dataConverted = data.ToObject<BikeData>();
+                        BikeData dataConverted = data["bikeData"].ToObject<BikeData>();
                         session.Data.Add(dataConverted);
                         if (session.LatestData.Count < 5) {
                             session.LatestData.Add(dataConverted);

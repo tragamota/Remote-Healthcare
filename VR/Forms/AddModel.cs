@@ -23,7 +23,7 @@ namespace VR {
         {
             if(Name_Txt.Text.Length > 0 && X_Txt.Text.Length > 0 && Y_Txt.Text.Length > 0 && Z_Txt.Text.Length > 0 && Object_Name_Txt.Text.Length > 0)
             {
-                if (Name_Txt.Text.Equals("Bike"))
+                if (Name_Txt.Text.Equals("bike"))
                 {
                     connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, double.Parse(X_Txt.Text), double.Parse(Y_Txt.Text), double.Parse(Z_Txt.Text), double.Parse(Scale_Txt.Text), int.Parse(Rotation_Z_Txt.Text));
                     HUD hud = new HUD(connector);
