@@ -285,8 +285,13 @@ namespace Doctor {
                     hashcode = patient.Hashcode
                 }
             });
+            if (UpdateThread.ThreadState == ThreadState.Stopped || UpdateThread.ThreadState == ThreadState.Aborted) {
+                UpdateThread = new Thread(run);
+            }
 
-            UpdateThread.Start();
+            if (UpdateThread.ThreadState != ThreadState.Running) {
+                UpdateThread.Start();
+            }
         }
 
         private void Stop_Session_Btn_Click(object sender, EventArgs e) {
