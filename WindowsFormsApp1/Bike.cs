@@ -1,21 +1,17 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
+using Newtonsoft.Json.Linq;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Remote_Healtcare_Console;
+using UserData;
 
 namespace Remote_Healtcare_Console {
     class Bike : Kettler {
         private bool start;
         private SerialCommunicator serialCommunicator;
-        private Connector connector;
         private Client client;
         private Thread BikeThread;
+        private Thread ChangesThread;
+        private string hashcode;
         private bool autoCalculateResistance;
         private bool autoCalculateResistanceNotExactly;
 
@@ -24,12 +20,43 @@ namespace Remote_Healtcare_Console {
             start = false;
             serialCommunicator = new SerialCommunicator(port);
             BikeThread = new Thread(InitBike);
+            ChangesThread = new Thread(changes);
+            ChangesThread.Start();
+        }
+
+        private void changes() {
+            while (serialCommunicator.IsConnected() && start) {
+                SetChanges();
+                Thread.Sleep(500);
+            }
+        }
+
+        private void SetChanges() {
+            JObject obj = client.ReadMessage();
+            switch ((string)obj["id"]) {
+                case ("setResistance"):
+                    int resistance = (int)obj["data"]["resistance"];
+                    SetResistance(resistance);
+                    break;
+                case "chat":
+                    string message = (string)obj["data"]["message"];
+                    new Thread(() => console.AddMessage(message)).Start();
+                    break;
+                case "setdoctor":
+                    client.SendMessage(obj);
+                    break;
+                case "start":
+                    BikeThread.Start();
+                    break;
+                case "stop":
+                    BikeThread.Abort();
+                    break;
+            }
         }
 
         public override void Start() {
             start = true;
             serialCommunicator.OpenConnection();
-            BikeThread.Start();
         }
 
         public override void Stop() {
@@ -37,8 +64,7 @@ namespace Remote_Healtcare_Console {
             serialCommunicator.CloseConnection();
         }
 
-        private void InitBike()
-        {
+        private void InitBike() {
             Thread.Sleep(500);
             Reset();
             Thread.Sleep(500);
@@ -50,16 +76,7 @@ namespace Remote_Healtcare_Console {
         private void Run() {
             while (serialCommunicator.IsConnected() && start) {
                 Update();
-                if (autoCalculateResistance == true)
-                {
-                    string objectName = "bike"; //name of bike object in our simulator.
-                    SetResistance((int)connector.CalculateIncline(objectName));
-                } else
-                if(autoCalculateResistanceNotExactly == true)
-                {
-                    string objectName = "bike"; //name of bike object in our simulator.
-                    SetResistance((int)connector.CalculateInclineNotExactly(objectName));
-                }
+                //SetResistance((int)console.connectForm.connector.CalculateIncline("bike"));
                 Thread.Sleep(500);
             }
         }
@@ -89,7 +106,6 @@ namespace Remote_Healtcare_Console {
                 trueResistance = resistance;
             }
             serialCommunicator.SendMessage("PW " + trueResistance);
-            serialCommunicator.ReadInput();
         }
 
         public override void SetTime(int mm, int ss) {
@@ -129,12 +145,16 @@ namespace Remote_Healtcare_Console {
             if (RecordedData.Count == 0) {
                 RecordedData.Add(bikeData);
             }
-            else if(RecordedData.Last().Time != bikeData.Time) {
+            else if (RecordedData.Last().Time != bikeData.Time) {
                 RecordedData.Add(bikeData);
             }
 
-
-            client.SendMessage(bikeData);
+            client.SendMessage(new {
+                id = "update",
+                data = new {
+                    bikeData = bikeData
+                }
+            });
 
             SetDataToGUI();
         }

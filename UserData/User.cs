@@ -1,47 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace UserData {
+    public enum UserType { Client, Doctor, None }
     public class User {
         private string username;
         private string password;
-        public string fullName { get; set; }
-        public string hashcode { get; }
+        private string hashcode;
+        public string FullName { get; set; }
+        public UserType Type { get; set; }
+
+        [Newtonsoft.Json.JsonConstructor]
+        public User(string username, string password, string fullName, string hashcode, UserType type) {
+            this.username = username;
+            this.password = password;
+            this.FullName = fullName;
+            this.hashcode = hashcode;
+            this.Type = type;
+        }
 
         public User(string username, string password, string fullName) {
             this.username = username;
             this.password = password;
-            this.fullName = fullName;
-            hashcode = Encoding.UTF8.GetString(new SHA256Managed().ComputeHash(Encoding.UTF8.GetBytes(DateTime.UtcNow.Ticks.ToString())));
+            this.FullName = fullName;
+            this.Type = UserType.Client;
+            makeHashcodeValid(Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(DateTime.UtcNow.Ticks.ToString() + username))));
         }
 
-        //this returns a boolean, if the username was accepted, true gets returned, otherwise there was an error or it was denied.
-        public bool setUsername(List<User> users, string newUsername) {
-            bool isTaken = false;
-            foreach (User u in users) {
-                if (u.username == newUsername) {
-                    isTaken = true;
-                }
-            }
-            if (isTaken) {
-                return false;
-            }
-            else {
-                username = newUsername;
-                return true;
-            }
+        public User(string username, string password, string fullName, UserType type) {
+            this.username = username;
+            this.password = password;
+            this.FullName = fullName;
+            this.Type = type;
+            string test = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(DateTime.UtcNow.Ticks.ToString() + username)));
+            makeHashcodeValid(test);
         }
 
-        public bool setPassword(string newPassword) {
-            if (password == newPassword || newPassword.Length < 3) {
-                return false;
-            }
-            else {
-                password = newPassword;
-                return true;
-            }
+        public string Password {
+             get { return password; }
+        }
+
+        public string Username {
+            get { return username; }
+        }
+
+        public string Hashcode {
+            get { return hashcode; }
+        }
+
+        public void SetUsername(string newUsername) {
+            username = newUsername;
+        }
+
+        public void SetPassword(string newPassword) {
+            password = newPassword;
         }
 
         public void CheckLogin(string username, string password, out bool valid, out string hashcode) {
@@ -52,6 +67,40 @@ namespace UserData {
             else {
                 valid = false;
                 hashcode = null;
+            }
+        }
+
+        private void makeHashcodeValid(string hash) {
+            List<char> forbiddenChars = new List<char>(Path.GetInvalidPathChars());
+            forbiddenChars.Add((char)92);
+            forbiddenChars.Add((char)47);
+            forbiddenChars.Add((char)63);
+            forbiddenChars.Add((char)42);
+            forbiddenChars.Add((char)58);
+            string validHashcode = string.Empty;
+            foreach(char c in hash) {
+                if(forbiddenChars.Contains(c)) {
+                    validHashcode += "{";
+                }
+                else {
+                    validHashcode += c;
+                }
+            }
+            hashcode = validHashcode;
+        }
+
+        public override bool Equals(object obj) {
+            if(obj is User) {
+                User TempUser = obj as User;
+                if(this.hashcode == TempUser.hashcode) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
             }
         }
     }

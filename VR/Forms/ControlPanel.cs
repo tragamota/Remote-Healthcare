@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Windows.Forms;
 
 namespace VR {
-    partial class ControlPanel : Form {
+    public partial class ControlPanel : Form {
         private Connector connector;
+		private HUD hud;
 
         public ControlPanel(Connector connector) {
             this.connector = connector;
@@ -59,5 +61,50 @@ namespace VR {
             DeleteModel deleteModel = new DeleteModel(connector);
             deleteModel.Show();
         }
-    }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            //connector.Moveto(connector.GetUUID("Camera"));
+            connector.UpdateNode(connector.GetUUID("Camera"),connector.GetUUID("Bike"));
+            //connector.Moveto(connector.GetUUID("Head"));
+            //connector.DeleteNode(connector.GetUUID("Camera"));
+            //connector.CameraNode();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+			//Console.WriteLine(connector.GetScene().ToString());
+			hud.SetText("Heil Brandon!");
+        }
+
+        private void Save_Btn_Click(object sender, EventArgs e)
+        {
+            //connector.Save("3A_Test");
+            connector.SaveScene();
+        }
+
+        private void Load_Btn_Click(object sender, EventArgs e)
+        {
+            //connector.Load("3A_Test");
+            connector.LoadScene();
+        }
+
+        private void buttonWater_Click(object sender, EventArgs e)
+        {
+            connector.AddWater();
+        }
+
+        private void cameraCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cameraCheck.Checked)
+                connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("bike"));
+            else
+                connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("GroundPlane"));
+        }
+
+		private void Add_HUD_Click(object sender, EventArgs e)
+		{
+			hud = new HUD(connector);
+		}
+	}
 }

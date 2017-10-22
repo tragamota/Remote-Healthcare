@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Remote_Healtcare_Console.Properties {
+namespace Doctor.Properties {
     using System;
     
     

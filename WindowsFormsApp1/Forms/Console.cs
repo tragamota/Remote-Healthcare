@@ -5,16 +5,20 @@ using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using UserData;
+using VR;
+using System.Threading;
 
 namespace Remote_Healtcare_Console
 {
-    partial class Console : Form
+    public partial class Console : Form
     {
         private Kettler bike;
         private ComboBox combo;
         public string path;
         public ISet<BikeData> data;
         private Client client;
+        public ConnectForm connectForm;
 
         public Console(Client client)
         {
@@ -49,20 +53,20 @@ namespace Remote_Healtcare_Console
             }
             else
             {
+                connectForm = new ConnectForm();
+                connectForm.Show();
+
+                //new Thread(() => test()).Start();
+
                 bike = new Bike(combo.SelectedItem.ToString(), this, client);
-
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
-                saveFileDialog.Filter = "JSON (.json)|*.json;";
-                saveFileDialog.FileName = "sessie.json";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    path = Path.GetFullPath(saveFileDialog.FileName);
-                }
-
                 bike.Start();
             }
+        }
+
+        private void test()
+        {
+            while (!connectForm.Connected()) { }
+
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e) {
@@ -74,7 +78,12 @@ namespace Remote_Healtcare_Console
 
         public void SetRoundMin(String s) { lblRoundMin.Text = s; }
 
-        public void SetSpeed(String s) { lblSpeed.Text = s; }
+        public void SetSpeed(String s)
+        {
+            lblSpeed.Text = s;
+            string speed = s.Replace(",", ".");
+            connectForm.connector.SetBikeSpeed(Math.Round(double.Parse(speed)));
+        }
 
         public void SetDistance(String s) { lblDistance.Text = s; }
 
@@ -86,9 +95,24 @@ namespace Remote_Healtcare_Console
 
         public void SetWatt(String s) { lblWatt.Text = s; }
 
+        public void AddMessage(String value)
+        {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke(new Action<string>(AddMessage), new object[] { value });
+                return;
+            }
+            Chat_Box.Text = Chat_Box.Text + value + "\r\n";
+        }
+
         private void Closing(object sender, FormClosingEventArgs e)
         {
             client.SendMessage("bye");
+        }
+
+        public void SetDisplay(double rate, double sp, double dist, double round, double res, double en, string ti, double wat)
+        {
+            connectForm.connector.hud.Update2(rate, dist, round, res, en, ti, wat);
         }
     }
 }

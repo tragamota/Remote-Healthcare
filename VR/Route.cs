@@ -7,43 +7,18 @@ using System.Threading.Tasks;
 
 namespace VR
 {
-    class Route
+    public class Route
     {
-        public string routeID;
-        public Connector connector;
+        private string routeID;
+        private Connector connector;
         public string routeName;
+        public dynamic[] data;
 
         public Route(Connector connector, dynamic[] data, string routeName)
         {
             this.connector = connector;
             this.routeName = routeName;
-
-            //dynamic pos1 = new { pos = (new int[3] { 0, 0, 0 }), dir = (new int[3] { 5, 0, -5 }) };
-            //dynamic pos2 = new { pos = (new int[3] { 50, 0, 0 }), dir = (new int[3] { 5, 0, 5 }) };
-            //dynamic pos3 = new { pos = (new int[3] { 50, 0, 50 }), dir = (new int[3] { -5, 0, 5 }) };
-            //dynamic pos4 = new { pos = (new int[3] { 0, 0, 50 }), dir = (new int[3] { -5, 0, -5 }) };
-
-            dynamic message = new
-            {
-                id = "tunnel/send",
-                data = new
-                {
-                    dest = connector.tunnelID,
-                    data = new
-                    {
-                        id = "route/add",
-                        data = new
-                        {
-                            nodes = data
-                        }
-                    }
-                }
-            };
-
-            connector.SendMessage(message);
-            JObject jObject = connector.ReadMessage();
-            routeID = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
-            //Console.WriteLine(jObject);
+            this.data = data;
         }
 
         public void MakeModelFollowRoute(Model model)
@@ -91,7 +66,7 @@ namespace VR
                         data = new
                         {
                             route = routeID,
-                            heightoffset = 0.01
+                            heightoffset = 0.1
                         }
                     }
                 }
@@ -99,6 +74,57 @@ namespace VR
 
             connector.SendMessage(message);
             JObject jObject = connector.ReadMessage();
+            //Console.WriteLine(jObject);
+        }
+
+        public void Reload(Connector connector)
+        {
+            this.connector = connector;
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = connector.tunnelID,
+                    data = new
+                    {
+                        id = "route/add",
+                        data = new
+                        {
+                            nodes = data
+                        }
+                    }
+                }
+            };
+
+            connector.SendMessage(message);
+            JObject jObject = connector.ReadMessage();
+            routeID = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
+            //Console.WriteLine(jObject);
+        }
+
+        internal void Load()
+        {
+            dynamic message = new
+            {
+                id = "tunnel/send",
+                data = new
+                {
+                    dest = connector.tunnelID,
+                    data = new
+                    {
+                        id = "route/add",
+                        data = new
+                        {
+                            nodes = data
+                        }
+                    }
+                }
+            };
+
+            connector.SendMessage(message);
+            JObject jObject = connector.ReadMessage();
+            routeID = (string)jObject.SelectToken("data").SelectToken("data").SelectToken("data").SelectToken("uuid");
             //Console.WriteLine(jObject);
         }
     }

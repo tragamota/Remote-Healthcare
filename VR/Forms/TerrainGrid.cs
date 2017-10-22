@@ -51,7 +51,7 @@ namespace VR {
         }
 
         private void Set_Height_Btn_Click(object sender, EventArgs e) {
-            int[] heights = new int[Terrain_Grid_Id.ColumnCount * Terrain_Grid_Id.RowCount];
+            double[] heights = new double[Terrain_Grid_Id.ColumnCount * Terrain_Grid_Id.RowCount];
             for (int y = 0; y < Terrain_Grid_Id.RowCount; y++) {
                 for (int x = 0; x < Terrain_Grid_Id.ColumnCount; x++) {
                     heights[(y * Terrain_Grid_Id.ColumnCount) + x] = int.Parse(Terrain_Grid_Id.GetControlFromPosition(x, y).Text);

@@ -1,142 +1,153 @@
-﻿//using System;
-//using System.Net;
-//using System.Net.Sockets;
-//using System.Text;
-//using System.Threading;
-//using Newtonsoft.Json.Linq;
-//using Remote_Healtcare_Console;
-//using System.Collections.Generic;
-//using System.IO;
-//using Newtonsoft.Json;
-//using System.Globalization;
-//using UserData;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using UserData;
 
-//namespace ClientServer {
-//    class Server {
-//        public static List<User> users;
+namespace Server {
+    class Server {
+        private TcpListener socket;
+        private List<User> users;
+        private List<Client> connectedDoctors;
+        private List<Client> connectedClients;
+        private Thread loadUsers;
+        private bool serverRunning;
 
-//        static void Main(string[] args) {
-//            IPAddress localhost;
+        private object usersLock, connectedDoctorsLock, connectedClientsLock;
 
-//            bool ipIsOk = IPAddress.TryParse("127.0.0.1", out localhost);
-//            if (!ipIsOk) { Console.WriteLine("ip adres kan niet geparsed worden."); Environment.Exit(1); }
+        public Server(string IPaddress, int portNumber) {
+            serverRunning       = true;
+            loadUsers           = null;
+            users               = new List<User>();
+            connectedClients    = new List<Client>();
+            connectedDoctors    = new List<Client>();
+            usersLock               = new object();
+            connectedClientsLock    = new object();
+            connectedDoctorsLock    = new object();
 
-//            TcpListener listener = new TcpListener(IPAddress.Any, 1330);
-//            listener.Start();
+            IPAddress Ip;
+            string usersPath = Directory.GetCurrentDirectory() + @"\Users.json";
 
-//            string path = Directory.GetCurrentDirectory() + @"\users.json";
-//            string jsonFile = File.ReadAllText(path);
-//            JArray openedData = (JArray)JsonConvert.DeserializeObject(jsonFile);
+            if (!IPAddress.TryParse(IPaddress, out Ip)) {
+                Console.WriteLine("The given IpAddress was not valid....\nClosing the server");
+                Environment.Exit(1);
+            }
 
-//            users = (List<User>)openedData.ToObject(typeof(List<User>));
+            try {
+                socket = new TcpListener(IPAddress.Any, portNumber);
+                if (File.Exists(usersPath)) {
+                    loadUsers = new Thread(() => loadAllUsers(usersPath));
+                    loadUsers.Start();
+                }
+                else
+                {
+                    string username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes("admin")));
+                    users.Add(new User(username, username, "Root", UserType.Doctor));
+                    username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes("test")));
+                    users.Add(new User(username, username, "Patient", UserType.Client));
+                    File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
+                }
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.StackTrace);
+            }
 
-//            while (true) {
-//                Console.WriteLine(@"
-//                      ==============================================
-//                        Server started at {0}
-//                        Waiting for connection
-//                      =============================================="
-//                , DateTime.Now);
+            if(loadUsers != null) {
+                loadUsers.Join();
+            }
 
-//                TcpClient client = listener.AcceptTcpClient();
+            new Thread(run).Start();
 
+            while (serverRunning) {
+                if (Console.ReadLine().ToLower() == "stop") {
+                    Console.WriteLine("Stopping Server....");
+                    try {
+                        serverRunning = false;
+                        socket.Stop();
+                        
+                    }
+                    catch (SocketException e) {
+                        Console.WriteLine(e.StackTrace);
+                    }
+                }
+                else {
+                    Console.WriteLine("Unknown command");
+                }
+            }
 
-//                Thread thread = new Thread(HandleClientThread);
-//                thread.Start(client);
-//            }
-//        }
+            try {
+                File.WriteAllText(usersPath, JsonConvert.SerializeObject(users));
+            }
+            catch(Exception e) {
+                Console.WriteLine(e.Source);
+            }
+            Environment.Exit(0);
+        }
 
-//        static void HandleClientThread(object obj) {
-//            List<BikeData> data = new List<BikeData>();
-//            User declaredUser = new User("test", "test", "test");
-//            TcpClient client = obj as TcpClient;
+        private void run() {
+            socket.Start();
+            Console.WriteLine("Server Started");
+            while (serverRunning) {
+                try {
+                    TcpClient clientSocket = socket.AcceptTcpClient();
+                    Console.WriteLine("Client Connected");
+                    new Thread(() => sortClients(new Client(clientSocket, ref users, ref connectedClients, ref connectedDoctors, ref usersLock, ref connectedClientsLock, ref connectedDoctorsLock))).Start();
+                }
+                catch (SocketException e) {
+                    Console.WriteLine(e.StackTrace);
+                }
+            }
+        }
 
-//            bool userDeclared = false;
-//            while (!userDeclared) {
-//                string received = ReadMessage(client);
-//                User user = (User)JObject.Parse(received).ToObject(typeof(User));
+        private void sortClients(Client client) {
+            client.LoginThread.Join();
+            if (client.User != null) {
+                if (client.User.Type == UserType.Doctor) {
+                    lock (connectedDoctorsLock) {
+                        connectedDoctors.Add(client);
+                    }
+                }
+                else if (client.User.Type == UserType.Client) {
+                    lock (connectedClientsLock) {
+                        connectedClients.Add(client);
+                    }
+                }
+            }
+            Console.WriteLine("connected Clients: {0}\t Connected Doctors: {1}", connectedClients.Count, connectedDoctors.Count);
+        }
 
-//                foreach (User userOfList in users) {
-//                    if (user.username == userOfList.username && user.password == userOfList.password) {
-//                        declaredUser = user;
-//                        userDeclared = true;
-//                        dynamic response = new {
-//                            access = "approved"
-//                        };
-//                        SendMessage(client, response);
-//                    }
-//                    else {
-//                        dynamic response = new {
-//                            access = "denied"
-//                        };
-//                        SendMessage(client, response);
-//                    }
-//                }
-//            }
+        private void loadAllUsers(string path) {
+            try {
+                JArray usersObj = (JArray)JsonConvert.DeserializeObject(File.ReadAllText(path));
+                if (usersObj != null) {
+                    foreach (JObject o in usersObj) {
+                        User tempUser = (User)o.ToObject(typeof(UserData.User));
+                        lock (usersLock) {
+                            users.Add(tempUser);
+                        }
+                    }
+                }
+                //User patient = new User("zwen", "zwen", "Zwen van Erkelens", DoctorType.Client);
+                //User doctor = new User("bram", "bram", "Bram Stoof", DoctorType.Doctor);
 
-//            DateTime date = DateTime.Now;
-//            Thread.CurrentThread.CurrentCulture = new CultureInfo("nl-NL");
-//            string path = Directory.GetCurrentDirectory() + @"\" + declaredUser.username + "_" + date.ToShortDateString() + ".json";
+                //users.Add(patient);
+                //users.Add(doctor);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+            }
+        }
 
-//            bool done = false;
-//            while (!done) {
-//                string received = ReadMessage(client);
-
-//                if (received.Equals("bye")) {
-//                    done = true;
-//                    SendMessage(client, "BYE");
-//                }
-//                else {
-//                    data.Add((BikeData)JObject.Parse(received).ToObject(typeof(BikeData)));
-//                    Console.WriteLine("Received: {0}", received);
-//                    SendMessage(client, "OK");
-
-//                    string json = JsonConvert.SerializeObject(data);
-//                    File.WriteAllText(path, json);
-//                }
-
-//            }
-
-//            client.Close();
-//            Console.WriteLine("Connection closed");
-//        }
-
-//        public static string ReadMessage(TcpClient client) {
-//            NetworkStream stream = client.GetStream();
-//            StringBuilder message = new StringBuilder();
-//            int numberOfBytesRead = 0;
-//            byte[] messageBytes = new byte[4];
-//            stream.Read(messageBytes, 0, messageBytes.Length);
-//            byte[] receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
-
-//            do {
-//                numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
-
-//                message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
-
-//            }
-//            while (message.Length < receiveBuffer.Length);
-
-//            string response = message.ToString();
-//            return response;
-//        }
-
-//        public static void SendMessage(TcpClient client, string message) {
-//            byte[] bytes = Encoding.UTF8.GetBytes(message);
-//            client.GetStream().Write(bytes, 0, bytes.Length);
-//        }
-
-//        public static void SendMessage(TcpClient client, dynamic message) {
-//            NetworkStream stream = client.GetStream();
-//            string json = JsonConvert.SerializeObject(message);
-
-//            byte[] prefixArray = BitConverter.GetBytes(json.Length);
-//            byte[] requestArray = Encoding.Default.GetBytes(json);
-
-//            byte[] buffer = new Byte[prefixArray.Length + json.Length];
-//            prefixArray.CopyTo(buffer, 0);
-//            requestArray.CopyTo(buffer, prefixArray.Length);
-//            stream.Write(buffer, 0, buffer.Length);
-//        }
-//    }
-//}
+        static void Main(string[] args) {
+            new Server("127.0.0.1", 1337);
+        }
+    }
+}

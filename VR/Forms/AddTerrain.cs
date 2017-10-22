@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace VR {
     partial class AddTerrain : Form {
-        public int[] heightValues = null;
+        public double[] heightValues = null;
         private Connector connector;
 
         public AddTerrain(Connector connector) {
@@ -25,7 +25,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = Path.GetFullPath(browseFileDialog.FileName);
+                string path = browseFileDialog.FileName;
                 Diffuse_Texture_Lbl.Text = path;
             }
         }
@@ -36,7 +36,7 @@ namespace VR {
             browseFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
 
             if (browseFileDialog.ShowDialog() == DialogResult.OK) {
-                string path = Path.GetFullPath(browseFileDialog.FileName);
+                string path = browseFileDialog.FileName;
                 Normal_Texture_Lbl.Text = path;
             }
         }

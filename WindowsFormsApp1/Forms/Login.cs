@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,11 +22,11 @@ namespace Remote_Healtcare_Console
         public Login()
         {
             InitializeComponent();
-            client = new Client();
         }
 
         private void BLog_in_Click(object sender, EventArgs e)
         {
+            client = new Client();
             login();
         }
 
@@ -37,12 +38,16 @@ namespace Remote_Healtcare_Console
 
         private void login() {
             if (txtUsername.Text.Length > 0 && txtPassword.Text.Length > 0) {
-                User user = new User(txtUsername.Text, txtPassword.Text, null);
+                dynamic user = new
+                {
+                    username = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(txtUsername.Text))),
+                    password = Encoding.Default.GetString(new SHA256Managed().ComputeHash(Encoding.Default.GetBytes(txtPassword.Text)))
+                };
                 client.SendMessage(user);
 
-                JObject jObject = JObject.Parse(client.ReadMessage());
+                JObject jObject = client.ReadMessage();
                 string result = (string)jObject.GetValue("access");
-                if (result.Equals("approved")) {
+                if (result.Equals("True")) {
                     this.Hide();
                     Form Form1 = new Console(client);
                     Form1.Closed += (s, args) => this.Close();
