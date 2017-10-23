@@ -112,7 +112,7 @@ namespace Remote_Healtcare_Console
 
         public void SetDisplay(double rate, double sp, double dist, double round, double res, double en, string ti, double wat)
         {
-            connectForm.connector.hud.Update2(rate, dist, round, res, en, ti, wat);
+            connectForm.connector.hud.Update2(rate, sp, dist, round, res, en, ti, wat);
         }
     }
 }

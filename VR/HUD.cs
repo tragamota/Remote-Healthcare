@@ -31,27 +31,6 @@ namespace VR
             this.uuidMessage = connector.GetUUID("HUDMessage");
 
             //connector.DrawLines(uuid);
-
-            double x = 1;
-            double y = 2;
-            double z = 3;
-            
-
-            
-            //while(x < 1000 && y < 1000 && z < 1000)
-            //{
-                x++;
-                y++;
-                z++;
-            SetText("lul lul lul lul lul lul lul lul lul");
-            Update2(x, y, z,x + 23,y + 23,z + 23, DateTime.Now.ToString("mm:ss tt"), x + y + 34);
-
-             //}
-            
-            JObject jObject = connector.GetScene();
-            Console.WriteLine(jObject);
-
-            Console.WriteLine("Camera ID: {0}", cameraID);
 			connector.Models.Add(this);
         }
 
@@ -125,11 +104,6 @@ namespace VR
             connector.DrawText(uuid, resistance, 300, 300);
         }
 
-        public void Update2(double rate, double dist, double round, double res, double en, string ti, double wat)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DrawEnergy(double en)
         {
             string energy = $"Energy: {en}K/J";
@@ -162,44 +136,44 @@ namespace VR
 
         public void Update(double rate, double sp, double dist,double round, double res, double en, string ti, double wat)
         {
-            connector.ClearPanel(uuid);
+            //connector.ClearPanel(uuid);
 
-            DrawHeartRate(rate);
-            DrawDistance(sp);
-            DrawSpeed(dist);
-            DrawRoundMin(round);
-            DrawResistance(res);
-            DrawEnergy(en);
-            DrawTime(ti);
-            DrawWatt(wat);
+            //DrawHeartRate(rate);
+            //DrawDistance(sp);
+            //DrawSpeed(dist);
+            //DrawRoundMin(round);
+            //DrawResistance(res);
+            //DrawEnergy(en);
+            //DrawTime(ti);
+            //DrawWatt(wat);
 
-            connector.SetClearColor(uuid);
-            connector.SwapText(uuid);
+            //connector.SetClearColor(uuid);
+            //connector.SwapText(uuid);
         }
 
         public void Update2(double rate, double sp, double dist, double round, double res, double en, string ti, double wat)
         {
-            connector.ClearPanel(uuid);
+            //connector.ClearPanel(uuid);
 
-            DrawHeartRate2(rate);
-            DrawDistance2(sp);
-            DrawSpeed2(dist);
-            DrawRoundMin2(round);
-            DrawResistance2(res);
-            DrawEnergy2(en);
-            DrawTime2(ti);
+            //DrawHeartRate2(rate);
+            //DrawDistance2(sp);
+            //DrawSpeed2(dist);
+            //DrawRoundMin2(round);
+            //DrawResistance2(res);
+            //DrawEnergy2(en);
+            //DrawTime2(ti);
 
-            connector.SetClearColor(uuid);
-            connector.SwapText(uuid);
+            //connector.SetClearColor(uuid);
+            //connector.SwapText(uuid);
         }
 
         public void SetText(String text) {
-            connector.ClearPanel(uuidMessage);
+            //connector.ClearPanel(uuidMessage);
 
-            DrawMessage(text);
-            StartTimer();
-            connector.SetClearColor(uuidMessage);
-            connector.SwapText(uuidMessage);
+            //DrawMessage(text);
+            //StartTimer();
+            //connector.SetClearColor(uuidMessage);
+            //connector.SwapText(uuidMessage);
         }
 
         public void StartTimer() {

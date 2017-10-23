@@ -21,7 +21,6 @@ namespace Remote_Healtcare_Console {
             serialCommunicator = new SerialCommunicator(port);
             BikeThread = new Thread(InitBike);
             ChangesThread = new Thread(changes);
-            ChangesThread.Start();
         }
 
         private void changes() {
@@ -33,30 +32,33 @@ namespace Remote_Healtcare_Console {
 
         private void SetChanges() {
             JObject obj = client.ReadMessage();
-            switch ((string)obj["id"]) {
-                case ("setResistance"):
-                    int resistance = (int)obj["data"]["resistance"];
-                    SetResistance(resistance);
-                    break;
-                case "chat":
-                    string message = (string)obj["data"]["message"];
-                    new Thread(() => console.AddMessage(message)).Start();
-                    break;
-                case "setdoctor":
-                    client.SendMessage(obj);
-                    break;
-                case "start":
-                    BikeThread.Start();
-                    break;
-                case "stop":
-                    BikeThread.Abort();
-                    break;
+            if (obj != null) {
+                switch ((string)obj["id"]) {
+                    case ("setResistance"):
+                        int resistance = (int)obj["data"]["resistance"];
+                        SetResistance(resistance);
+                        break;
+                    case "chat":
+                        string message = (string)obj["data"]["message"];
+                        new Thread(() => console.AddMessage(message)).Start();
+                        break;
+                    case "setdoctor":
+                        client.SendMessage(obj);
+                        break;
+                    case "start":
+                        BikeThread.Start();
+                        break;
+                    case "stop":
+                        BikeThread.Abort();
+                        break;
+                }
             }
         }
 
         public override void Start() {
             start = true;
             serialCommunicator.OpenConnection();
+            ChangesThread.Start();
         }
 
         public override void Stop() {

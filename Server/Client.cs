@@ -133,6 +133,9 @@ namespace Server {
                 case "stoprecording":
                     new Thread(() => StopRecording((JObject)obj["data"])).Start();
                     break;
+                case "setResistance":
+                    new Thread(() => SetResistance((JObject)obj["data"])).Start();
+                    break;
                 case "sendmessagetoperson":
                     new Thread(() => sendPM((JObject)obj["data"])).Start();
                     break;
@@ -160,6 +163,27 @@ namespace Server {
                 case "disconnect":
                     closeStream();
                     break;
+            }
+        }
+
+        private void SetResistance(JObject data)
+        {
+            lock (connectedClientsLock)
+            {
+                foreach (Client client in connectedClients)
+                {
+                    if (client.User.Hashcode == (string)data["hashcode"])
+                    {
+                        client.writeMessage(new
+                        {
+                            id = "setResistance",
+                            data = new
+                            {
+                                resistance = (int)data["resistance"]
+                            }
+                        });
+                    }
+                }
             }
         }
 
