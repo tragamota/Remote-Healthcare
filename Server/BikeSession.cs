@@ -27,9 +27,6 @@ namespace Server {
             if (!Directory.Exists(pathToUserDir)) {
                 Directory.CreateDirectory(pathToUserDir);
             }
-            else {
-                File.Create(pathToSessionFile);
-            }
 
             try {
                 File.WriteAllText(pathToSessionFile, JsonConvert.SerializeObject(Data));
