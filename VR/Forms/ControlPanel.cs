@@ -85,7 +85,7 @@ namespace VR {
             connector.SaveScene();
         }
 
-        private void Load_Btn_Click(object sender, EventArgs e)
+        public void Load_Btn_Click(object sender, EventArgs e)
         {
             //connector.Load("3A_Test");
             connector.LoadScene();

@@ -11,9 +11,6 @@ namespace Remote_Healtcare_Console {
         private Client client;
         private Thread BikeThread;
         private Thread ChangesThread;
-        private string hashcode;
-        private bool autoCalculateResistance;
-        private bool autoCalculateResistanceNotExactly;
 
         public Bike(string port, Console console, Client client) : base(console) {
             this.client = client;

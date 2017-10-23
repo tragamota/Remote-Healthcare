@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using UserData;
 using VR;
 using System.Threading;
+using Remote_Healtcare_Console.Forms;
 
 namespace Remote_Healtcare_Console
 {
@@ -18,7 +19,7 @@ namespace Remote_Healtcare_Console
         public string path;
         public ISet<BikeData> data;
         private Client client;
-        public ConnectForm connectForm;
+        public AutoVR connectForm;
         private object hudlock;
 
         public Console(Client client)
@@ -55,20 +56,12 @@ namespace Remote_Healtcare_Console
             }
             else
             {
-                connectForm = new ConnectForm(ref hudlock);
+                connectForm = new AutoVR(ref hudlock);
                 connectForm.Show();
-
-                //new Thread(() => test()).Start();
-
+                
                 bike = new Bike(combo.SelectedItem.ToString(), this, client);
                 bike.Start();
             }
-        }
-
-        private void test()
-        {
-            while (!connectForm.Connected()) { }
-
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e) {

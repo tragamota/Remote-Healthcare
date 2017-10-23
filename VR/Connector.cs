@@ -129,7 +129,7 @@ namespace VR {
             }
         }
 
-        internal void SetFilePath(string filePath)
+        public void SetFilePath(string filePath)
         {
             this.filePath = filePath;
         }

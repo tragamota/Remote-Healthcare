@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace VR {
-    partial class ModelFollowRoute : Form {
+    public partial class ModelFollowRoute : Form {
         private Connector connector;
         private List<Model> models;
         private List<Route> routes;
