@@ -28,8 +28,7 @@ namespace VR
 
             this.uuid = connector.GetUUID("HUDPanel");
             this.uuidMessage = connector.GetUUID("HUDMessage");
-
-            //connector.DrawLines(uuid);
+            
 			connector.Models.Add(this);
         }
 

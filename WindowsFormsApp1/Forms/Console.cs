@@ -103,6 +103,7 @@ namespace Remote_Healtcare_Console
                 return;
             }
             Chat_Box.Text = Chat_Box.Text + value + "\r\n";
+            connectForm.connector.hud.SetText(value);
         }
 
         private void Closing(object sender, FormClosingEventArgs e)

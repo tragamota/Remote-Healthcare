@@ -266,13 +266,18 @@ namespace Doctor {
         }
 
         private void Send_Message_Btn_Click(object sender, EventArgs e) {
-            client.SendMessage(new {
-                id = "chat",
-                data = new {
-                    message = Message_Txt_Box.Text,
-                    hashcode = patient.Hashcode
-                }
-            });
+            lock (client.ReadAndWriteLock)
+            {
+                client.SendMessage(new
+                {
+                    id = "sendmessagetoperson",
+                    data = new
+                    {
+                        message = Message_Txt_Box.Text,
+                        hashcode = patient.Hashcode
+                    }
+                });
+            }
         }
 
         private void Start_Session_Btn_Click(object sender, EventArgs e) {

@@ -300,7 +300,14 @@ namespace Server {
             lock (connectedClientsLock) {
                 foreach (Client client in connectedClients) {
                     if (client.User.Hashcode == hashcode) {
-                        writeMessage(messageFromDoc);
+                        client.writeMessage(new
+                        {
+                            id = "chat",
+                            data = new
+                            {
+                                message = messageFromDoc
+                            }
+                        });
                     }
                 }
             }
