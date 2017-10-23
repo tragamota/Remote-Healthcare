@@ -19,10 +19,12 @@ namespace Remote_Healtcare_Console
         public ISet<BikeData> data;
         private Client client;
         public ConnectForm connectForm;
+        private object hudlock;
 
         public Console(Client client)
         {
             InitializeComponent();
+            hudlock = new object();
             this.client = client;
             combo = comPorts;
             combo.Items.Clear();
@@ -53,7 +55,7 @@ namespace Remote_Healtcare_Console
             }
             else
             {
-                connectForm = new ConnectForm();
+                connectForm = new ConnectForm(ref hudlock);
                 connectForm.Show();
 
                 //new Thread(() => test()).Start();
@@ -113,7 +115,10 @@ namespace Remote_Healtcare_Console
 
         public void SetDisplay(double rate, double sp, double dist, double round, double res, double en, string ti, double wat)
         {
-            connectForm.connector.hud.Update2(rate, sp, dist, round, res, en, ti, wat);
+            lock (hudlock)
+            {
+                connectForm.connector.hud.Update2(rate, sp, dist, round, res, en, ti, wat);
+            }
         }
     }
 }

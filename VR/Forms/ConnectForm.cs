@@ -15,13 +15,14 @@ namespace VR {
         private string id;
         private List<string> filePath;
         private Dictionary<string, string> keys;
+        private object hudlock;
 
-        public ConnectForm() {
+        public ConnectForm(ref object hudlock) {
             InitializeComponent();
             connector = new Connector();
             filePath = new List<string>();
             keys = new Dictionary<string, string>();
-
+            this.hudlock = hudlock;
             JArray array = connector.GetClients();
 
             foreach (JObject obj in array) {
@@ -57,7 +58,7 @@ namespace VR {
             connector.SetFilePath(filePath[listBox_id.SelectedIndex]);
 
             this.Hide();
-            ControlPanel panel = new ControlPanel(connector);
+            ControlPanel panel = new ControlPanel(connector, ref hudlock);
             panel.Closed += (s, args) => this.Close();
             panel.Show();
         }

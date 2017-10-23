@@ -41,10 +41,7 @@ namespace VR {
             };
             SendMessage(message);
 
-            Dictionary<string, string> hosts = new Dictionary<string, string>();
-
             JObject jObject = ReadMessage();
-
             JArray array = (JArray)jObject["data"];
             return array;
         }
@@ -67,26 +64,68 @@ namespace VR {
         }
 
         public JObject ReadMessage() {
-            StringBuilder message = new StringBuilder();
+            //StringBuilder message = new StringBuilder();
+            //int numberOfBytesRead = 0;
+            //byte[] messageBytes = new byte[4];
+            //stream.Read(messageBytes, 0, messageBytes.Length);
+            //byte[] receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
+
+            //do {
+            //    numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
+
+            //    message.AppendFormat("{0}", Encoding.Default.GetString(receiveBuffer, 0, numberOfBytesRead));
+
+            //}
+            //while (message.Length < receiveBuffer.Length);
+
+            //string response = message.ToString();
+
+            //try {
+            //    return JObject.Parse(response);
+            //}catch(Exception e) {
+            //    return new JObject();
+            //}
+
             int numberOfBytesRead = 0;
             byte[] messageBytes = new byte[4];
-            stream.Read(messageBytes, 0, messageBytes.Length);
-            byte[] receiveBuffer = new byte[BitConverter.ToInt32(messageBytes, 0)];
+            byte[] receiveBuffer;
 
-            do {
-                numberOfBytesRead = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
-
-                message.AppendFormat("{0}", Encoding.ASCII.GetString(receiveBuffer, 0, numberOfBytesRead));
-
+            while (numberOfBytesRead < messageBytes.Length) {
+                try {
+                    numberOfBytesRead += stream.Read(messageBytes, numberOfBytesRead, messageBytes.Length - numberOfBytesRead);
+                }
+                catch (IOException e) {
+                    Console.WriteLine(e.StackTrace);
+                    return null;
+                }
             }
-            while (message.Length < receiveBuffer.Length);
 
-            string response = message.ToString();
+            numberOfBytesRead = 0;
+            try {
+                int size = BitConverter.ToInt32(messageBytes, 0);
+                Console.WriteLine("Size: " + size);
+                receiveBuffer = new byte[size];
+            }
+            catch (ArgumentException e) {
+                Console.WriteLine(e.StackTrace);
+                return null;
+            }
+
+            while (numberOfBytesRead < receiveBuffer.Length) {
+                try {
+                    numberOfBytesRead += stream.Read(receiveBuffer, numberOfBytesRead, receiveBuffer.Length - numberOfBytesRead);
+                }
+                catch (IOException e) {
+                    Console.WriteLine(e.StackTrace);
+                    return null;
+                }
+            }
 
             try {
-                return JObject.Parse(response);
-            }catch(Exception e) {
-                return new JObject();
+                return JObject.Parse(Encoding.Default.GetString(receiveBuffer));
+            }
+            catch (Exception) {
+                return null;
             }
         }
 

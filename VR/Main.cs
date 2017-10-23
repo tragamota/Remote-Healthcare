@@ -13,7 +13,8 @@ namespace VR {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ConnectForm());
+            object fakelock = new object();
+            Application.Run(new ConnectForm(ref fakelock));
         }
     }
 }

@@ -13,9 +13,11 @@ using System.Windows.Forms;
 namespace VR {
     partial class AddModel : Form {
         private Connector connector;
+        private object hudlock;
 
-        public AddModel(Connector connector) {
+        public AddModel(Connector connector, ref object hudlock) {
             this.connector = connector;
+            this.hudlock = hudlock;
             InitializeComponent();
         }
 
@@ -26,7 +28,7 @@ namespace VR {
                 if (Name_Txt.Text.Equals("bike"))
                 {
                     connector.AddModel(Name_Txt.Text, Object_Name_Txt.Text, double.Parse(X_Txt.Text), double.Parse(Y_Txt.Text), double.Parse(Z_Txt.Text), double.Parse(Scale_Txt.Text), int.Parse(Rotation_Z_Txt.Text));
-                    HUD hud = new HUD(connector);
+                    new HUD(ref connector, ref hudlock);
                 }
                 else
                 {

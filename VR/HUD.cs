@@ -15,13 +15,14 @@ namespace VR
         public string uuid;
         public string uuidMessage;
         public string cameraID;
+        private object hudlock;
 
-        public HUD(Connector connector)
+        public HUD(ref Connector connector, ref object hudlock)
         {
 			this.modelname = "hud";
             this.connector = connector;
-            connector.hud = this;
             this.cameraID = connector.GetUUID("bike");
+            this.hudlock = hudlock;
 
             connector.AddHUD(cameraID);
             connector.AddMassageScreen(cameraID);
@@ -30,6 +31,8 @@ namespace VR
             this.uuidMessage = connector.GetUUID("HUDMessage");
             
 			connector.Models.Add(this);
+            SetText("Welkom!");
+            connector.hud = this;
         }
 
         public void DrawMessage(string message)
@@ -166,26 +169,31 @@ namespace VR
         }
 
         public void SetText(String text) {
-            connector.ClearPanel(uuidMessage);
+            lock (hudlock) {
+                connector.ClearPanel(uuidMessage);
 
-            DrawMessage(text);
-            StartTimer();
-            connector.SetClearColor(uuidMessage);
-            connector.SwapText(uuidMessage);
+                DrawMessage(text);
+                StartTimer();
+                connector.SetClearColor(uuidMessage);
+                connector.SwapText(uuidMessage);
+            }
         }
 
         public void StartTimer() {
 
             Timer timer1 = new Timer(5000);
-            timer1.Elapsed += new ElapsedEventHandler(ClearMassage);
+            timer1.Elapsed += (Sender, e) => ClearMassage(Sender, e, timer1); 
             timer1.Start();
         }
 
-        public void ClearMassage(Object sender, ElapsedEventArgs e)
+        public void ClearMassage(Object sender, ElapsedEventArgs e, Timer timer)
         {
-            connector.ClearPanel(uuidMessage);
-            connector.SetClearColor(uuidMessage);
-            connector.SwapText(uuidMessage);
+            lock (hudlock) {
+                connector.ClearPanel(uuidMessage);
+                connector.SetClearColor(uuidMessage);
+                connector.SwapText(uuidMessage);
+            }
+            timer.Dispose();
         }  
     }
 }

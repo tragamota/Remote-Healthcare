@@ -6,15 +6,17 @@ namespace VR {
     public partial class ControlPanel : Form {
         private Connector connector;
 		private HUD hud;
+        private object hudlock;
 
-        public ControlPanel(Connector connector) {
+        public ControlPanel(Connector connector, ref object hudlock) {
             this.connector = connector;
             InitializeComponent();
             connector.LoadSceneModels();
+            this.hudlock = hudlock;
         }
 
         private void Add_Model_Click(object sender, EventArgs e) {
-            AddModel model = new AddModel(connector);
+            AddModel model = new AddModel(connector, ref hudlock);
             model.Show();
         }
 
@@ -104,7 +106,7 @@ namespace VR {
 
 		private void Add_HUD_Click(object sender, EventArgs e)
 		{
-			hud = new HUD(connector);
+			new HUD(ref connector, ref hudlock);
 		}
 	}
 }

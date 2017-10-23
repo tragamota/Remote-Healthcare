@@ -39,6 +39,7 @@ namespace Remote_Healtcare_Console
                     console.SetEnergy(bikeData.Energy.ToString());
                     console.SetTime(((bikeData.Time < TimeSpan.Zero) ? "-" : "") + bikeData.Time.ToString(@"mm\:ss"));
                     console.SetWatt(bikeData.Power.ToString());
+                    console.SetDisplay(bikeData.Pulse, bikeData.Speed, bikeData.Distance, bikeData.Rpm, bikeData.Resistance, bikeData.Energy, bikeData.Time.ToString(), bikeData.Power);
                 });
             }
             catch (InvalidOperationException e) {
@@ -48,7 +49,6 @@ namespace Remote_Healtcare_Console
                 System.Console.WriteLine(e.StackTrace);
             }
 
-            console.SetDisplay(bikeData.Pulse, bikeData.Speed, bikeData.Distance, bikeData.Rpm, bikeData.Resistance, bikeData.Energy, bikeData.Time.ToString(), bikeData.Power);
         }
     }
 }

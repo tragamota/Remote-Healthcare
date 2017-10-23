@@ -17,6 +17,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Doctor", "Doctor\Doctor.csproj", "{251213D5-8916-4DB8-AB7F-A4022BB23969}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		UserData\UserData.projitems*{0e89495e-98d7-45de-998c-995c28af520f}*SharedItemsImports = 4
 		UserData\UserData.projitems*{251213d5-8916-4db8-ab7f-a4022bb23969}*SharedItemsImports = 4
