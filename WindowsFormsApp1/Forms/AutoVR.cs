@@ -79,6 +79,8 @@ namespace Remote_Healtcare_Console.Forms
             new HUD(ref connector, ref hudlock);
 
             connector.UpdateNode(connector.GetUUID("Camera"), connector.GetUUID("bike"));
+
+            connector.DeleteGroundplane();
         }
     }
 }
