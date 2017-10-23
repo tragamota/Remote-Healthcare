@@ -48,7 +48,7 @@ namespace Remote_Healtcare_Console
                 System.Console.WriteLine(e.StackTrace);
             }
 
-            //console.SetDisplay(bikeData.Pulse, bikeData.Speed, bikeData.Distance, bikeData.Rpm, bikeData.Resistance, bikeData.Energy, bikeData.Time.ToString(), bikeData.Power);
+            console.SetDisplay(bikeData.Pulse, bikeData.Speed, bikeData.Distance, bikeData.Rpm, bikeData.Resistance, bikeData.Energy, bikeData.Time.ToString(), bikeData.Power);
         }
     }
 }

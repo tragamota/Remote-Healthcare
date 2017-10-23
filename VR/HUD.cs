@@ -22,7 +22,6 @@ namespace VR
             this.connector = connector;
             connector.hud = this;
             this.cameraID = connector.GetUUID("bike");
-           // Console.WriteLine("Camera ID: {0}", cameraID);
 
             connector.AddHUD(cameraID);
             connector.AddMassageScreen(cameraID);
@@ -136,44 +135,44 @@ namespace VR
 
         public void Update(double rate, double sp, double dist,double round, double res, double en, string ti, double wat)
         {
-            //connector.ClearPanel(uuid);
+            connector.ClearPanel(uuid);
 
-            //DrawHeartRate(rate);
-            //DrawDistance(sp);
-            //DrawSpeed(dist);
-            //DrawRoundMin(round);
-            //DrawResistance(res);
-            //DrawEnergy(en);
-            //DrawTime(ti);
-            //DrawWatt(wat);
+            DrawHeartRate(rate);
+            DrawDistance(sp);
+            DrawSpeed(dist);
+            DrawRoundMin(round);
+            DrawResistance(res);
+            DrawEnergy(en);
+            DrawTime(ti);
+            DrawWatt(wat);
 
-            //connector.SetClearColor(uuid);
-            //connector.SwapText(uuid);
+            connector.SetClearColor(uuid);
+            connector.SwapText(uuid);
         }
 
         public void Update2(double rate, double sp, double dist, double round, double res, double en, string ti, double wat)
         {
-            //connector.ClearPanel(uuid);
+            connector.ClearPanel(uuid);
 
-            //DrawHeartRate2(rate);
-            //DrawDistance2(sp);
-            //DrawSpeed2(dist);
-            //DrawRoundMin2(round);
-            //DrawResistance2(res);
-            //DrawEnergy2(en);
-            //DrawTime2(ti);
+            DrawHeartRate2(rate);
+            DrawDistance2(sp);
+            DrawSpeed2(dist);
+            DrawRoundMin2(round);
+            DrawResistance2(res);
+            DrawEnergy2(en);
+            DrawTime2(ti);
 
-            //connector.SetClearColor(uuid);
-            //connector.SwapText(uuid);
+            connector.SetClearColor(uuid);
+            connector.SwapText(uuid);
         }
 
         public void SetText(String text) {
-            //connector.ClearPanel(uuidMessage);
+            connector.ClearPanel(uuidMessage);
 
-            //DrawMessage(text);
-            //StartTimer();
-            //connector.SetClearColor(uuidMessage);
-            //connector.SwapText(uuidMessage);
+            DrawMessage(text);
+            StartTimer();
+            connector.SetClearColor(uuidMessage);
+            connector.SwapText(uuidMessage);
         }
 
         public void StartTimer() {

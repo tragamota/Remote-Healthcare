@@ -82,7 +82,12 @@ namespace VR {
             while (message.Length < receiveBuffer.Length);
 
             string response = message.ToString();
-            return JObject.Parse(response);
+
+            try {
+                return JObject.Parse(response);
+            }catch(Exception e) {
+                return new JObject();
+            }
         }
 
         internal void SetFilePath(string filePath)
